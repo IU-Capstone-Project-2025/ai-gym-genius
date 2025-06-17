@@ -32,6 +32,8 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
 		})
 	}
 
+	//TODO add more validation for the date format and step value
+
 	
 
 	// This is a placeholder for the actual logic to get the number of active users.

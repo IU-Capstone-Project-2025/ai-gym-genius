@@ -7,4 +7,5 @@ import (
 
 func SetupStatisticsRoutes(app *fiber.App) {
 	app.Get("/statistics", handlers.GetNumberOfActiveUsers)
+	app.Post("/statistics/add-activity", handlers.GetNumberOfActiveUsers)
 }
