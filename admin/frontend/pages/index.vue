@@ -1,5 +1,11 @@
+<template>
+  <div class="w-[400px]">
+    <UAccordion :items="items"/>
+  </div>
+</template>
+
 <script setup lang="ts">
-import type { AccordionItem } from '@nuxt/ui'
+import type {AccordionItem} from '@nuxt/ui'
 
 const items = ref<AccordionItem[]>([
   {
@@ -20,6 +26,7 @@ const items = ref<AccordionItem[]>([
 ])
 </script>
 
-<template>
-  <UAccordion :items="items" />
-</template>
+<style scoped>
+
+
+</style>
