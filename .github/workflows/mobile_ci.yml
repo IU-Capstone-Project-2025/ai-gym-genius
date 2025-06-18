@@ -24,6 +24,8 @@ jobs:
 
       - name: Install Dependencies
         run: flutter pub get
+        working-directory: mobile
 
       - name: Run Linter
         run: flutter analyze
+        working-directory: mobile
