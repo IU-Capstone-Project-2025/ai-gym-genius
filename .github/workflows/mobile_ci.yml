@@ -4,10 +4,10 @@ on:
     branches: [ "main" ]
     paths:
       - 'mobile/**'        # run only if at least one file here changed
-  pull_request:
-    branches: [ "main" ]
-    paths:
-      - 'mobile/**'
+  # pull_request:
+  #   branches: [ "main" ]
+  #   paths:
+  #     - 'mobile/**'
 
 jobs:
   build-and-test:
