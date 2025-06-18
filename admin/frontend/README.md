@@ -4,6 +4,7 @@
 
 - Nuxt UI
 - Tailwindcss
+- ChartJS
 
 
 ### Architecture
