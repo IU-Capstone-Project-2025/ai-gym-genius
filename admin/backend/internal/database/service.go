@@ -1,14 +1,39 @@
 package database
 
 import (
-	"gorm.io/driver/postgres"
-  	"gorm.io/gorm"
-	"fmt"
 	"admin/internal/database/models"
+	"crypto/sha256"
+	"encoding/hex"
+	"fmt"
+	"github.com/dgrijalva/jwt-go"
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+	"os"
+	"time"
 )
 
 var DB *gorm.DB
+var secret = os.Getenv("SECRET")
+var jwtSecret = os.Getenv("JWT_SECRET")
 
+func Hash(login, password string) string {
+
+	data := login + ":" + password + ":" + secret
+
+	hash := sha256.Sum256([]byte(data))
+
+	return hex.EncodeToString(hash[:])
+}
+
+func CreateTokenForUser(user models.User) (string, error) {
+	claims := jwt.MapClaims{
+		"sub":  user.ID,
+		"role": "user",
+		"exp":  time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(jwtSecret))
+}
 
 func InitDatabase() error {
 	var err error
@@ -21,6 +46,8 @@ func InitDatabase() error {
 
 	err = DB.AutoMigrate(
 		&models.UserActivity{},
+		&models.User{},
+		&models.Admin{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)

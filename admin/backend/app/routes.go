@@ -2,7 +2,6 @@ package main
 
 import (
 	"admin/internal/statistics"
-
 	"github.com/gofiber/fiber/v2"
 )
 

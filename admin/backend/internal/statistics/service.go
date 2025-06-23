@@ -1,1 +1,1 @@
-// File for service logic related to statistics
+package statistics
