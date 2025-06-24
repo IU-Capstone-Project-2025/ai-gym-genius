@@ -1,4 +1,4 @@
-package models
+package schemas
 
 type UserActivity struct {
 		ID                 uint             `gorm:"primaryKey;autoIncrement"`

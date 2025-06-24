@@ -1,15 +1,16 @@
 package database
 
 import (
-	"admin/internal/database/models"
+	"admin/internal/database/schemas"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
+	"os"
+	"time"
+
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
-	"os"
-	"time"
 )
 
 var DB *gorm.DB
@@ -25,7 +26,7 @@ func Hash(login, password string) string {
 	return hex.EncodeToString(hash[:])
 }
 
-func CreateTokenForUser(user models.User) (string, error) {
+func CreateTokenForUser(user schemas.User) (string, error) {
 	claims := jwt.MapClaims{
 		"sub":  user.ID,
 		"role": "user",
@@ -39,15 +40,15 @@ func InitDatabase() error {
 	var err error
 
 	dsn := "host=localhost user=postgres password=postgres dbname=gorm port=5432 sslmode=disable"
-	DB, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
 
 	err = DB.AutoMigrate(
-		&models.UserActivity{},
-		&models.User{},
-		&models.Admin{},
+		&schemas.UserActivity{},
+		&schemas.User{},
+		&schemas.Admin{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)

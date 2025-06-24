@@ -7,16 +7,10 @@ definitions:
       password:
         type: string
     type: object
-  models.GetNumberOfActiveUsersInput:
+  models.ErrorResponse:
     properties:
-      end_date:
-        example: "2023-01-31"
-        type: string
-      start_date:
-        example: "2023-01-01"
-        type: string
-      step:
-        example: day
+      error:
+        example: A descriptive error message
         type: string
     type: object
   models.GetUserActivityInput:
@@ -92,30 +86,44 @@ paths:
     get:
       consumes:
       - application/json
-      description: Returns the number of active users for a given period with a step
+      description: Returns the count of active users within the specified date range
+        and interval step (hour or day)
       parameters:
-      - description: User data
-        in: body
-        name: request
+      - description: Start date in YYYY-MM-DD format
+        example: '"2025-06-01"'
+        in: query
+        name: start_date
         required: true
-        schema:
-          $ref: '#/definitions/models.GetNumberOfActiveUsersInput'
+        type: string
+      - description: End date in YYYY-MM-DD format
+        example: '"2025-06-10"'
+        in: query
+        name: end_date
+        required: true
+        type: string
+      - description: Interval step
+        enum:
+        - hour
+        - day
+        example: '"day"'
+        in: query
+        name: step
+        required: true
+        type: string
       produces:
       - application/json
       responses:
         "200":
-          description: Number of active users
+          description: Active users count
           schema:
             additionalProperties:
               type: integer
             type: object
         "400":
-          description: Validation error
+          description: Invalid input
           schema:
-            additionalProperties:
-              type: integer
-            type: object
-      summary: Get the number of active users
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get number of active users
       tags:
       - Statistics
   /user-activity:

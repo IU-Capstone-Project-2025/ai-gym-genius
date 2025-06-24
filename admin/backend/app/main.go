@@ -2,7 +2,10 @@ package main
 
 import (
 	_ "admin/docs"
+	"admin/internal/database"
+
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 	swagger "github.com/swaggo/fiber-swagger"
 )
 
@@ -20,11 +23,18 @@ import (
 func main() {
 	app := fiber.New()
 
+	app.Use(cors.New(cors.Config{
+    AllowOrigins: "*",
+    AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
 	app.Get("/swagger/*", swagger.WrapHandler)
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.SendString("Hello, World!")
 	})
+
+	database.InitDatabase()
 
 	CombineRoutes(app)
 

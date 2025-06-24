@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"github.com/gofiber/fiber/v2"
+	"admin/internal/database/schemas"
 	"admin/internal/database/models"
 	"admin/internal/database"
 )
@@ -9,14 +10,14 @@ import (
 // GetUserActivity
 // @Summary Record user activity
 // @Description Records activity for a user on a specific date
-// @Tags statistics
+// @Tags Statistics
 // @Accept json
 // @Produce json
 // @Param input body models.GetUserActivityInput true "Request parameters"
 // @Success 200 {object} string "Success message"
 // @Failure 400 {object} string "Validation error"
 // @Failure 500 {object} string "Server error"
-// @Router /user-activity [post]
+// @Router /statistics/add-activity [post]
 func GetUserActivity(c *fiber.Ctx) error {
 	data := new(models.GetUserActivityInput)
 
@@ -40,7 +41,7 @@ func GetUserActivity(c *fiber.Ctx) error {
 
 	//TODO add more validation for the date format
 
-	record := models.UserActivity{
+	record := schemas.UserActivity{
 		UserID:  data.UserID,
 		Date: data.Date,
 	}

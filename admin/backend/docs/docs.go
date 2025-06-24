@@ -99,7 +99,7 @@ const docTemplate = `{
         },
         "/statistics": {
             "get": {
-                "description": "Returns the number of active users for a given period with a step",
+                "description": "Returns the count of active users within the specified date range and interval step (hour or day)",
                 "consumes": [
                     "application/json"
                 ],
@@ -109,21 +109,40 @@ const docTemplate = `{
                 "tags": [
                     "Statistics"
                 ],
-                "summary": "Get the number of active users",
+                "summary": "Get number of active users",
                 "parameters": [
                     {
-                        "description": "User data",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.GetNumberOfActiveUsersInput"
-                        }
+                        "type": "string",
+                        "example": "\"2025-06-01\"",
+                        "description": "Start date in YYYY-MM-DD format",
+                        "name": "start_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "example": "\"2025-06-10\"",
+                        "description": "End date in YYYY-MM-DD format",
+                        "name": "end_date",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "enum": [
+                            "hour",
+                            "day"
+                        ],
+                        "type": "string",
+                        "example": "\"day\"",
+                        "description": "Interval step",
+                        "name": "step",
+                        "in": "query",
+                        "required": true
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Number of active users",
+                        "description": "Active users count",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -132,12 +151,9 @@ const docTemplate = `{
                         }
                     },
                     "400": {
-                        "description": "Validation error",
+                        "description": "Invalid input",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "integer"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -202,20 +218,12 @@ const docTemplate = `{
                 }
             }
         },
-        "models.GetNumberOfActiveUsersInput": {
+        "models.ErrorResponse": {
             "type": "object",
             "properties": {
-                "end_date": {
+                "error": {
                     "type": "string",
-                    "example": "2023-01-31"
-                },
-                "start_date": {
-                    "type": "string",
-                    "example": "2023-01-01"
-                },
-                "step": {
-                    "type": "string",
-                    "example": "day"
+                    "example": "A descriptive error message"
                 }
             }
         },

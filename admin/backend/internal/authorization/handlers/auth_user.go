@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"admin/internal/database"
+	"admin/internal/database/schemas"
 	"admin/internal/database/models"
 	"errors"
 	"github.com/gofiber/fiber/v2"
@@ -42,7 +43,7 @@ func LoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	var user models.User
+	var user schemas.User
 	if err := database.DB.Where("Login = ?", data.Login).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{

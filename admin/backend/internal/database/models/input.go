@@ -20,6 +20,6 @@ type GetNumberOfActiveUsersInput struct {
 }
 
 type GetUserActivityInput struct {
-	UserID	string `json:"user_id"`
-	Date string `json:"date"`
+	UserID	string `json:"user_id" example:"12345"`
+	Date string `json:"date" example:"2023-01-01"`
 }
