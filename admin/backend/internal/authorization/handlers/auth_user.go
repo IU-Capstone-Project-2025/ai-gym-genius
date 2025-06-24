@@ -21,7 +21,7 @@ import (
 // @Failure 404 {object} map[string]string "User not found"
 // @Failure 401 {object} map[string]string "Incorrect password"
 // @Failure 500 {object} map[string]string "Failed to query database or create token"
-// @Router /auth/login [post]
+// @Router /auth [post]
 func LoginHandler(c *fiber.Ctx) error {
 	data := new(models.AuthInput)
 
@@ -43,7 +43,7 @@ func LoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	var user schemas.User
+	var user schemas.Admin
 	if err := database.DB.Where("Login = ?", data.Login).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{

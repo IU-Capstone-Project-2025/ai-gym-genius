@@ -19,6 +19,8 @@ var jwtSecret = os.Getenv("JWT_SECRET")
 
 func Hash(login, password string) string {
 
+	fmt.Println(secret, jwtSecret)
+
 	data := login + ":" + password + ":" + secret
 
 	hash := sha256.Sum256([]byte(data))
@@ -26,7 +28,7 @@ func Hash(login, password string) string {
 	return hex.EncodeToString(hash[:])
 }
 
-func CreateTokenForUser(user schemas.User) (string, error) {
+func CreateTokenForUser(user schemas.Admin) (string, error) {
 	claims := jwt.MapClaims{
 		"sub":  user.ID,
 		"role": "user",
@@ -39,7 +41,7 @@ func CreateTokenForUser(user schemas.User) (string, error) {
 func InitDatabase() error {
 	var err error
 
-	dsn := "host=localhost user=postgres password=postgres dbname=gorm port=5432 sslmode=disable"
+	dsn := "host=localhost user=postgres password=PASSWORD dbname=gorm port=5432 sslmode=disable"
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
@@ -47,7 +49,6 @@ func InitDatabase() error {
 
 	err = DB.AutoMigrate(
 		&schemas.UserActivity{},
-		&schemas.User{},
 		&schemas.Admin{},
 	)
 	if err != nil {

@@ -3,10 +3,8 @@ package main
 import (
 	_ "admin/docs"
 	"admin/internal/database"
-
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
-	swagger "github.com/swaggo/fiber-swagger"
 )
 
 // @title Gym Genius API
@@ -27,12 +25,6 @@ func main() {
     AllowOrigins: "*",
     AllowHeaders: "Origin, Content-Type, Accept",
 	}))
-
-	app.Get("/swagger/*", swagger.WrapHandler)
-
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
 
 	database.InitDatabase()
 

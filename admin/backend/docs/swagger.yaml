@@ -16,8 +16,10 @@ definitions:
   models.GetUserActivityInput:
     properties:
       date:
+        example: "2023-01-01"
         type: string
       user_id:
+        example: "12345"
         type: string
     type: object
 host: localhost:3000
@@ -34,7 +36,7 @@ info:
   title: Gym Genius API
   version: "1.0"
 paths:
-  /auth/login:
+  /auth:
     post:
       consumes:
       - application/json
@@ -126,7 +128,7 @@ paths:
       summary: Get number of active users
       tags:
       - Statistics
-  /user-activity:
+  /statistics/add-activity:
     post:
       consumes:
       - application/json
@@ -155,5 +157,5 @@ paths:
             type: string
       summary: Record user activity
       tags:
-      - statistics
+      - Statistics
 swagger: "2.0"

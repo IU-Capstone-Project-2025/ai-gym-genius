@@ -24,7 +24,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/auth/login": {
+        "/auth": {
             "post": {
                 "description": "Authenticate a user with login and password, returning a token",
                 "consumes": [
@@ -159,7 +159,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/user-activity": {
+        "/statistics/add-activity": {
             "post": {
                 "description": "Records activity for a user on a specific date",
                 "consumes": [
@@ -169,7 +169,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "statistics"
+                    "Statistics"
                 ],
                 "summary": "Record user activity",
                 "parameters": [
@@ -231,10 +231,12 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "2023-01-01"
                 },
                 "user_id": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "12345"
                 }
             }
         }
