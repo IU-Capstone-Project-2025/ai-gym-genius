@@ -14,9 +14,9 @@ type AuthInput struct {
 }
 
 type GetNumberOfActiveUsersInput struct {
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
-	Step string `json:"step"`
+	StartDate string `json:"start_date" example:"2023-01-01"`
+	EndDate   string `json:"end_date" example:"2023-01-31"`
+	Step string `json:"step" example:"day"`
 }
 
 type GetUserActivityInput struct {

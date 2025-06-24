@@ -5,6 +5,16 @@ import (
 	"admin/internal/database/models"
 )
 
+// GetNumberOfActiveUsers
+// @Summary Get the number of active users
+// @Description Returns the number of active users for a given period with a step
+// @Tags Statistics
+// @Accept json
+// @Produce json
+// @Param request body models.GetNumberOfActiveUsersInput true "User data"
+// @Success 200 {object} map[string]int "Number of active users"
+// @Failure 400 {object} map[string]int "Validation error"
+// @Router /statistics [get]	
 func GetNumberOfActiveUsers(c *fiber.Ctx) error {
 	data := new(models.GetNumberOfActiveUsersInput)
 

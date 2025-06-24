@@ -1,0 +1,151 @@
+basePath: /
+definitions:
+  models.AuthInput:
+    properties:
+      login:
+        type: string
+      password:
+        type: string
+    type: object
+  models.GetNumberOfActiveUsersInput:
+    properties:
+      end_date:
+        example: "2023-01-31"
+        type: string
+      start_date:
+        example: "2023-01-01"
+        type: string
+      step:
+        example: day
+        type: string
+    type: object
+  models.GetUserActivityInput:
+    properties:
+      date:
+        type: string
+      user_id:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API for Gym Genius application
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Gym Genius API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate a user with login and password, returning a token
+      parameters:
+      - description: Login and Password
+        in: body
+        name: authInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User logged in successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request body or missing fields
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "401":
+          description: Incorrect password
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: User not found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Failed to query database or create token
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: User Login
+      tags:
+      - auth
+  /statistics:
+    get:
+      consumes:
+      - application/json
+      description: Returns the number of active users for a given period with a step
+      parameters:
+      - description: User data
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/models.GetNumberOfActiveUsersInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Number of active users
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+        "400":
+          description: Validation error
+          schema:
+            additionalProperties:
+              type: integer
+            type: object
+      summary: Get the number of active users
+      tags:
+      - Statistics
+  /user-activity:
+    post:
+      consumes:
+      - application/json
+      description: Records activity for a user on a specific date
+      parameters:
+      - description: Request parameters
+        in: body
+        name: input
+        required: true
+        schema:
+          $ref: '#/definitions/models.GetUserActivityInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Success message
+          schema:
+            type: string
+        "400":
+          description: Validation error
+          schema:
+            type: string
+        "500":
+          description: Server error
+          schema:
+            type: string
+      summary: Record user activity
+      tags:
+      - statistics
+swagger: "2.0"

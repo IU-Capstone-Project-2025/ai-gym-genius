@@ -8,6 +8,19 @@ import (
 	"gorm.io/gorm"
 )
 
+// LoginHandler godoc
+// @Summary User Login
+// @Description Authenticate a user with login and password, returning a token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param authInput body models.AuthInput true "Login and Password"
+// @Success 200 {object} map[string]string "User logged in successfully"
+// @Failure 400 {object} map[string]string "Invalid request body or missing fields"
+// @Failure 404 {object} map[string]string "User not found"
+// @Failure 401 {object} map[string]string "Incorrect password"
+// @Failure 500 {object} map[string]string "Failed to query database or create token"
+// @Router /auth/login [post]
 func LoginHandler(c *fiber.Ctx) error {
 	data := new(models.AuthInput)
 
@@ -60,6 +73,6 @@ func LoginHandler(c *fiber.Ctx) error {
 	c.Set("Authorization", "Bearer "+ token)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Organization user logged in successfully",
+		"message": "User logged in successfully",
 	})
 }
