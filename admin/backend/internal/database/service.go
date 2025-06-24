@@ -2,10 +2,11 @@ package database
 
 import (
 	"admin/internal/database/schemas"
+	"admin/config"
+	
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -14,8 +15,16 @@ import (
 )
 
 var DB *gorm.DB
-var secret = os.Getenv("SECRET")
-var jwtSecret = os.Getenv("JWT_SECRET")
+
+var(
+	secret = config.C.Secret
+	jwtSecret = config.C.JwtSecret
+	dbHost = config.C.DbHost
+	dbUser = config.C.DbUser
+	dbPassword = config.C.DbPassword
+	dbName = config.C.DbName
+	dbPort = config.C.DbPort
+)
 
 func Hash(login, password string) string {
 
@@ -41,7 +50,10 @@ func CreateTokenForUser(user schemas.Admin) (string, error) {
 func InitDatabase() error {
 	var err error
 
-	dsn := "host=localhost user=postgres password=PASSWORD dbname=gorm port=5432 sslmode=disable"
+	dsn := fmt.Sprintf(
+		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
+		dbHost, dbUser, dbPassword, dbName, dbPort,
+	)
 	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)

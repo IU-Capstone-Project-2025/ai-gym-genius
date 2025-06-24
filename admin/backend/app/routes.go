@@ -11,4 +11,7 @@ func CombineRoutes(app *fiber.App) {
 	authorization.SetupAuthRoutes(app)
 	statistics.SetupStatisticsRoutes(app)
 	app.Get("/swagger/*", swagger.WrapHandler)
+	app.Get("/ping", func(c *fiber.Ctx) error {
+		return c.SendString("pong")
+	})
 }

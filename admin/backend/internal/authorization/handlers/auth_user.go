@@ -33,13 +33,13 @@ func LoginHandler(c *fiber.Ctx) error {
 
 	if data.Login == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Field 'Login' cannot be empty",
+			"error": "Field 'login' cannot be empty",
 		})
 	}
 
 	if data.Password == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Field 'Password' cannot be empty",
+			"error": "Field 'password' cannot be empty",
 		})
 	}
 
@@ -71,7 +71,7 @@ func LoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	c.Set("Authorization", "Bearer "+ token)
+	c.Set("Authorization", "Bearer " + token)
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "User logged in successfully",
