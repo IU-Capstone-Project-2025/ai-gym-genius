@@ -50,6 +50,11 @@ Egor Dushin
 - Authorization form in admin panel interface - [PR](https://github.com/IU-Capstone-Project-2025/gym-genius/pull/14)
 - CI/CD for admin panel frontend - [PR](https://github.com/IU-Capstone-Project-2025/gym-genius/pull/15)
 
+Vladislav Kuznetsov:
+- Added production-docker compose for mobile deployment - [PR](https://github.com/IU-Capstone-Project-2025/gym-genius/pull/16)
+- Setup ubuntu server, setup network configuration, firewall, dependencies. Deployed mobile app. [URL](http://213.171.25.183/)
+
+
 ## Plan for Next Week
 
 Continue working on our features. Some of the tasks can be seen in backlog already:
