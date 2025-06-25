@@ -40,11 +40,14 @@ Kirill Nosov:
 - Created models of the user and user activity for database.
 - Tested basic scenarious of the API.
 
+https://github.com/IU-Capstone-Project-2025/gym-genius/pull/13 (check personal commits)
+
 Aleksandr Mikhailov:
 - Added proper config to backend
 - Added docker files for deployment
 - Fully implemented get active users and post user activity endpoints
 - Added README.md to backend
+https://github.com/IU-Capstone-Project-2025/gym-genius/pull/13 (check personal commits)
 
 Egor Dushin
 - Authorization form in admin panel interface - [PR](https://github.com/IU-Capstone-Project-2025/gym-genius/pull/14)
