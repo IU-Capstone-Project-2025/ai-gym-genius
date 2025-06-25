@@ -47,8 +47,8 @@ Aleksandr Mikhailov:
 - Added README.md to backend
 
 Egor Dushin
-- Authorization form in admin panel interface
-- CI/CD for admin panel frontend
+- Authorization form in admin panel interface - [PR](https://github.com/IU-Capstone-Project-2025/gym-genius/pull/14)
+- CI/CD for admin panel frontend - [PR](https://github.com/IU-Capstone-Project-2025/gym-genius/pull/15)
 
 ## Plan for Next Week
 
