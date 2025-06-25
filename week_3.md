@@ -48,6 +48,7 @@ Aleksandr Mikhailov:
 
 Egor Dushin
 - Authorization form in admin panel interface
+- CI/CD for admin panel frontend
 
 ## Plan for Next Week
 
