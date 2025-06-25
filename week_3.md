@@ -47,6 +47,7 @@ Aleksandr Mikhailov:
 - Added docker files for deployment
 - Fully implemented get active users and post user activity endpoints
 - Added README.md to backend
+
 https://github.com/IU-Capstone-Project-2025/gym-genius/pull/13 (check personal commits)
 
 Egor Dushin
