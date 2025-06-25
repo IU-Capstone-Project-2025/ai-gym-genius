@@ -6,13 +6,16 @@
       </template>
 
       <div class="flex flex-col gap-y-4">
-        <UInput placeholder="Login"/>
-        <UInput placeholder="Password"/>
+        <UInput placeholder="Login" size="xl"/>
+        <UInput placeholder="Password" size="xl"/>
       </div>
 
       <template #footer>
         <div class="grid grid-cols-1 justify-items-end">
-          <UButton>Sign in</UButton>
+          <div class="flex gap-x-2">
+            <UButton variant="outline" color="neutral" size="xl">Sign up</UButton>
+            <UButton size="xl">Sign in</UButton>
+          </div>
         </div>
       </template>
     </UCard>

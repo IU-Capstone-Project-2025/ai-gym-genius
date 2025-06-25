@@ -1,13 +1,15 @@
 <template>
   <div class="organisms__navbar">
     <div class="flex-grow"></div>
-    <NuxtLink to="/auth">
+    <NuxtLink to="/auth" v-if="useRoute().name !== 'auth'">
       <UButton>Login</UButton>
     </NuxtLink>
   </div>
 </template>
 
 <script setup lang="ts">
+
+
 
 </script>
 
