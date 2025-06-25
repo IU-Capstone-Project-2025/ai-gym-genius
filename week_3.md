@@ -12,16 +12,6 @@ title: "Week #3"
 
 *Screenshots/GIFs/PDF presentation/Videos demonstrating the working MVP*
 
-## ML
-
-*Remove this section if not applicable*
-
-**Link to the training code**: *link*
-
-*Describe how you trained your model, what data you used, and what parameters your model uses to make decisions.*
-
-**Links to the initial model artifacts**: *links*
-
 ## Internal demo
 
 *Notes from internal demo*
@@ -29,6 +19,14 @@ title: "Week #3"
 # Weekly commitments
 
 ## Individual contribution of each participant
+
+Ivan Chabanov:
+- added Data, Domain, Presentation layers
+- added dark/bright themes to application
+- implemented state management and created UI for working out process
+- made navigation/routes logic
+
+https://github.com/IU-Capstone-Project-2025/gym-genius/commit/5cfaed1ffed3558977cf2db08081f7919062317b
 
 Kirill Nosov:
 - Added method for JWT-token generation.
