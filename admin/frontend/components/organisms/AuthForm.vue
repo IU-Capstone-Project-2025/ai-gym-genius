@@ -6,8 +6,19 @@
       </template>
 
       <div class="flex flex-col gap-y-4">
-        <UInput placeholder="Login" size="xl"/>
-        <UInput placeholder="Password" size="xl"/>
+        <UInput
+            placeholder="Login"
+            size="xl"
+            autocomplete="off"
+            v-model="login"
+        />
+        <UInput
+            placeholder="Password"
+            size="xl"
+            type="password"
+            autocomplete="off"
+            v-model="password"
+        />
       </div>
 
       <template #footer>
@@ -17,7 +28,7 @@
                 :variant="type === 'sign_in' ? 'outline' : 'solid'"
                 :color="type === 'sign_in' ? 'neutral' : 'primary'"
                 size="xl"
-                @click="emit('switch', 'sign_up')"
+                @click="type === 'sign_up' ? actionButtonClick() : emit('switch', 'sign_up')"
             >
               Sign up
             </UButton>
@@ -26,9 +37,9 @@
                 size="xl"
                 :variant="type === 'sign_in' ? 'solid' : 'outline'"
                 :color="type === 'sign_in' ? 'primary' : 'neutral'"
-                @click="emit('switch', 'sign_in')"
+                @click="type === 'sign_in' ? actionButtonClick() : emit('switch', 'sign_in')"
             >
-              Sign in
+              Log in
             </UButton>
           </div>
         </div>
@@ -44,13 +55,25 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  (e : "switch", value : "sign_in" | "sign_up")
+  (e: "switch", value: "sign_in" | "sign_up"),
+  (e: "action", login_: string, password_: string)
 }>()
 
 const header = computed(() => {
-  return props.type === "sign_in" ? "Sign In" : "Sign up"
+  return props.type === "sign_in" ? "Log In" : "Sign up"
 });
 
+const login: Ref<string> = ref("");
+const password: Ref<string> = ref("");
+
+
+const actionButtonClick = () => {
+  if (!login.value || !password.value) {
+    return;
+  }
+
+  emit('action', login.value, password.value);
+}
 
 </script>
 
