@@ -1,12 +1,21 @@
 package models
 
-type GetNumberOfActiveUsersInput struct {
-	StartDate string `json:"start_date"`
-	EndDate   string `json:"end_date"`
-	Step string `json:"step"`
+import "time"
+
+type UserRegistrationInput struct {
+	Login    string `json:"login"`
+	Name     string `json:"name"`
+	Surname  string `json:"surname"`
+	Phone    string `json:"phone"`
+	Password string `json:"password"`
+}
+
+type AuthInput struct {
+	Login    string `json:"login"`
+	Password string `json:"password"`
 }
 
 type GetUserActivityInput struct {
-	UserID	string `json:"user_id"`
-	Date string `json:"date"`
+	UserID uint      `json:"user_id" example:"12345"`
+	Date   time.Time `json:"date"`
 }

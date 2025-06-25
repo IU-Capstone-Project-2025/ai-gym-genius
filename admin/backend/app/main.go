@@ -1,15 +1,33 @@
 package main
 
 import (
+	_ "admin/docs"
+	"admin/internal/database"
+	
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
 )
 
+// @title Gym Genius API
+// @version 1.0
+// @description API for Gym Genius application
+// @termsOfService http://swagger.io/terms/
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @host localhost:3000
+// @BasePath /
 func main() {
 	app := fiber.New()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	app.Use(cors.New(cors.Config{
+    	AllowOrigins: "*",
+    	AllowHeaders: "Origin, Content-Type, Accept",
+	}))
+
+	database.InitDatabase()
 
 	CombineRoutes(app)
 
