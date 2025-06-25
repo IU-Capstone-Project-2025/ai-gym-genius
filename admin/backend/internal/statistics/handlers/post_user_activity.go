@@ -30,13 +30,13 @@ func PostUserActivity(c *fiber.Ctx) error {
 
 	if data.UserID == 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Field 'UserID' cannot be empty",
+			"error": "Field 'user_id' cannot be empty",
 		})
 	}
 
 	if data.Date.IsZero() {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Field 'Date' cannot be empty",
+			"error": "Field 'date' cannot be empty",
 		})
 	}
 
@@ -53,6 +53,7 @@ func PostUserActivity(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "User activity recorded successfully",
+		"id": record.ID,
 	})
 
 }
