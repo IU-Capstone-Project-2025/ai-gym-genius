@@ -26,7 +26,7 @@
 │  └─ src/
 ├─ scripts/              # helper bash/PowerShell helpers
 └─ docs/                 # ADRs, diagrams, onboarding
-````
+```
 
 ---
 
@@ -34,7 +34,7 @@
 
 | Mobile                                                                                                                                               | Backend                                                                                                                                         | Admin                                                                                                                                           |
 | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| • Start/stop workouts, add sets/reps/weight<br>• Heat-map statistics and graphs<br>• ❄️ **Offline-first** (local DB → async sync)<br>• AI “Get Feedback” button | • gRPC + REST API<br>• Delta-sync algorithm<br>• PostgreSQL + SQLC<br>• Stripe web-hooks for subscriptions<br>• OpenAI-powered workout analysis | • Metrics dashboard (PromQL via Grafana)<br>• Role-based access control |
+| -  Start/stop workouts, add sets/reps/weight-  Heat-map statistics and graphs-  ❄️ **Offline-first** (local DB → async sync)-  AI "Get Feedback" button | -  gRPC + REST API-  Delta-sync algorithm-  PostgreSQL + SQLC-  Stripe web-hooks for subscriptions-  OpenAI-powered workout analysis | -  Metrics dashboard (PromQL via Grafana)-  Role-based access control |
 
 ---
 
@@ -52,7 +52,28 @@
 
 ## Getting Started
 
-Will be added soon. 
+### Mobile App
+
+#### Prerequisites
+- [Docker](https://docs.docker.com/get-docker/) installed on your machine
+
+#### Build and Run
+```bash
+# Build the Flutter web app
+docker build -t gym-genius-mobile -f mobile/Dockerfile .
+
+# Run the container
+docker run -p 8080:80 gym-genius-mobile
+
+# Access the app at http://localhost:8080
+```
+
+#### Local Development (Optional)
+```bash
+cd mobile/
+flutter pub get
+flutter run -d chrome --web-port 8080
+```
 
 ## License
 

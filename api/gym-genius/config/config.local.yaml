@@ -1,0 +1,8 @@
+env: "local" # local, prod
+
+db:
+  url: "postgres+psycopg2://user:password@localhost:5432/gym_genius"
+
+http:
+  port: 8000
+  address: "localhost"
