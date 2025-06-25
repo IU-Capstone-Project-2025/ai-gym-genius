@@ -1,7 +1,7 @@
 <template>
   <div class="organisms__navbar">
     <div class="flex-grow"></div>
-    <NuxtLink to="/auth" v-if="useRoute().name !== 'auth'">
+    <NuxtLink to="/auth" v-if="authButtonVisible">
       <UButton>Login</UButton>
     </NuxtLink>
   </div>
@@ -9,7 +9,9 @@
 
 <script setup lang="ts">
 
-
+const authButtonVisible = computed(() => {
+  return useRoute().name !== 'auth';
+})
 
 </script>
 
