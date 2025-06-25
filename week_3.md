@@ -40,7 +40,7 @@ Kirill Nosov:
 - Created models of the user and user activity for database.
 - Tested basic scenarious of the API.
 
-Alexander Mikhailov:
+Aleksandr Mikhailov:
 - Added proper config to backend
 - Added docker files for deployment
 - Fully implemented get active users and post user activity endpoints
