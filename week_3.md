@@ -43,7 +43,8 @@ Alexander Mikhailov:
 
 ## Plan for Next Week
 
-*...*
+Continue working on our features. Some of the tasks can be seen in backlog already:
+https://nodoser.atlassian.net/jira/software/projects/SCRUM/boards/1/backlog
 
 ## Confirmation of the code's operability
 
