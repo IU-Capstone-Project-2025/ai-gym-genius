@@ -6,7 +6,12 @@ title: "Week #3"
 
 ## Implemented MVP features
 
-*Describe all implemented features (with to relevant PRs/Issues for implemented features) in your MVP and functional user journey(s)*
+ - Workout execution feature completed – users can now start, pause and finish training sessions.
+ - MVP declared READY
+ - Introduced clean-architecture layers (Data ➜ Domain ➜ Presentation).
+ - Added light & dark themes.
+ - Implemented robust state-management and UI for the workout flow.
+ - Set up full navigation / routing logic.
 
 ## Demonstration of the working MVP
 
