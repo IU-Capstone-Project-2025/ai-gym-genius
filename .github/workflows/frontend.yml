@@ -5,13 +5,13 @@ name: Frontend CI/CD Pipeline
 on:
   push:
     branches:
-      - master
+      - main
     paths:
       - 'admin/frontend/**' # Запускается только при изменениях в этой директории
 
   pull_request:
     branches:
-      - master
+      - main
     paths:
       - 'admin/frontend/**' # Также только при PR с изменениями в этой директории
 
