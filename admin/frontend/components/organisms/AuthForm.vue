@@ -16,7 +16,7 @@
             placeholder="Password"
             size="xl"
             type="password"
-            autocomplete="off"
+            autocomplete="new-password"
             v-model="password"
         />
       </div>
