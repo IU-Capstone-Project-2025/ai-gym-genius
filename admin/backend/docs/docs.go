@@ -97,9 +97,9 @@ const docTemplate = `{
                 }
             }
         },
-        "/statistics": {
+        "/statistics/active-users": {
             "get": {
-                "description": "Returns the count of active users within the specified date range and interval step (hour or day)",
+                "description": "Returns the count of distinct active users grouped by specified time intervals between start and end dates.",
                 "consumes": [
                     "application/json"
                 ],
@@ -109,32 +109,26 @@ const docTemplate = `{
                 "tags": [
                     "Statistics"
                 ],
-                "summary": "Get number of active users",
+                "summary": "Get number of active users in time intervals",
                 "parameters": [
                     {
                         "type": "string",
-                        "example": "\"2025-06-01\"",
-                        "description": "Start date in YYYY-MM-DD format",
+                        "description": "Start date/time in RFC3339 format (e.g., 2025-06-01T00:00:00Z)",
                         "name": "start_date",
                         "in": "query",
                         "required": true
                     },
                     {
                         "type": "string",
-                        "example": "\"2025-06-10\"",
-                        "description": "End date in YYYY-MM-DD format",
+                        "description": "End date/time in RFC3339 format (e.g., 2025-06-10T00:00:00Z)",
                         "name": "end_date",
                         "in": "query",
                         "required": true
                     },
                     {
-                        "enum": [
-                            "hour",
-                            "day"
-                        ],
                         "type": "string",
-                        "example": "\"day\"",
-                        "description": "Interval step",
+                        "example": "\"24h\"",
+                        "description": "Time interval step duration, format: \u003cnumber\u003e\u003cunit\u003e where unit is 'h' for hours or 'd' for days (e.g., '24h', '7d')",
                         "name": "step",
                         "in": "query",
                         "required": true
@@ -142,16 +136,22 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "Active users count",
+                        "description": "Array of interval results containing start time, end time, and user count",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "integer"
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handlers.intervalResult"
                             }
                         }
                     },
                     "400": {
-                        "description": "Invalid input",
+                        "description": "Invalid input parameters (missing, malformed, or invalid date range)",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error while processing the request",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -207,6 +207,20 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handlers.intervalResult": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "end_time": {
+                    "type": "string"
+                },
+                "start_time": {
+                    "type": "string"
+                }
+            }
+        },
         "models.AuthInput": {
             "type": "object",
             "properties": {
@@ -231,12 +245,11 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "date": {
-                    "type": "string",
-                    "example": "2023-01-01"
+                    "type": "string"
                 },
                 "user_id": {
-                    "type": "string",
-                    "example": "12345"
+                    "type": "integer",
+                    "example": 12345
                 }
             }
         }

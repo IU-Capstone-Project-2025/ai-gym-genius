@@ -1,5 +1,14 @@
 basePath: /
 definitions:
+  handlers.intervalResult:
+    properties:
+      count:
+        type: integer
+      end_time:
+        type: string
+      start_time:
+        type: string
+    type: object
   models.AuthInput:
     properties:
       login:
@@ -16,11 +25,10 @@ definitions:
   models.GetUserActivityInput:
     properties:
       date:
-        example: "2023-01-01"
         type: string
       user_id:
-        example: "12345"
-        type: string
+        example: 12345
+        type: integer
     type: object
 host: localhost:3000
 info:
@@ -84,30 +92,26 @@ paths:
       summary: User Login
       tags:
       - auth
-  /statistics:
+  /statistics/active-users:
     get:
       consumes:
       - application/json
-      description: Returns the count of active users within the specified date range
-        and interval step (hour or day)
+      description: Returns the count of distinct active users grouped by specified
+        time intervals between start and end dates.
       parameters:
-      - description: Start date in YYYY-MM-DD format
-        example: '"2025-06-01"'
+      - description: Start date/time in RFC3339 format (e.g., 2025-06-01T00:00:00Z)
         in: query
         name: start_date
         required: true
         type: string
-      - description: End date in YYYY-MM-DD format
-        example: '"2025-06-10"'
+      - description: End date/time in RFC3339 format (e.g., 2025-06-10T00:00:00Z)
         in: query
         name: end_date
         required: true
         type: string
-      - description: Interval step
-        enum:
-        - hour
-        - day
-        example: '"day"'
+      - description: 'Time interval step duration, format: <number><unit> where unit
+          is ''h'' for hours or ''d'' for days (e.g., ''24h'', ''7d'')'
+        example: '"24h"'
         in: query
         name: step
         required: true
@@ -116,16 +120,22 @@ paths:
       - application/json
       responses:
         "200":
-          description: Active users count
+          description: Array of interval results containing start time, end time,
+            and user count
           schema:
-            additionalProperties:
-              type: integer
-            type: object
+            items:
+              $ref: '#/definitions/handlers.intervalResult'
+            type: array
         "400":
-          description: Invalid input
+          description: Invalid input parameters (missing, malformed, or invalid date
+            range)
           schema:
             $ref: '#/definitions/models.ErrorResponse'
-      summary: Get number of active users
+        "500":
+          description: Internal server error while processing the request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get number of active users in time intervals
       tags:
       - Statistics
   /statistics/add-activity:

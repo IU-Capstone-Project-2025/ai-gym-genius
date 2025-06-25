@@ -4,7 +4,7 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
-	
+
 
 type Config struct {
 	Secret     string `envconfig:"AUTH_SECRET" required:"true"`

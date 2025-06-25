@@ -1,5 +1,7 @@
 package models
 
+import "time"
+
 type UserRegistrationInput struct {
 	Login    string `json:"login"`
 	Name     string `json:"name"`
@@ -13,13 +15,7 @@ type AuthInput struct {
 	Password string `json:"password"`
 }
 
-type GetNumberOfActiveUsersInput struct {
-	StartDate string `json:"start_date" example:"2023-01-01"`
-	EndDate   string `json:"end_date" example:"2023-01-31"`
-	Step string `json:"step" example:"day"`
-}
-
 type GetUserActivityInput struct {
-	UserID	string `json:"user_id" example:"12345"`
-	Date string `json:"date" example:"2023-01-01"`
+	UserID uint      `json:"user_id" example:"12345"`
+	Date   time.Time `json:"date"`
 }

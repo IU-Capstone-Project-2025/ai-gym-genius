@@ -1,11 +1,12 @@
 package statistics
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"admin/internal/statistics/handlers"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 func SetupStatisticsRoutes(app *fiber.App) {
-	app.Get("/statistics", handlers.GetNumberOfActiveUsers)
-	app.Post("/statistics/add-activity", handlers.GetUserActivity)
+	app.Get("/statistics/active-users", handlers.GetNumberOfActiveUsers)
+	app.Post("/statistics/add-activity", handlers.PostUserActivity)
 }
