@@ -1,0 +1,48 @@
+# Название вашего рабочего процесса
+name: Frontend CI/CD Pipeline
+
+# События, которые триггерят этот рабочий процесс
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'admin/frontend/**' # Запускается только при изменениях в этой директории
+
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'admin/frontend/**' # Также только при PR с изменениями в этой директории
+
+# Определяем задачи
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: admin/frontend # Указываем рабочую директорию для команд
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js and Cache Yarn
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*'
+          cache: 'yarn'
+          cache-dependency-path: admin/frontend/yarn.lock # Путь к yarn.lock
+
+      - name: Install dependencies with Yarn
+        run: yarn install --frozen-lockfile
+
+      - name: Build Nuxt 3 project with Yarn
+        run: yarn build
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-frontend
+          path: admin/frontend/.output/
