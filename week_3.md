@@ -46,6 +46,9 @@ Aleksandr Mikhailov:
 - Fully implemented get active users and post user activity endpoints
 - Added README.md to backend
 
+Egor Dushin
+- Authorization form in admin panel interface
+
 ## Plan for Next Week
 
 Continue working on our features. Some of the tasks can be seen in backlog already:
