@@ -1,6 +1,10 @@
-@import "tailwindcss";
 @import "@nuxt/ui";
+@import "tailwindcss";
 
 html {
     @apply overflow-x-hidden
+}
+
+button {
+    @apply cursor-pointer
 }

@@ -9,6 +9,7 @@
       </div>
     </template>
 
+
     <div class="relative h-96">
       <div v-if="isLoading" class="absolute inset-0 flex items-center justify-center bg-white/50 dark:bg-gray-900/50 z-10">
         <UIcon name="i-heroicons-arrow-path" class="animate-spin h-8 w-8 text-primary-500" />
