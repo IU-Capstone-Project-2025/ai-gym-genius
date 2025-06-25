@@ -30,7 +30,18 @@ title: "Week #3"
 
 ## Individual contribution of each participant
 
-*...*
+Kirill Nosov:
+- Added method for JWT-token generation.
+- Added method for password hashing.
+- Made the Swagger for the admin panel backend.
+- Created models of the user and user activity for database.
+- Tested basic scenarious of the API.
+
+Alexander Mikhailov:
+- Added proper config to backend
+- Added docker files for deployment
+- Fully implemented get active users and post user activity endpoints
+- Added README.md to backend
 
 ## Plan for Next Week
 
