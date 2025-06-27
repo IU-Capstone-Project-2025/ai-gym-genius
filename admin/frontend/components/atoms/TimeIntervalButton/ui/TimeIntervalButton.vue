@@ -20,4 +20,8 @@ defineEmits<{
   select: []
 }>()
 
+defineOptions({
+  name : "TimeIntervalButton"
+})
+
 </script>

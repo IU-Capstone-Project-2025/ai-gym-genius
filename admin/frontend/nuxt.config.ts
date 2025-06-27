@@ -12,5 +12,10 @@ export default defineNuxtConfig({
     },
     ui: {
         fonts: false
-    }
+    },
+    storybook: {
+        // Options
+        host: 'http://localhost',
+        port: 6006,
+    },
 })
