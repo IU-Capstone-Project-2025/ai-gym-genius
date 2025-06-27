@@ -7,7 +7,7 @@
 </template>
 <script setup lang="ts">
 
-import AuthForm from "~/components/organisms/AuthForm.vue";
+import {AuthForm} from '~/components/organisms/AuthForm'
 
 const type: Ref<"sign_in" | "sign_up"> = ref("sign_in");
 

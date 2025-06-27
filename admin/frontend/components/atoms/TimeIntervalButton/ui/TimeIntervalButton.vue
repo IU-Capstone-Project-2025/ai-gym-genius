@@ -1,9 +1,9 @@
 <template>
   <UButton
-    :color="isActive ? 'primary' : 'gray'"
-    :variant="isActive ? 'solid' : 'ghost'"
-    size="sm"
-    @click="$emit('select')"
+      :color="isActive ? 'primary' : 'gray'"
+      :variant="isActive ? 'solid' : 'ghost'"
+      size="sm"
+      @click="$emit('select')"
   >
     {{ label }}
   </UButton>
@@ -19,4 +19,9 @@ defineProps<Props>()
 defineEmits<{
   select: []
 }>()
+
+defineOptions({
+  name : "TimeIntervalButton"
+})
+
 </script>
