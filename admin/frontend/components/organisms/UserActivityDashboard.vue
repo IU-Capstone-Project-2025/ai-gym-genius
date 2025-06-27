@@ -38,9 +38,10 @@
 
 <script setup lang="ts">
 import {computed, watch} from 'vue'
-import TimeIntervalSelector from '../molecules/TimeIntervalSelector.vue'
+
 import {useUserActivity} from '~/composables/useUserActivity'
 import {ActivityChart} from "~/components/molecules/ActivityChart";
+import {TimeIntervalSelector} from "~/components/molecules/TimeIntervalSelector";
 
 
 const {selectedInterval, activityData, isLoading, fetchActivityData} = useUserActivity()
