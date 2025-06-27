@@ -7,7 +7,9 @@
 </template>
 
 <script setup lang="ts">
-import UserActivityDashboard from '~/components/organisms/UserActivityDashboard.vue'
+
+import {UserActivityDashboard} from "~/components/organisms/UserActivityDashboard";
+
 </script>
 
 <style scoped>
