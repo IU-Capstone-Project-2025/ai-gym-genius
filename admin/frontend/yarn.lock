@@ -1533,6 +1533,13 @@
     react-dom "^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0"
     ts-dedent "^2.0.0"
 
+"@storybook/addon-links@^9.0.13":
+  version "9.0.13"
+  resolved "https://registry.yarnpkg.com/@storybook/addon-links/-/addon-links-9.0.13.tgz#e3d6941423c93b6dcf42b03756b9a83641b97328"
+  integrity sha512-lYcy6ffYoTcWiQzqamf6fpvH6hwltgrvfaTBEyusoZwW8bYIzJkxAY/7jd6WVSohudKtdvnbvLiw40v/rEorVg==
+  dependencies:
+    "@storybook/global" "^5.0.0"
+
 "@storybook/builder-vite@9.0.5":
   version "9.0.5"
   resolved "https://registry.yarnpkg.com/@storybook/builder-vite/-/builder-vite-9.0.5.tgz#daa15a265c2452c18258bf883de41a70e62245ad"
