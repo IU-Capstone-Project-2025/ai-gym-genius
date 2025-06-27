@@ -1,6 +1,7 @@
 <script setup lang="ts">
 
-import Navbar from "~/components/organisms/Navbar.vue";
+import {Navbar} from "~/components/organisms/Navbar";
+
 </script>
 
 <template>
