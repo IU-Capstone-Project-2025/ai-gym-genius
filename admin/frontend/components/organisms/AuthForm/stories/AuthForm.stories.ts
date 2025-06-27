@@ -137,3 +137,32 @@ export const FormValidation: Story = {
         `
     })
 };
+
+// Добавьте эту историю в существующий файл
+export const DarkMode: Story = {
+    render: () => ({
+        components: { AuthForm },
+        setup() {
+            const formType = ref('sign_in');
+
+            function handleSwitch(type) {
+                formType.value = type;
+            }
+
+            function handleAction(login, password) {
+                console.log('Action triggered:', login, password);
+            }
+
+            return { formType, handleSwitch, handleAction };
+        },
+        template: `
+            <div style="min-height: 100vh; background-color: #1a1a1a; padding: 2rem;" class="dark">
+                <AuthForm 
+                    :type="formType"
+                    @switch="handleSwitch"
+                    @action="handleAction"
+                />
+            </div>
+        `
+    })
+};

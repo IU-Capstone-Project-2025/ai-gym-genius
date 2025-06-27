@@ -72,3 +72,25 @@ export const FluctuatingData: Story = {
         title: 'Fluctuating User Engagement'
     }
 };
+
+// Добавьте эту историю в существующий файл
+export const DarkMode: Story = {
+    render: () => ({
+        components: { ActivityChart },
+        setup() {
+            return {
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    values: [65, 59, 80, 81, 56, 55, 40]
+                },
+                title: 'Weekly User Activity'
+            };
+        },
+        template: `
+            <div style="padding: 2rem; background-color: #1a1a1a; height: 400px;" class="dark">
+                <ActivityChart :data="data" :title="title" />
+            </div>
+        `
+    })
+};
+

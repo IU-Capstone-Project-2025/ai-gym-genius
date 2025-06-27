@@ -77,3 +77,24 @@ export const Interactive: Story = {
         `
     })
 };
+
+// Добавьте эту историю в существующий файл
+export const DarkMode: Story = {
+    render: () => ({
+        components: {TimeIntervalSelector},
+        setup() {
+            const selectedInterval = ref('24h');
+            return {selectedInterval};
+        },
+        template: `
+          <div style="padding: 2rem; background-color: #1a1a1a;" class="dark">
+            <TimeIntervalSelector
+                :selectedInterval="selectedInterval"
+                @update:selectedInterval="selectedInterval = $event"
+            />
+            <div class="mt-4 text-white">Selected: {{ selectedInterval }}</div>
+          </div>
+        `
+    })
+};
+
