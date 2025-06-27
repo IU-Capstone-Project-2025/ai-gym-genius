@@ -24,7 +24,7 @@ func init() {
 	// does not override set env variables
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("failed to load .env")
+		fmt.Println("failed to load .env; using set env variables")
 	}
 	if err := envconfig.Process("", &C); err != nil {
 		panic(err)

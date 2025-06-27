@@ -27,13 +27,8 @@ var(
 )
 
 func Hash(login, password string) string {
-
-	fmt.Println(secret, jwtSecret)
-
 	data := login + ":" + password + ":" + secret
-
 	hash := sha256.Sum256([]byte(data))
-
 	return hex.EncodeToString(hash[:])
 }
 
@@ -60,8 +55,14 @@ func InitDatabase() error {
 	}
 
 	err = DB.AutoMigrate(
-		&schemas.UserActivity{},
+		&schemas.User{},
 		&schemas.Admin{},
+		&schemas.UserActivity{},
+		&schemas.Exercise{},
+		&schemas.ExerciseSet{},
+		&schemas.ExerciseInfo{},
+		&schemas.MuscleGroup{},
+		&schemas.Workout{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)

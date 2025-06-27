@@ -112,7 +112,8 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
 
     for i := range intervals {
         var count int64
-        err := database.DB.Model(&schemas.UserActivity{}).
+        err :=
+            database.DB.Model(&schemas.UserActivity{}).
             Where("date BETWEEN ? AND ?", intervals[i].StartTime, intervals[i].EndTime).
             Count(&count).Error
 
