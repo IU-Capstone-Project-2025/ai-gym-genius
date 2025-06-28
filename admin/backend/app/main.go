@@ -3,7 +3,7 @@ package main
 import (
 	_ "admin/docs"
 	"admin/internal/database"
-	
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -23,13 +23,17 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-    	AllowOrigins: "*",
-    	AllowHeaders: "Origin, Content-Type, Accept",
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept",
 	}))
 
-	database.InitDatabase()
+	if err := database.InitDatabase(); err != nil {
+		panic("Failed to connect to the database: " + err.Error())
+	}
 
 	CombineRoutes(app)
 
-	app.Listen(":3000")	
+	if err := app.Listen(":3000"); err != nil {
+		panic("Failed to start the server: " + err.Error())
+	}
 }
