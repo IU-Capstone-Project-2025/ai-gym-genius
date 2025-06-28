@@ -50,6 +50,9 @@ jobs:
       run:
         working-directory: admin/backend
     steps:
+      - name: Debug
+        with:
+          run: echo "${{ secrets.SSH_HOST }}"
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
