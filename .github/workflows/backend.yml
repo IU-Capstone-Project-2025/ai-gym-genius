@@ -64,4 +64,4 @@ jobs:
           script: |
             cd ~/gym-genius
             git pull
-            docker-compose up -d --force-recreate --build backend
+            docker compose up -d --force-recreate --build backend
