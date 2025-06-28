@@ -2,6 +2,10 @@ name: Backend CI/CD Pipeline
 
 on:
   workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Deployment environment'
+        default: 'prod'
 
 jobs:
   lint:
@@ -50,9 +54,8 @@ jobs:
       run:
         working-directory: admin/backend
     steps:
-      - name: Debug
-        with:
-          run: echo "${{ secrets.SSH_HOST }}"
+      - name: Debug SSH Host
+        run: echo "${{ secrets.SSH_HOST }}"
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
