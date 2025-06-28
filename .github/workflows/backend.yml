@@ -50,9 +50,6 @@ jobs:
     name: Build and Deploy
     runs-on: ubuntu-latest
     needs: [ test ]
-    defaults:
-      run:
-        working-directory: admin/backend
     steps:
       - name: Debug SSH Host
         run: echo "${{ secrets.SSH_HOST }}"
