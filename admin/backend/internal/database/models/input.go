@@ -10,6 +10,13 @@ type UserCreate struct {
 	Password string `json:"password"`
 }
 
+type WorkoutCreate struct {
+	Duration   uint      `json:"duration" example:"60"`
+	StartTime  time.Time `json:"start_time" example:"2023-10-01T12:00:00Z"`
+	Description string    `json:"description" example:"Morning workout"`
+	Weight     float64   `json:"weight" example:"70.5"`
+}
+
 // includes all fields of UserCreate but optional
 type UserUpdate struct {
 	Login *string `json:"login"`
@@ -17,6 +24,14 @@ type UserUpdate struct {
 	// Phone    *string `json:"phone"`
 	Password *string `json:"password"`
 	ID       uint    `json:"id"`
+}
+
+type WorkoutUpdate struct {
+	ID		 uint      `json:"id"`
+	Duration   uint      `json:"duration" example:"60"`
+	StartTime  time.Time `json:"start_time" example:"2023-10-01T12:00:00Z"`
+	Description string    `json:"description" example:"Morning workout"`
+	Weight     float64   `json:"weight" example:"70.5"`
 }
 
 type AuthInput struct {
