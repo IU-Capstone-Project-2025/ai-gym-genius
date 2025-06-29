@@ -7,7 +7,7 @@ import(
 	"github.com/gofiber/fiber/v2"
 )
 
-func CreateTraining(c *fiber.Ctx) error {
+func CreateWorkout(c *fiber.Ctx) error {
 	workoutCreate := &models.WorkoutCreate{}
 
 	if err := c.BodyParser(workoutCreate); err != nil {
@@ -30,7 +30,7 @@ func CreateTraining(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "User created successfully",
+		"message": "Workout created successfully",
 		"id":      workout.ID,
 	})
 }
