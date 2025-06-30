@@ -3,7 +3,8 @@ package main
 import (
 	_ "admin/docs"
 	"admin/internal/database"
-	
+	middleware "admin/internal/middlewares"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -23,13 +24,18 @@ func main() {
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
-    	AllowOrigins: "*",
-    	AllowHeaders: "Origin, Content-Type, Accept",
+		AllowOrigins: "*",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowMethods: "GET, POST, PATCH, DELETE",
 	}))
 
-	database.InitDatabase()
+	app.Use(middleware.LoggingMiddleware())
+
+	if err := database.InitDatabase(); err != nil {
+		panic(err) // failed to connect or migrate
+	}
 
 	CombineRoutes(app)
 
-	app.Listen(":3000")	
+	app.Listen(":3000")
 }
