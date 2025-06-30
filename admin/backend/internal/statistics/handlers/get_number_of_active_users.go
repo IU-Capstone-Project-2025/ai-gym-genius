@@ -94,7 +94,7 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
         })
     }
 
-    var intervals []intervalResult
+    var intervals = []intervalResult{}
     currentStart := params.StartDate
     for currentStart.Before(params.EndDate) {
         currentEnd := currentStart.Add(intervalDuration)
