@@ -1,0 +1,54 @@
+# Название вашего рабочего процесса (Pipeline)
+name: CI/CD Pipeline
+
+# События, которые триггерят этот рабочий процесс
+on:
+  push:
+    # Запускать при пуше в основную ветку
+    branches:
+      - master # <-- Убедись, что это правильное имя твоей основной ветки на GitHub
+
+  # Запускать при создании/обновлении пулл-реквеста в основную ветку
+  pull_request:
+    branches:
+      - master # <-- И здесь
+
+# Определяем задачи (Jobs)
+jobs:
+  # Задача сборки проекта
+  build:
+    # Указываем среду выполнения (Runner)
+    runs-on: ubuntu-latest # Можно использовать windows-latest или macos-latest
+
+    # Шаги выполнения задачи
+    steps:
+      # 1. Чек-аут кода вашего репозитория
+      - name: Checkout code
+        uses: actions/checkout@v4 # Используем стандартное действие для скачивания кода
+
+      # 2. Настройка Node.js и кеширование для Yarn
+      - name: Setup Node.js and Cache Yarn
+        # Используем стандартное действие для установки Node.js
+        # Указываем версию, совместимую с Nuxt 3
+        uses: actions/setup-node@v4
+        with:
+          node-version: 'lts/*' # Используем последнюю LTS версию Node.js (>=16 для Nuxt 3)
+          # --- Важно: Настраиваем кеширование для Yarn ---
+          cache: 'yarn'
+
+      # 3. Установка зависимостей с использованием Yarn
+      - name: Install dependencies with Yarn
+        # --- Используем yarn install с флагом для CI ---
+        run: yarn install --frozen-lockfile # Требует наличия yarn.lock
+
+      # 4. Сборка проекта Nuxt 3 с использованием Yarn
+      - name: Build Nuxt 3 project with Yarn
+        # --- Запускаем скрипт сборки через yarn ---
+        run: yarn build # Убедитесь, что у вас есть скрипт 'build' в package.json
+
+      # 5. Сохранение артефактов сборки (собранных файлов)
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-nuxt-app # Имя артефакта
+          path: .output/      # Путь к собранным файлам для no-ssr Nuxt 3 (создается yarn build)

@@ -1,0 +1,11 @@
+version: '3.8'
+
+services:
+  mobile:
+    build:
+      context: .
+      dockerfile: mobile/Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - API_URL=http://213.171.25.183

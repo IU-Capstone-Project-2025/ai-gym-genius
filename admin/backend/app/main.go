@@ -37,5 +37,7 @@ func main() {
 
 	CombineRoutes(app)
 
-	app.Listen(":3000")
+	if err := app.Listen(":3000"); err != nil {
+		panic("Failed to start the server: " + err.Error())
+	}
 }
