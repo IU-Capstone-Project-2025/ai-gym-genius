@@ -8,3 +8,7 @@ OR
 
 1. Create .env file, follow .env.example. This file will be used to set env variables inside the docker container.
 2. `docker-compose up --build`
+
+Optionally, generate swagger docs with
+
+`swag init --dir . --generalInfo ./app/main.go --output ./docs`
