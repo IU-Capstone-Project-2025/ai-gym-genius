@@ -1,12 +1,12 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '/core/domain/entities/exercise_entity.dart';
-import '/core/domain/repositories/training_repository.dart';
+import '../../domain/repositories/workout_repository.dart';
 import 'training_event.dart';
 import 'training_state.dart';
 
 class TrainingBloc extends Bloc<TrainingEvent, TrainingState> {
-  final TrainingRepository workoutRepository;
+  final WorkoutRepository workoutRepository;
   TrainingBloc({required this.workoutRepository}) : super(TrainingState()) {
     on<AddExercise>(_onAddExercise);
     on<RemoveExercise>(_onRemoveExercise);
