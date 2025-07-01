@@ -49,7 +49,10 @@ func InitDatabase() error {
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		dbHost, dbUser, dbPassword, dbName, dbPort,
 	)
-	DB, err = gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DB, err = gorm.Open(
+		postgres.Open(dsn),
+		&gorm.Config{TranslateError: true}, // fix to properly return errors in pg
+	)
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
