@@ -59,4 +59,5 @@ jobs:
             cd ~/gym-genius/admin/frontend/
             git pull
             cd ../backend/
+            git pull
             docker compose up -d --force-recreate --build frontend
