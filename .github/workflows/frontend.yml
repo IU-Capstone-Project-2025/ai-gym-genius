@@ -42,39 +42,10 @@ jobs:
       - name: Lint code
         run: yarn lint
 
-  build:
-    name: Build
-    runs-on: ubuntu-latest
-    needs: lint
-    defaults:
-      run:
-        working-directory: admin/frontend
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js and Cache Yarn
-        uses: actions/setup-node@v4
-        with:
-          node-version: 'lts/*'
-          cache: 'yarn'
-          cache-dependency-path: admin/frontend/yarn.lock
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build Nuxt 3 project
-        run: yarn build
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: built-frontend
-          path: admin/frontend/.output/
-
   deploy:
     name: Deploy
     runs-on: ubuntu-latest
-    needs: build
+#    needs: lint
     environment:
       name: prod
     steps:
@@ -86,5 +57,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~/gym-genius/admin/frontend/
+            git pull
+            cd ../backend/
             git pull
             docker compose up -d --force-recreate --build frontend
