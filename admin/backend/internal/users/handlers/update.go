@@ -16,6 +16,7 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param id path int true "User ID"
 // @Param user body models.UserUpdate true "User update payload"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string "Bad Request"

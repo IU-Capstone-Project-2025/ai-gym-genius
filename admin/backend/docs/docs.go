@@ -439,6 +439,13 @@ const docTemplate = `{
                 "summary": "Update an existing user",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "User update payload",
                         "name": "user",
                         "in": "body",
@@ -678,6 +685,13 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/models.WorkoutUpdate"
                         }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -793,9 +807,6 @@ const docTemplate = `{
         "models.UserUpdate": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "login": {
                     "type": "string"
                 },
@@ -857,9 +868,6 @@ const docTemplate = `{
                 "duration": {
                     "type": "integer",
                     "example": 60
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "start_time": {
                     "type": "string",

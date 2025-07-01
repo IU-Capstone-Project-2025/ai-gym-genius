@@ -433,6 +433,13 @@
                 "summary": "Update an existing user",
                 "parameters": [
                     {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
                         "description": "User update payload",
                         "name": "user",
                         "in": "body",
@@ -672,6 +679,13 @@
                         "schema": {
                             "$ref": "#/definitions/models.WorkoutUpdate"
                         }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
                     }
                 ],
                 "responses": {
@@ -787,9 +801,6 @@
         "models.UserUpdate": {
             "type": "object",
             "properties": {
-                "id": {
-                    "type": "integer"
-                },
                 "login": {
                     "type": "string"
                 },
@@ -851,9 +862,6 @@
                 "duration": {
                     "type": "integer",
                     "example": 60
-                },
-                "id": {
-                    "type": "integer"
                 },
                 "start_time": {
                     "type": "string",

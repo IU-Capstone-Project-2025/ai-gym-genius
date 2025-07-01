@@ -16,6 +16,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param workout body models.WorkoutUpdate true "Workout update payload"
+// @Param id path int true "Workout ID"
 // @Success 200 {object} map[string]interface{}
 // @Failure 400 {object} map[string]string "Bad Request"
 // @Failure 404 {object} map[string]string "Workout Not Found"
