@@ -4,7 +4,8 @@ import (
 	_ "admin/docs"
 	"admin/internal/database"
 	middleware "admin/internal/middlewares"
-
+	"admin/internal/photo"
+	"fmt"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
