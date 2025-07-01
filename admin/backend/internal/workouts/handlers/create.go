@@ -7,6 +7,18 @@ import(
 	"github.com/gofiber/fiber/v2"
 )
 
+
+// CreateWorkout
+// @Summary Create a new workout
+// @Description Create a new workout with duration, start time, description, and weight
+// @Tags workouts
+// @Accept json
+// @Produce json
+// @Param workout body models.WorkoutCreate true "Workout create payload"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string "Bad Request"
+// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Router /workouts [post]
 func CreateWorkout(c *fiber.Ctx) error {
 	workoutCreate := &models.WorkoutCreate{}
 

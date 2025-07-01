@@ -11,10 +11,10 @@ import (
 // PostUserActivity
 // @Summary Record user activity
 // @Description Records activity for a user on a specific date
-// @Tags Statistics
+// @Tags statistics
 // @Accept json
 // @Produce json
-// @Param input body models.GetUserActivityInput true "Request parameters"
+// @Param input body models.UserActivityCreate true "Request parameters"
 // @Success 200 {object} string "Success message"
 // @Failure 400 {object} string "Validation error"
 // @Failure 500 {object} string "Server error"
