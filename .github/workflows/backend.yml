@@ -7,6 +7,18 @@ on:
         description: 'Deployment environment'
         default: 'prod'
 
+  push:
+    branches:
+      - main
+    paths:
+      - 'admin/backend/**'
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'admin/backend/**'
+
 jobs:
   lint:
     name: Lint
@@ -53,8 +65,6 @@ jobs:
     environment:
       name: prod
     steps:
-      - name: Debug SSH Host
-        run: echo "${{ secrets.SSH_HOST }}"
       - name: Deploy
         uses: appleboy/ssh-action@master
         with:
@@ -62,6 +72,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/gym-genius/admin/backend/
+            cd ~/gym-genius/
             git pull
             docker compose up -d --force-recreate --build backend

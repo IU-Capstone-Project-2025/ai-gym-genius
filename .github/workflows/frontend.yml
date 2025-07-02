@@ -56,8 +56,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~/gym-genius/admin/frontend/
-            git pull
-            cd ../backend/
+            cd ~/gym-genius/
             git pull
             docker compose up -d --force-recreate --build frontend
