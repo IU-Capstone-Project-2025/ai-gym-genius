@@ -1,35 +1,45 @@
+version: '3.8'
+
 services:
+
   postgres:
     image: postgres:15
     restart: unless-stopped
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: admindb
     ports:
       - "5432:5432"
+    env_file:
+      - ./.env
     volumes:
       - pgdata:/var/lib/postgresql/data
 
   backend:
     build:
-      context: .
+      context: ./admin/backend
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
     env_file:
-      - .env
+      - ./.env
     depends_on:
       - postgres
 
   frontend:
     build:
-      context: ../frontend
+      context: ./admin/frontend
       dockerfile: Dockerfile
     ports:
       - "8080:3000"
     depends_on:
       - backend
+
+  mobile:
+    build:
+      context: ./mobile
+      dockerfile: Dockerfile
+    ports:
+      - "8081:80"
+    env_file:
+      - ./.env
 
 volumes:
   pgdata:
