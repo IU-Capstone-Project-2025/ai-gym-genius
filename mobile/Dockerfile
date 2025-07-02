@@ -12,9 +12,9 @@ ENV PATH="$PATH:$FLUTTER_DIR/bin"
 RUN flutter doctor
 
 FROM build AS dependencies
-COPY mobile/pubspec.yaml ./
+COPY pubspec.yaml ./
 RUN flutter pub get
-COPY mobile/ .
+COPY . .
 
 FROM dependencies AS compile
 ARG API_URL
