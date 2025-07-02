@@ -9,6 +9,17 @@ import (
 	"gorm.io/gorm"
 )
 
+// CreateExercise
+// @Summary Create a new exercise
+// @Description Create a new exercise
+// @Tags exercises
+// @Accept json
+// @Produce json
+// @Param exercise body models.ExerciseCreate true "Exercise create payload"
+// @Success 200 {object} map[string]interface{}
+// @Failure 400 {object} map[string]string "Bad Request"
+// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Router /exercises [post]
 func AddExercise(c *fiber.Ctx) error {
 	exerciseCreate := &models.AddExercise{}
 
