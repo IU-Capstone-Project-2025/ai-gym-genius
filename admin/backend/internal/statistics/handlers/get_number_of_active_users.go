@@ -45,7 +45,7 @@ func parseStep(stepStr string) (step, error) {
 // GetNumberOfActiveUsers
 // @Summary Get number of active users in time intervals
 // @Description Returns the count of distinct active users grouped by specified time intervals between start and end dates.
-// @Tags Statistics
+// @Tags statistics
 // @Accept json
 // @Produce json
 // @Param start_date query string true "Start date/time in RFC3339 format (e.g., 2025-06-01T00:00:00Z)"
@@ -94,7 +94,7 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
         })
     }
 
-    var intervals []intervalResult
+    var intervals = []intervalResult{}
     currentStart := params.StartDate
     for currentStart.Before(params.EndDate) {
         currentEnd := currentStart.Add(intervalDuration)
@@ -112,7 +112,8 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
 
     for i := range intervals {
         var count int64
-        err := database.DB.Model(&schemas.UserActivity{}).
+        err :=
+            database.DB.Model(&schemas.UserActivity{}).
             Where("date BETWEEN ? AND ?", intervals[i].StartTime, intervals[i].EndTime).
             Count(&count).Error
 

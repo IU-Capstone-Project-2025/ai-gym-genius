@@ -11,16 +11,16 @@ import (
 // PostUserActivity
 // @Summary Record user activity
 // @Description Records activity for a user on a specific date
-// @Tags Statistics
+// @Tags statistics
 // @Accept json
 // @Produce json
-// @Param input body models.GetUserActivityInput true "Request parameters"
+// @Param input body models.UserActivityCreate true "Request parameters"
 // @Success 200 {object} string "Success message"
 // @Failure 400 {object} string "Validation error"
 // @Failure 500 {object} string "Server error"
 // @Router /statistics/add-activity [post]
 func PostUserActivity(c *fiber.Ctx) error {
-	data := new(models.GetUserActivityInput)
+	data := &models.UserActivityCreate{}
 
 	if err := c.BodyParser(data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -50,7 +50,7 @@ func PostUserActivity(c *fiber.Ctx) error {
 			"error": "Failed to record user activity",
 		})
 	}
-
+	
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "User activity recorded successfully",
 		"id": record.ID,

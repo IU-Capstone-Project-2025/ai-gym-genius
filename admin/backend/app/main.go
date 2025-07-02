@@ -3,7 +3,7 @@ package main
 import (
 	_ "admin/docs"
 	"admin/internal/database"
-
+	middleware "admin/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -24,11 +24,14 @@ func main() {
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept",
+		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
+		AllowMethods: "GET, POST, PATCH, DELETE",
 	}))
 
+	app.Use(middleware.LoggingMiddleware())
+
 	if err := database.InitDatabase(); err != nil {
-		panic("Failed to connect to the database: " + err.Error())
+		panic(err) // failed to connect or migrate
 	}
 
 	CombineRoutes(app)

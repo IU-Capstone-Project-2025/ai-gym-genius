@@ -3,7 +3,7 @@ package schemas
 import "time"
 
 type UserActivity struct {
-	ID     uint      `gorm:"primaryKey;autoIncrement"`
-	UserID uint    `gorm:"not null;index"`
+	ID     uint      `gorm:"primaryKey"`
+	UserID uint      `gorm:"not null;index"`
 	Date   time.Time `gorm:"not null;index"`
 }

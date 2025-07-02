@@ -23,7 +23,7 @@ import (
 // @Failure 500 {object} map[string]string "Failed to query database or create token"
 // @Router /auth [post]
 func LoginHandler(c *fiber.Ctx) error {
-	data := new(models.AuthInput)
+	data := &models.AuthInput{}
 
 	if err := c.BodyParser(data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
