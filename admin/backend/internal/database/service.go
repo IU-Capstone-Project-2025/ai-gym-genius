@@ -63,8 +63,6 @@ func InitDatabase() error {
 		&schemas.UserActivity{},
 		&schemas.Exercise{},
 		&schemas.ExerciseSet{},
-		&schemas.ExerciseInfo{},
-		&schemas.MuscleGroup{},
 		&schemas.Workout{},
 	)
 	if err != nil {

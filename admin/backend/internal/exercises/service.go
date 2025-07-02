@@ -1,4 +1,4 @@
-package photo
+package exercises
 
 import (
 	"errors"
@@ -23,3 +23,5 @@ func TransformGoogleDriveLink(originalLink string) (string, error) {
 	directLink := "https://drive.google.com/uc?id=" + fileID
 	return directLink, nil
 }
+
+
