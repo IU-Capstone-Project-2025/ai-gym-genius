@@ -36,6 +36,11 @@ type WorkoutUpdate struct {
 	Weight      float64   `json:"weight" example:"70.5"`
 }
 
+type ExerciseUpdate struct {
+	Name string `json:"url"`
+	URL string `json:"url"`
+}
+
 type AuthInput struct {
 	Login    string `json:"login"`
 	Password string `json:"password"`

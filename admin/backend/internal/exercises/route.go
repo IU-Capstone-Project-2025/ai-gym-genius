@@ -6,7 +6,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-func SetUpUserRoutes(app *fiber.App) {
+func SetupExerciseRoutes(app *fiber.App) {
 	app.Post("/exercises/", handlers.AddExercise)
 	app.Delete("/exercises/:id", handlers.DeleteExercise)
 }
