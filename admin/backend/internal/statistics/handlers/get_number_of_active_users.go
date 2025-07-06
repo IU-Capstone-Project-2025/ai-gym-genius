@@ -12,6 +12,10 @@ import (
     "gorm.io/gorm"
 )
 
+var (
+    ErrInvalidStepParam = errors.New("malformed step parameter. should be of format '<uint><h | d>'");
+)
+
 type params struct {
     StartDate time.Time `query:"start_date"`
     EndDate   time.Time `query:"end_date"`
@@ -31,13 +35,13 @@ type intervalResult struct {
 
 func parseStep(stepStr string) (step, error) {
     if len(stepStr) < 2 {
-        return step{}, errors.New("malformed step parameter. should be of format '<uint><h | d>'")
+        return step{}, ErrInvalidStepParam
     }
     
     unit := stepStr[len(stepStr)-1]
     value, err := strconv.ParseUint(stepStr[:len(stepStr)-1], 10, 64)
     if (unit != 'h' && unit != 'd') || err != nil {
-        return step{}, errors.New("malformed step parameter. should be of format '<uint><h | d>'")
+        return step{}, ErrInvalidStepParam
     }
     return step{unit: unit, value: value}, nil
 }
