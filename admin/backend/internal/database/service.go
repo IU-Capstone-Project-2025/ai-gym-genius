@@ -26,6 +26,14 @@ var(
 	dbPort = config.C.DbPort
 )
 
+func GetAllUsers() ([]schemas.User, error) {
+	var users []schemas.User
+	if err := DB.Find(&users).Error; err != nil {
+		return nil, fmt.Errorf("failed to get all users: %w", err)
+	}
+	return users, nil
+}
+
 func Hash(login, password string) string {
 	data := login + ":" + password + ":" + secret
 	hash := sha256.Sum256([]byte(data))
