@@ -2,4 +2,4 @@
 admin/backend/.env
 .DS_Store
 /api/gym-genius/config/config.yaml
-./.env
+.env
