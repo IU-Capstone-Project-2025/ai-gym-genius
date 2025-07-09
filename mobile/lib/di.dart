@@ -1,5 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:gym_genius/core/data/datasources/local/services/workout_database_provider.dart';
 import 'package:gym_genius/core/data/repositories/mock_workout_repository_impl.dart';
+import 'package:sqflite/sqflite.dart';
 
 import '/core/domain/repositories/ex_infos_repository.dart';
 import 'core/domain/repositories/workout_repository.dart';
@@ -28,7 +30,7 @@ void setUpLocator(LaunchingType type) async {
   // For local - dbProvider
   // For remote - apiProvider
   getIt.registerLazySingleton<LocalWorkoutDatasource>(
-    () => SqfliteDatabase(),
+    () => SqfliteDatabase(WorkoutDatabaseProvider(JsonExerciseInfosLoader(), databaseFactory)),
   );
   getIt.registerLazySingleton<RemoteWorkoutDatasource>(
     () => APIWorkoutDatasource(),
