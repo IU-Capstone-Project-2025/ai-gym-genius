@@ -37,6 +37,7 @@ interface Props {
     values: number[]
   }
   title?: string
+  label?: string
 }
 
 const props = defineProps<Props>()
@@ -45,7 +46,7 @@ const appConfig = useAppConfig()
 const chartData = computed(() => ({
   labels: props.data.labels,
   datasets: [{
-    label: 'Active Users',
+    label: props.label || 'Active Users',
     data: props.data.values,
     borderColor: 'rgb(59, 130, 246)', // blue-500
     backgroundColor: 'rgba(59, 130, 246, 0.1)',
@@ -67,14 +68,25 @@ const chartOptions = computed(() => ({
       }
     },
     legend: {
-      display: false
+      display: true,
+      labels: {
+        color: 'rgb(156, 163, 175)', // gray-400
+        font: {
+          size: 12
+        }
+      }
     },
     tooltip: {
       backgroundColor: 'rgb(31, 41, 55)', // gray-800
       titleColor: 'rgb(243, 244, 246)', // gray-100
       bodyColor: 'rgb(209, 213, 219)', // gray-300
       borderColor: 'rgb(75, 85, 99)', // gray-600
-      borderWidth: 1
+      borderWidth: 1,
+      callbacks: {
+        label: function(context: any) {
+          return `${context.dataset.label}: ${context.parsed.y}`
+        }
+      }
     }
   },
   scales: {

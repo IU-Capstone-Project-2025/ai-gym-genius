@@ -9,7 +9,7 @@
 
 ### Architecture
 
-Atomic Design withing nuxt 3 default structure
+Atomic Design within nuxt 3 default structure
 
 - components: atoms/molecules/organisms
 - layouts (like templates in AD)
@@ -18,4 +18,4 @@ Atomic Design withing nuxt 3 default structure
 
 ### Functionality
 
-- **Users activity withing specified time interval**
+- **Users activity within specified time interval**
