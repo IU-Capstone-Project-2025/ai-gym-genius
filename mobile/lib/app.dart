@@ -25,10 +25,24 @@ class _MainAppState extends State<MainApp> {
   }
 
   Future<void> fetchData() async {
+    // Define the URL for the POST request
+    final url =
+        Uri.parse('http://api.xn--b1ab5acc.site/statistics/add_activity');
+    // Create the JSON body for the request
+    Map<String, dynamic> body = {
+      "date": DateTime.now().toString(),
+      "user_id": 1,
+      // Add other key-value pairs as needed
+    };
     try {
-      // HTTP GET request
-      final response =
-          await http.get(Uri.parse('https://api.example.com/data'));
+      // Make the POST request
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: json.encode(body),
+      );
       if (response.statusCode == 200) {
         // Parse the response
         var data = json.decode(response.body);
