@@ -3,9 +3,9 @@ package schemas
 // TODO verify schemas
 
 type Exercise struct {
-	ID           uint   `gorm:"primaryKey;autoincrement"`
-	Name         string `gorm:"not null"`
-	URL          string
+	ID   uint   `gorm:"primaryKey;autoincrement"`
+	Name string `gorm:"not null"`
+	URL  string
 }
 
 // type MuscleGroup struct {
