@@ -17,13 +17,13 @@ type WorkoutCreate struct {
 	Weight      float64   `json:"weight" example:"70.5"`
 }
 
-type AddExercise struct {
+type ExerciseCreate struct {
 	Name string `json:"name"`
-	URL string `json:"url"`
+	URL  string `json:"url"`
 }
 
 type UserUpdate struct {
-	Login    *string `json:"login"`
+	Login *string `json:"login"`
 	// Surname  *string `json:"surname"`
 	// Phone    *string `json:"phone"`
 	Password *string `json:"password"`
@@ -34,6 +34,11 @@ type WorkoutUpdate struct {
 	StartTime   time.Time `json:"start_time" example:"2023-10-01T12:00:00Z"`
 	Description string    `json:"description" example:"Morning workout"`
 	Weight      float64   `json:"weight" example:"70.5"`
+}
+
+type ExerciseUpdate struct {
+	Name string `json:"url"`
+	URL  string `json:"url"`
 }
 
 type AuthInput struct {

@@ -1,11 +1,12 @@
 package handlers
 
 import (
+	"admin/internal/database"
 	"admin/internal/database/models"
 	"admin/internal/database/schemas"
-	"admin/internal/database"
-	"github.com/gofiber/fiber/v2"
 	"errors"
+
+	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
@@ -21,19 +22,19 @@ import (
 // @Failure 500 {object} map[string]string "Internal Server Error"
 // @Router /exercises [post]
 func AddExercise(c *fiber.Ctx) error {
-	exerciseCreate := &models.AddExercise{}
+	exerciseCreate := &models.ExerciseCreate{}
 
 	if err := c.BodyParser(exerciseCreate); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": err.Error(),
 		})
 	}
-	
+
 	exercise := &schemas.Exercise{
 		Name: exerciseCreate.Name,
-		URL: exerciseCreate.URL,
+		URL:  exerciseCreate.URL,
 	}
-	
+
 	if err := database.DB.Create(exercise).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{

@@ -22,6 +22,18 @@ definitions:
         example: A descriptive error message
         type: string
     type: object
+  models.ExerciseCreate:
+    properties:
+      name:
+        type: string
+      url:
+        type: string
+    type: object
+  models.ExerciseUpdate:
+    properties:
+      url:
+        type: string
+    type: object
   models.UserActivityCreate:
     properties:
       date:
@@ -34,11 +46,13 @@ definitions:
     properties:
       login:
         description: Login    string `json:"login"`
+        example: john
         type: string
       password:
         description: |-
           Surname  string `json:"surname"`
           Phone    string `json:"phone"`
+        example: "123"
         type: string
     type: object
   models.UserRead:
@@ -165,6 +179,127 @@ paths:
       summary: User Login
       tags:
       - auth
+  /exercises:
+    post:
+      consumes:
+      - application/json
+      description: Create a new exercise
+      parameters:
+      - description: Exercise create payload
+        in: body
+        name: exercise
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExerciseCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Create a new exercise
+      tags:
+      - exercises
+  /exercises/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete a exercise by their unique ID
+      parameters:
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Exercise deleted successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Exercise Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Delete a exercise by ID
+      tags:
+      - exercises
+    patch:
+      consumes:
+      - application/json
+      description: Update exercise details by ID
+      parameters:
+      - description: Exercise update payload
+        in: body
+        name: exercise
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExerciseUpdate'
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "404":
+          description: Exercise Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Update an existing exercise
+      tags:
+      - exercises
   /statistics/active-users:
     get:
       consumes:
@@ -560,7 +695,7 @@ paths:
         required: true
         schema:
           $ref: '#/definitions/models.WorkoutUpdate'
-      - description: User ID
+      - description: Workout ID
         in: path
         name: id
         required: true

@@ -38,6 +38,8 @@ func init() {
 		logHandler = slog.NewTextHandler(os.Stdout, nil)
 	case "PROD":
 		logHandler = slog.NewJSONHandler(os.Stdout, nil)
+	default:
+		logHandler = slog.NewTextHandler(os.Stdout, nil)
 	}
 	logger := slog.New(logHandler)
 	slog.SetDefault(logger)
