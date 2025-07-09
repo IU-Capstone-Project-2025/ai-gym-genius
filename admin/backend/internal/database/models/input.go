@@ -22,6 +22,11 @@ type ExerciseCreate struct {
 	URL  string `json:"url"`
 }
 
+type ExerciseUpdate struct {
+	Name string `json:"url"`
+	URL  string `json:"url"`
+}
+
 type UserUpdate struct {
 	Login *string `json:"login"`
 	// Surname  *string `json:"surname"`
@@ -36,10 +41,6 @@ type WorkoutUpdate struct {
 	Weight      float64   `json:"weight" example:"70.5"`
 }
 
-type ExerciseUpdate struct {
-	Name string `json:"url"`
-	URL  string `json:"url"`
-}
 
 type AuthInput struct {
 	Login    string `json:"login"`
