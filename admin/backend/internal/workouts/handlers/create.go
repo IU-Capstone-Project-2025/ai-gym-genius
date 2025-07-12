@@ -1,12 +1,12 @@
 package handlers
 
-import(
+import (
 	"admin/internal/database"
 	"admin/internal/database/models"
 	"admin/internal/database/schemas"
 	"github.com/gofiber/fiber/v2"
+	"time"
 )
-
 
 // CreateWorkout
 // @Summary Create a new workout
@@ -28,11 +28,52 @@ func CreateWorkout(c *fiber.Ctx) error {
 		})
 	}
 
-	workout := &schemas.Workout{
+	if workoutCreate.UserID < 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "User ID must be greater than 0",
+		})
+	}
+
+	if workoutCreate.Duration < 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Duration must be greater than 0",
+		})
+	}
+
+	if workoutCreate.Timestamp.IsZero() {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Timestamp must be provided",
+		})
+	}
+
+		workout := &schemas.Workout{
+		UserID:      workoutCreate.UserID,
 		Duration:    workoutCreate.Duration,
-		StartTime:   workoutCreate.StartTime,
-		Description: workoutCreate.Description,
-		Weight:      workoutCreate.Weight,
+		Timestamp:   workoutCreate.Timestamp,
+	}
+
+	user := &schemas.User{}
+	if err := database.DB.First(user, workout.UserID).Error; err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"error": "User not found",
+		})
+	}
+
+	// Check if the user is active
+	if user.Status != "active" {
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+			"error": "User is not active",
+		})
+	}
+
+	user.NumberOfWorkouts++
+	user.TotalTimeSpent += workout.Duration
+	user.AverageWorkoutDuration = user.TotalTimeSpent / time.Duration(user.NumberOfWorkouts)
+
+	if err := database.DB.Save(user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update user workout count",
+		})
 	}
 
 	if err := database.DB.Create(workout).Error; err != nil {
@@ -40,6 +81,8 @@ func CreateWorkout(c *fiber.Ctx) error {
 			"error": "Failed to create workout",
 		})
 	}
+
+	
 
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Workout created successfully",

@@ -11,10 +11,9 @@ type UserCreate struct {
 }
 
 type WorkoutCreate struct {
-	Duration    uint      `json:"duration" example:"60"`
-	StartTime   time.Time `json:"start_time" example:"2023-10-01T12:00:00Z"`
-	Description string    `json:"description" example:"Morning workout"`
-	Weight      float64   `json:"weight" example:"70.5"`
+	UserID 	uint      `json:"user_id" example:"12345"`
+	Duration    time.Duration      `json:"duration" example:"1h45m"` // Duration in hours, minutes, and seconds
+	Timestamp time.Time `json:"timestamp" example:"2023-10-01T12:00:00Z"`
 }
 
 type ExerciseCreate struct {
@@ -43,10 +42,9 @@ type UserUpdate struct {
 }
 
 type WorkoutUpdate struct {
-	Duration    uint      `json:"duration" example:"60"`
-	StartTime   time.Time `json:"start_time" example:"2023-10-01T12:00:00Z"`
-	Description string    `json:"description" example:"Morning workout"`
-	Weight      float64   `json:"weight" example:"70.5"`
+	UserID	  *uint      `json:"user_id" example:"12345"`
+	Duration    *time.Duration      `json:"duration" example:"60"`
+	Timestamp *time.Time `json:"timestamp" example:"2023-10-01T12:00:00Z"`
 }
 
 

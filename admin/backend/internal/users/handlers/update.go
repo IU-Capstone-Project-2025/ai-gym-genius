@@ -54,36 +54,47 @@ func UpdateUser(c *fiber.Ctx) error {
 	if input.Login != nil {
 		user.Login = *input.Login
 	}
+
 	if input.Name != nil {
 		user.Name = *input.Name
 	}
+
 	if input.Surname != nil {
 		user.Surname = *input.Surname
 	}
+
 	if input.Email != nil {
 		user.Email = *input.Email
 	}
+
 	if input.SubscriptionType != nil {
 		user.SubscriptionType = *input.SubscriptionType
 	}
+
 	if input.Status != nil {
 		user.Status = *input.Status
 	}
+
 	if input.LastActivity != nil {
 		user.LastActivity = *input.LastActivity
 	}
+
 	if input.NumberOfWorkouts != nil {
 		user.NumberOfWorkouts = *input.NumberOfWorkouts
 	}
+
 	if input.TotalTimeSpent != nil {
 		user.TotalTimeSpent = *input.TotalTimeSpent
 	}
+
 	if input.StreakCount != nil {
 		user.StreakCount = *input.StreakCount
 	}
+
 	if input.AverageWorkoutDuration != nil {
 		user.AverageWorkoutDuration = *input.AverageWorkoutDuration
 	}
+	
 	if input.Password != nil {
 		hashed := database.Hash(*input.Login, *input.Password)
 		user.Hash = hashed

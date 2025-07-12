@@ -52,21 +52,24 @@ func UpdateWorkout(c *fiber.Ctx) error {
 		})
 	}
 
-	updatedWorkout := &schemas.Workout{
-		ID: uint(id),
-		Duration:    workoutUpdate.Duration,
-		StartTime:   workoutUpdate.StartTime,
-		Description: workoutUpdate.Description,
-		Weight:      workoutUpdate.Weight,
+	// Update workout fields only if they are provided in the input
+	if workoutUpdate.UserID != nil {
+		workout.UserID = *workoutUpdate.UserID
 	}
 
-	if err := database.DB.Save(updatedWorkout).Error; err != nil {
+	if workoutUpdate.Duration != nil {
+		workout.Duration = *workoutUpdate.Duration
+	}
+
+	if workoutUpdate.Timestamp != nil {
+		workout.Timestamp = *workoutUpdate.Timestamp
+	}
+
+	if err := database.DB.Save(&workout).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "failed to update workout",
 		})
 	}
 
-	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
-		"message": "workout updated successfully",
-	})
+	return c.JSON(workout)
 }

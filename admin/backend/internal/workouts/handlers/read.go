@@ -45,9 +45,8 @@ func GetWorkout(c *fiber.Ctx) error {
 
 	workoutRead := models.WorkoutRead{
 		Duration:    workout.Duration,
-		StartTime:   workout.StartTime,
-		Description: workout.Description,
-		Weight:      workout.Weight,
+		Timestamp:   workout.Timestamp,
+		UserID:      workout.UserID,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(workoutRead)

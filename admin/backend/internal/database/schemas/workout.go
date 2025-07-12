@@ -4,8 +4,8 @@ import "time"
 
 type Workout struct {
 	ID          uint      `gorm:"primaryKey"`
-	Duration    uint      `gorm:"not null"`
-	StartTime   time.Time `gorm:"not null"`
-	Description string
-	Weight      float64
+	UserID      uint      `gorm:"not null"`
+	User        User      `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	Duration    time.Duration      `gorm:"not null"`
+	Timestamp time.Time `gorm:"not null"` // Timestamp of the workout
 }
