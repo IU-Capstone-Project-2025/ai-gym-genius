@@ -97,5 +97,3 @@ func UpdateUser(c *fiber.Ctx) error {
 
 	return c.JSON(user)
 }
-
-}
