@@ -489,35 +489,6 @@ const docTemplate = `{
                 }
             }
         },
-        "/users/all": {
-            "get": {
-                "description": "Retrieves a list of all users from the database.",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "users"
-                ],
-                "summary": "Get all users",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/schemas.User"
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "type": "string"
-                        }
-                    }
-                }
-            }
-        },
         "/users/{id}": {
             "get": {
                 "description": "Retrieve a user by their unique ID",
@@ -685,6 +656,60 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "User Not Found",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}/activity": {
+            "get": {
+                "description": "Retrieve monthly activity statistics for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get user activity statistics",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Monthly activity statistics",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "additionalProperties": true
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
                         "schema": {
                             "type": "object",
                             "additionalProperties": {
@@ -1013,23 +1038,67 @@ const docTemplate = `{
         "models.UserCreate": {
             "type": "object",
             "properties": {
-                "login": {
-                    "description": "Login    string ` + "`" + `json:\"login\"` + "`" + `",
+                "email": {
                     "type": "string",
-                    "example": "john"
+                    "example": "john_doe@gmail.com"
+                },
+                "login": {
+                    "type": "string",
+                    "example": "john123"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John"
                 },
                 "password": {
-                    "description": "Surname  string ` + "`" + `json:\"surname\"` + "`" + `\nPhone    string ` + "`" + `json:\"phone\"` + "`" + `",
                     "type": "string",
                     "example": "123"
+                },
+                "surname": {
+                    "type": "string"
                 }
             }
         },
         "models.UserRead": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john_doe@gmail.com"
+                },
                 "id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 12345
+                },
+                "last_activity": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
+                "name": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "number_of_workouts": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "status": {
+                    "description": "e.g., \"active\", \"inactive\", \"banned\"",
+                    "type": "string",
+                    "example": "active"
+                },
+                "streak_count": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "subscription_type": {
+                    "description": "e.g., \"free\", \"basic\", \"pro\"",
+                    "type": "string",
+                    "example": "free"
+                },
+                "surname": {
+                    "type": "string",
+                    "example": "Doe"
                 },
                 "username": {
                     "type": "string"
@@ -1039,11 +1108,42 @@ const docTemplate = `{
         "models.UserUpdate": {
             "type": "object",
             "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john_doe@gmail.com"
+                },
+                "last_activity": {
+                    "type": "string",
+                    "example": "2023-10-01T12:00:00Z"
+                },
                 "login": {
                     "type": "string"
                 },
+                "name": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "number_of_workouts": {
+                    "type": "integer",
+                    "example": 0
+                },
                 "password": {
-                    "description": "Surname  *string ` + "`" + `json:\"surname\"` + "`" + `\nPhone    *string ` + "`" + `json:\"phone\"` + "`" + `",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "e.g., \"active\", \"inactive\", \"banned\"",
+                    "type": "string",
+                    "example": "active"
+                },
+                "streak_count": {
+                    "type": "integer",
+                    "example": 0
+                },
+                "subscription_type": {
+                    "type": "string",
+                    "example": "free"
+                },
+                "surname": {
                     "type": "string"
                 }
             }
@@ -1051,77 +1151,39 @@ const docTemplate = `{
         "models.WorkoutCreate": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string",
-                    "example": "Morning workout"
-                },
-                "duration": {
-                    "type": "integer",
-                    "example": 60
-                },
-                "start_time": {
+                "timestamp": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
                 },
-                "weight": {
-                    "type": "number",
-                    "example": 70.5
+                "user_id": {
+                    "type": "integer",
+                    "example": 12345
                 }
             }
         },
         "models.WorkoutRead": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string",
-                    "example": "Morning workout"
-                },
-                "duration": {
-                    "type": "integer",
-                    "example": 60
-                },
-                "start_time": {
+                "timestamp": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
                 },
-                "weight": {
-                    "type": "number",
-                    "example": 70.5
+                "user_id": {
+                    "type": "integer",
+                    "example": 12345
                 }
             }
         },
         "models.WorkoutUpdate": {
             "type": "object",
             "properties": {
-                "description": {
-                    "type": "string",
-                    "example": "Morning workout"
-                },
-                "duration": {
-                    "type": "integer",
-                    "example": 60
-                },
-                "start_time": {
+                "timestamp": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
                 },
-                "weight": {
-                    "type": "number",
-                    "example": 70.5
-                }
-            }
-        },
-        "schemas.User": {
-            "type": "object",
-            "properties": {
-                "hash": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "login": {
-                    "type": "string"
+                "user_id": {
+                    "type": "integer",
+                    "example": 12345
                 }
             }
         }

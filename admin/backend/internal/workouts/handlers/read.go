@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"admin/internal/database/schemas"
 	"errors"
 	"github.com/gofiber/fiber/v2"
@@ -47,6 +47,7 @@ func GetWorkout(c *fiber.Ctx) error {
 		Duration:    workout.Duration,
 		Timestamp:   workout.Timestamp,
 		UserID:      workout.UserID,
+		ExerciseSets: workout.ExerciseSets,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(workoutRead)

@@ -3,7 +3,7 @@ package handlers
 import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"

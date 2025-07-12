@@ -6,6 +6,17 @@ import (
 	"time"
 )
 
+// GetUserActivityStats
+// @Summary Get user activity statistics
+// @Description Retrieve monthly activity statistics for a user
+// @Tags statistics
+// @Accept json
+// @Produce json
+// @Param id path int true "User ID"
+// @Success 200 {array} map[string]interface{} "Monthly activity statistics"
+// @Failure 400 {object} map[string]string "Bad Request"
+// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Router /users/{id}/activity [get]
 func GetUserActivityStats(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("id")
 	if err != nil || userID < 1 {

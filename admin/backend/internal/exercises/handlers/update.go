@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"admin/internal/database/schemas"
 	"errors"
 	"github.com/gofiber/fiber/v2"
@@ -52,19 +52,32 @@ func UpdateExercise(c *fiber.Ctx) error {
 		})
 	}
 
-	updatedExercise := &schemas.Exercise{
-		ID: uint(id),
-		Name: exercise.Name,
-		URL: exercise.URL,
+	// Update exercise fields only if they are provided in the input
+	if exerciseUpdate.Name != nil {
+		exercise.Name = *exerciseUpdate.Name
 	}
 
-	if err := database.DB.Save(updatedExercise).Error; err != nil {
+	if exerciseUpdate.URL != nil {
+		exercise.URL = *exerciseUpdate.URL
+	}
+
+	if exerciseUpdate.Description != nil {
+		exercise.Description = *exerciseUpdate.Description
+	}
+
+	if exerciseUpdate.MuscleGroup != nil {
+		exercise.MuscleGroup = *exerciseUpdate.MuscleGroup
+	}
+
+	if exerciseUpdate.URL != nil {
+		exercise.URL = *exerciseUpdate.URL
+	}
+
+	if err := database.DB.Save(&exercise).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "failed to update exercise",
 		})
 	}
 
-	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
-		"message": "exercise updated successfully",
-	})
+	return c.JSON(exercise)
 }

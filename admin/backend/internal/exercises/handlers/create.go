@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"admin/internal/database/schemas"
 	"errors"
 
@@ -32,6 +32,8 @@ func AddExercise(c *fiber.Ctx) error {
 
 	exercise := &schemas.Exercise{
 		Name: exerciseCreate.Name,
+		Description: exerciseCreate.Description,
+		MuscleGroup: exerciseCreate.MuscleGroup,
 		URL:  exerciseCreate.URL,
 	}
 

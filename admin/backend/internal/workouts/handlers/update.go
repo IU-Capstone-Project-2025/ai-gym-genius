@@ -2,11 +2,12 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"admin/internal/database/schemas"
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
+	"encoding/json"
 )
 
 // UpdateWorkout
@@ -65,7 +66,15 @@ func UpdateWorkout(c *fiber.Ctx) error {
 		workout.Timestamp = *workoutUpdate.Timestamp
 	}
 
-	if err := database.DB.Save(&workout).Error; err != nil {
+	if workoutUpdate.ExerciseSets != nil {
+		jsonData, err := json.Marshal(workoutUpdate.ExerciseSets)
+		if err != nil {
+			return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to marshal exercises"})
+		}
+		workout.ExerciseSets = jsonData
+	}
+
+	if err := database.DB.Save(workout).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"error": "failed to update workout",
 		})

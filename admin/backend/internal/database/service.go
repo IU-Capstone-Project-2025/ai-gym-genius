@@ -67,9 +67,9 @@ func InitDatabase() error {
 		&schemas.User{},
 		&schemas.Admin{},
 		&schemas.UserActivity{},
+		&schemas.Workout{},
 		&schemas.Exercise{},
 		&schemas.ExerciseSet{},
-		&schemas.Workout{},
 	)
 	if err != nil {
 		return fmt.Errorf("failed to migrate database: %w", err)

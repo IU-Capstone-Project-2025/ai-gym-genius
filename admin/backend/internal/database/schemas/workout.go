@@ -1,6 +1,9 @@
 package schemas
 
-import "time"
+import (
+	"time"
+	"gorm.io/datatypes"
+)
 
 type Workout struct {
 	ID          uint      `gorm:"primaryKey"`
@@ -8,4 +11,5 @@ type Workout struct {
 	User        User      `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
 	Duration    time.Duration      `gorm:"not null"`
 	Timestamp time.Time `gorm:"not null"` // Timestamp of the workout
+    ExerciseSets datatypes.JSON `gorm:"type:jsonb;not null"`
 }

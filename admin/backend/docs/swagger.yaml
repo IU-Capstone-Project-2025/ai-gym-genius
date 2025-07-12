@@ -44,87 +44,112 @@ definitions:
     type: object
   models.UserCreate:
     properties:
+      email:
+        example: john_doe@gmail.com
+        type: string
       login:
-        description: Login    string `json:"login"`
-        example: john
+        example: john123
+        type: string
+      name:
+        example: John
         type: string
       password:
-        description: |-
-          Surname  string `json:"surname"`
-          Phone    string `json:"phone"`
         example: "123"
+        type: string
+      surname:
         type: string
     type: object
   models.UserRead:
     properties:
+      email:
+        example: john_doe@gmail.com
+        type: string
       id:
+        example: 12345
         type: integer
+      last_activity:
+        example: "2023-10-01T12:00:00Z"
+        type: string
+      name:
+        example: John
+        type: string
+      number_of_workouts:
+        example: 0
+        type: integer
+      status:
+        description: e.g., "active", "inactive", "banned"
+        example: active
+        type: string
+      streak_count:
+        example: 0
+        type: integer
+      subscription_type:
+        description: e.g., "free", "basic", "pro"
+        example: free
+        type: string
+      surname:
+        example: Doe
+        type: string
       username:
         type: string
     type: object
   models.UserUpdate:
     properties:
+      email:
+        example: john_doe@gmail.com
+        type: string
+      last_activity:
+        example: "2023-10-01T12:00:00Z"
+        type: string
       login:
         type: string
+      name:
+        example: John
+        type: string
+      number_of_workouts:
+        example: 0
+        type: integer
       password:
-        description: |-
-          Surname  *string `json:"surname"`
-          Phone    *string `json:"phone"`
+        type: string
+      status:
+        description: e.g., "active", "inactive", "banned"
+        example: active
+        type: string
+      streak_count:
+        example: 0
+        type: integer
+      subscription_type:
+        example: free
+        type: string
+      surname:
         type: string
     type: object
   models.WorkoutCreate:
     properties:
-      description:
-        example: Morning workout
-        type: string
-      duration:
-        example: 60
-        type: integer
-      start_time:
+      timestamp:
         example: "2023-10-01T12:00:00Z"
         type: string
-      weight:
-        example: 70.5
-        type: number
+      user_id:
+        example: 12345
+        type: integer
     type: object
   models.WorkoutRead:
     properties:
-      description:
-        example: Morning workout
-        type: string
-      duration:
-        example: 60
-        type: integer
-      start_time:
+      timestamp:
         example: "2023-10-01T12:00:00Z"
         type: string
-      weight:
-        example: 70.5
-        type: number
+      user_id:
+        example: 12345
+        type: integer
     type: object
   models.WorkoutUpdate:
     properties:
-      description:
-        example: Morning workout
-        type: string
-      duration:
-        example: 60
-        type: integer
-      start_time:
+      timestamp:
         example: "2023-10-01T12:00:00Z"
         type: string
-      weight:
-        example: 70.5
-        type: number
-    type: object
-  schemas.User:
-    properties:
-      hash:
-        type: string
-      id:
+      user_id:
+        example: 12345
         type: integer
-      login:
-        type: string
     type: object
 host: localhost:3000
 info:
@@ -578,25 +603,42 @@ paths:
       summary: Update an existing user
       tags:
       - users
-  /users/all:
+  /users/{id}/activity:
     get:
-      description: Retrieves a list of all users from the database.
+      consumes:
+      - application/json
+      description: Retrieve monthly activity statistics for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Monthly activity statistics
           schema:
             items:
-              $ref: '#/definitions/schemas.User'
+              additionalProperties: true
+              type: object
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
           description: Internal Server Error
           schema:
-            type: string
-      summary: Get all users
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get user activity statistics
       tags:
-      - users
+      - statistics
   /workouts:
     post:
       consumes:

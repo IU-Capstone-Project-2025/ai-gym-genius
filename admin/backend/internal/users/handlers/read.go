@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"admin/internal/database/schemas"
 
 	"errors"

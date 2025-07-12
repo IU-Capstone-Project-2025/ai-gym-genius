@@ -2,10 +2,11 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/database/models"
+	"admin/internal/models"
 	"admin/internal/database/schemas"
 	"github.com/gofiber/fiber/v2"
 	"time"
+	"encoding/json"
 )
 
 // CreateWorkout
@@ -46,10 +47,16 @@ func CreateWorkout(c *fiber.Ctx) error {
 		})
 	}
 
+	jsonData, err := json.Marshal(workoutCreate.ExerciseSets)
+    if err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to marshal exercises"})
+    }
+
 		workout := &schemas.Workout{
 		UserID:      workoutCreate.UserID,
 		Duration:    workoutCreate.Duration,
 		Timestamp:   workoutCreate.Timestamp,
+		ExerciseSets:  jsonData,
 	}
 
 	user := &schemas.User{}
