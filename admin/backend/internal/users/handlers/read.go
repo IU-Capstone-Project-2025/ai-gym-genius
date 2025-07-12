@@ -48,6 +48,16 @@ func GetUser(c *fiber.Ctx) error {
 	userRead := models.UserRead{
 		ID:    user.ID,
 		Login: user.Login,
+		Name:  user.Name,
+		Surname: user.Surname,
+		Email: user.Email,
+		SubscriptionType: user.SubscriptionType,
+		Status: user.Status,
+		LastActivity: user.LastActivity,
+		NumberOfWorkouts: user.NumberOfWorkouts,
+		TotalTimeSpent: user.TotalTimeSpent,
+		StreakCount: user.StreakCount,
+		AverageWorkoutDuration: user.AverageWorkoutDuration,
 	}
 
 	return c.Status(fiber.StatusOK).JSON(userRead)
@@ -88,6 +98,16 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 		userReads[i] = models.UserRead{
 			ID:    user.ID,
 			Login: user.Login,
+			Name:  user.Name,
+			Surname: user.Surname,
+			Email: user.Email,
+			SubscriptionType: user.SubscriptionType,
+			Status: user.Status,
+			LastActivity: user.LastActivity,
+			NumberOfWorkouts: user.NumberOfWorkouts,
+			TotalTimeSpent: user.TotalTimeSpent,
+			StreakCount: user.StreakCount,
+			AverageWorkoutDuration: user.AverageWorkoutDuration,
 		}
 	}
 

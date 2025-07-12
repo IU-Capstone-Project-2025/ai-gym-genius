@@ -31,14 +31,14 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	var input models.UserUpdate
+	input := &models.UserUpdate{}
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "invalid request body",
 		})
 	}
 
-	var user schemas.User
+	user := &schemas.User{}
 	if err := database.DB.First(&user, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
