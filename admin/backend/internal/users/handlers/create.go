@@ -5,6 +5,7 @@ import (
 	"admin/internal/database/models"
 	"admin/internal/database/schemas"
 	"errors"
+	"time"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -31,6 +32,16 @@ func CreateUser(c *fiber.Ctx) error {
 	
 	user := &schemas.User{
 		Login: userCreate.Login,
+		Name: userCreate.Name,
+		Surname: userCreate.Surname,
+		Email: userCreate.Email,
+		SubscriptionType: "free", // Default subscription type
+		Status: "active", // Default status
+		LastActivity: time.Now().UTC(), // Set current time as last activity
+		NumberOfWorkouts: 0, // Initial number of workouts
+		TotalTimeSpent: 0, // Initial total time spent
+		StreakCount: 0, // Initial streak count
+		AverageWorkoutDuration: 0, // Initial average workout duration
 		Hash:  database.Hash(userCreate.Login, userCreate.Password),
 	}
 	

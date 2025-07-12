@@ -3,10 +3,11 @@ package models
 import "time"
 
 type UserCreate struct {
-	// Login    string `json:"login"`
-	Login string `json:"login" example:"john"`
-	// Surname  string `json:"surname"`
-	// Phone    string `json:"phone"`
+	Login string `json:"login" example:"john123"`
+	Name  string `json:"name" example:"John"`
+	Surname  string `json:"surname"`
+	Phone    string `json:"phone" example:"+1234567890"`
+	Email string `json:"email" example:"john_doe@gmail.com"`
 	Password string `json:"password" example:"123"`
 }
 

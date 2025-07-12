@@ -8,7 +8,7 @@ type User struct {
 	Name  string `gorm:"not null"`
 	Surname string `gorm:"not null"`
 	Email string `gorm:"not null;uniqueIndex"`
-	SubscriptionType string `gorm:"not null"`
+	SubscriptionType string `gorm:"not null"` // e.g., "free", "basic", "pro"
 	Status string `gorm:"not null"` // e.g., "active", "inactive", "banned"
 	LastActivity time.Time `gorm:"not null"` // e.g., timestamp of last activity
 	NumberOfWorkouts int `gorm:"not null"` // e.g., number of workouts completed
