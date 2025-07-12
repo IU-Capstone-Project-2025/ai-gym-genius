@@ -6,7 +6,6 @@ type UserCreate struct {
 	Login string `json:"login" example:"john123"`
 	Name  string `json:"name" example:"John"`
 	Surname  string `json:"surname"`
-	Phone    string `json:"phone" example:"+1234567890"`
 	Email string `json:"email" example:"john_doe@gmail.com"`
 	Password string `json:"password" example:"123"`
 }
@@ -30,8 +29,16 @@ type ExerciseUpdate struct {
 
 type UserUpdate struct {
 	Login *string `json:"login"`
-	// Surname  *string `json:"surname"`
-	// Phone    *string `json:"phone"`
+	Name  *string `json:"name" example:"John"`
+	Surname  *string `json:"surname"`
+	Email *string `json:"email" example:"john_doe@gmail.com"`
+	SubscriptionType *string `json:"subscription_type" example:"free"`
+	Status *string `json:"status" example:"active"` // e.g., "active", "inactive", "banned"
+	LastActivity *time.Time `json:"last_activity" example:"2023-10-01T12:00:00Z"`
+	NumberOfWorkouts *int `json:"number_of_workouts" example:"0"`
+	TotalTimeSpent *time.Duration `json:"total_time_spent" example:"3600"` // in seconds
+	StreakCount *int `json:"streak_count" example:"0"`
+	AverageWorkoutDuration *time.Duration `json:"average_workout_duration" example:"3600"` // in seconds
 	Password *string `json:"password"`
 }
 

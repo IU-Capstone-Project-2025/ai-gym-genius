@@ -25,24 +25,21 @@ import (
 // @Router /users/{id} [patch]
 func UpdateUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	
-	if err != nil {
+	if err != nil || id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "malformed 'id' parameter; should be > 0",
+			"error": "invalid user ID",
 		})
 	}
-	
-	userUpdate := &models.UserUpdate{}
 
-	if err := c.BodyParser(userUpdate); err != nil {
+	var input models.UserUpdate
+	if err := c.BodyParser(&input); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
 			"error": "invalid request body",
 		})
 	}
 
-	user := &schemas.User{}
-
-	if err := database.DB.First(user, id).Error; err != nil {
+	var user schemas.User
+	if err := database.DB.First(&user, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
 				"error": "user not found",
@@ -53,9 +50,52 @@ func UpdateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	// TODO finish ths method
-	// decide how to handle password updates
-	return c.Status(fiber.StatusNotImplemented).JSON(fiber.Map{
-		"message": "bleh",
-	})
+	// Update user fields only if they are provided in the input
+	if input.Login != nil {
+		user.Login = *input.Login
+	}
+	if input.Name != nil {
+		user.Name = *input.Name
+	}
+	if input.Surname != nil {
+		user.Surname = *input.Surname
+	}
+	if input.Email != nil {
+		user.Email = *input.Email
+	}
+	if input.SubscriptionType != nil {
+		user.SubscriptionType = *input.SubscriptionType
+	}
+	if input.Status != nil {
+		user.Status = *input.Status
+	}
+	if input.LastActivity != nil {
+		user.LastActivity = *input.LastActivity
+	}
+	if input.NumberOfWorkouts != nil {
+		user.NumberOfWorkouts = *input.NumberOfWorkouts
+	}
+	if input.TotalTimeSpent != nil {
+		user.TotalTimeSpent = *input.TotalTimeSpent
+	}
+	if input.StreakCount != nil {
+		user.StreakCount = *input.StreakCount
+	}
+	if input.AverageWorkoutDuration != nil {
+		user.AverageWorkoutDuration = *input.AverageWorkoutDuration
+	}
+	if input.Password != nil {
+		hashed := database.Hash(*input.Login, *input.Password)
+		user.Hash = hashed
+	}
+
+	if err := database.DB.Save(&user).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "failed to update user",
+		})
+	}
+
+	return c.JSON(user)
+}
+
 }
