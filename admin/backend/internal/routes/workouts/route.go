@@ -1,7 +1,7 @@
 package workouts
 
 import (
-	"admin/internal/workouts/handlers"
+	"admin/internal/routes/workouts/handlers"
 	"github.com/gofiber/fiber/v2"
 )
 

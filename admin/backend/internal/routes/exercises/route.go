@@ -1,7 +1,7 @@
 package exercises
 
 import (
-	"admin/internal/exercises/handlers"
+	"admin/internal/routes/exercises/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )

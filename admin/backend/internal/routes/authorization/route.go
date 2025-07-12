@@ -1,7 +1,7 @@
 package authorization
 
 import (
-	"admin/internal/authorization/handlers"
+	"admin/internal/routes/authorization/handlers"
 	"github.com/gofiber/fiber/v2"
 )
 

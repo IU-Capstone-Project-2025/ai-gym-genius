@@ -3,7 +3,6 @@ package middleware
 import (
 	"log/slog"
 	"strings"
-	// "encoding/json"
 	
 	"github.com/gofiber/fiber/v2"
 )
@@ -15,11 +14,6 @@ func LoggingMiddleware() fiber.Handler {
 		if c.Method() == "GET" && strings.HasPrefix(c.Path(), "/swagger/") {
 			return err
 		}
-		// rawResponse := c.Response().Body()
-		// var decodedResponse string
-		// if err := json.Unmarshal(rawResponse, &decodedResponse); err != nil {
-		// 	decodedResponse = string(rawResponse)
-		// }
 		slog.Info(
 			"request",
 			"method", c.Method(),

@@ -1,11 +1,11 @@
 package main
 
 import (
-	"admin/internal/authorization"
-	"admin/internal/exercises"
-	"admin/internal/statistics"
-	"admin/internal/users"
-	"admin/internal/workouts"
+	"admin/internal/routes/authorization"
+	"admin/internal/routes/exercises"
+	"admin/internal/routes/statistics"
+	"admin/internal/routes/users"
+	"admin/internal/routes/workouts"
 
 	"github.com/gofiber/fiber/v2"
 	swagger "github.com/swaggo/fiber-swagger"

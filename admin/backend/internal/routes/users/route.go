@@ -1,7 +1,7 @@
 package users
 
 import (
-	"admin/internal/users/handlers"
+	"admin/internal/routes/users/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )

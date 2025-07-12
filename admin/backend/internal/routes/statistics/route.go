@@ -1,7 +1,7 @@
 package statistics
 
 import (
-	"admin/internal/statistics/handlers"
+	"admin/internal/routes/statistics/handlers"
 
 	"github.com/gofiber/fiber/v2"
 )
