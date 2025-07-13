@@ -4,6 +4,8 @@ import (
 	_ "admin/docs"
 	"admin/internal/database"
 	middleware "admin/internal/middlewares"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 )
@@ -20,6 +22,9 @@ import (
 // @host localhost:3000
 // @BasePath /
 func main() {
+	if err := database.InitDatabase(); err != nil {
+		panic(err) // failed to connect or migrate
+	}
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{
@@ -30,13 +35,11 @@ func main() {
 
 	app.Use(middleware.LoggingMiddleware())
 
-	if err := database.InitDatabase(); err != nil {
-		panic(err) // failed to connect or migrate
-	}
-
 	CombineRoutes(app)
-
-	if err := app.Listen(":3000"); err != nil {
-		panic("Failed to start the server: " + err.Error())
-	}
+	
+	app.Use(func(c *fiber.Ctx) error {
+		return c.SendStatus(fiber.StatusNotFound)
+	})
+	
+	log.Fatal(app.Listen(":3000"))
 }

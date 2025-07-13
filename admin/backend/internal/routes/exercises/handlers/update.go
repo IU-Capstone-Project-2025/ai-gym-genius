@@ -2,53 +2,53 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/models"
 	"admin/internal/database/schemas"
+	"admin/internal/models"
 	"errors"
+
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
 // UpdateExercise
-// @Summary Update an existing exercise
-// @Description Update exercise details by ID
+// @Summary Update an existing exercise by ID
 // @Tags exercises
 // @Accept json
 // @Produce json
 // @Param exercise body models.ExerciseUpdate true "Exercise update payload"
 // @Param id path int true "Exercise ID"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]string "Bad Request"
-// @Failure 404 {object} map[string]string "Exercise Not Found"
-// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Success 200 {object} models.MessageResponse
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 404 {object} models.ErrorResponse "Exercise Not Found"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /exercises/{id} [patch]
 func UpdateExercise(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
-	
+
 	if err != nil || id < 1 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "malformed 'id' parameter; should be > 0",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "malformed 'id' parameter; should be > 0",
 		})
 	}
-	
+
 	exerciseUpdate := &models.ExerciseUpdate{}
-	
+
 	if err := c.BodyParser(exerciseUpdate); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid request body",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "invalid request body",
 		})
 	}
-	
+
 	exercise := &schemas.Exercise{}
-	
+
 	if err := database.DB.First(exercise, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "exercise not found",
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error: "exercise not found",
 			})
 		}
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to query exercise",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to query exercise",
 		})
 	}
 
@@ -65,8 +65,8 @@ func UpdateExercise(c *fiber.Ctx) error {
 		exercise.Description = *exerciseUpdate.Description
 	}
 
-	if exerciseUpdate.MuscleGroup != nil {
-		exercise.MuscleGroup = *exerciseUpdate.MuscleGroup
+	if exerciseUpdate.MuscleGroups != nil {
+		exercise.MuscleGroups = *exerciseUpdate.MuscleGroups
 	}
 
 	if exerciseUpdate.URL != nil {
@@ -74,10 +74,12 @@ func UpdateExercise(c *fiber.Ctx) error {
 	}
 
 	if err := database.DB.Save(&exercise).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to update exercise",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to update exercise",
 		})
 	}
 
-	return c.JSON(exercise)
+	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
+		Message: "Exercise updated successfully",
+	})
 }

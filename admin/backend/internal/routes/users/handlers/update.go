@@ -2,51 +2,51 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/models"
 	"admin/internal/database/schemas"
+	"admin/internal/models"
 	"errors"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
 
 // UpdateUser
-// @Summary Update an existing user
-// @Description Update user details by ID
+// @Summary Update an existing user by ID
 // @Tags users
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
 // @Param user body models.UserUpdate true "User update payload"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]string "Bad Request"
-// @Failure 404 {object} map[string]string "User Not Found"
-// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Success 200 {object} models.MessageResponse "Updated Successfully"
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 404 {object} models.ErrorResponse "User Not Found"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/{id} [patch]
 func UpdateUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil || id < 1 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid user ID",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "invalid user ID",
 		})
 	}
 
 	input := &models.UserUpdate{}
 	if err := c.BodyParser(&input); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid request body",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "invalid request body",
 		})
 	}
 
 	user := &schemas.User{}
 	if err := database.DB.First(&user, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "user not found",
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error: "user not found",
 			})
 		}
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to query user",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to query user",
 		})
 	}
 
@@ -83,26 +83,26 @@ func UpdateUser(c *fiber.Ctx) error {
 		user.NumberOfWorkouts = *input.NumberOfWorkouts
 	}
 
-	if input.TotalTimeSpent != nil {
-		user.TotalTimeSpent = *input.TotalTimeSpent
+	if input.TotalTimeSpentNS != nil {
+		user.TotalTimeSpent = time.Duration(*input.TotalTimeSpentNS)
 	}
 
 	if input.StreakCount != nil {
 		user.StreakCount = *input.StreakCount
 	}
 
-	if input.AverageWorkoutDuration != nil {
-		user.AverageWorkoutDuration = *input.AverageWorkoutDuration
+	if input.AverageWorkoutDurationNS != nil {
+		user.AverageWorkoutDuration = time.Duration(*input.AverageWorkoutDurationNS)
 	}
-	
+
 	if input.Password != nil {
 		hashed := database.Hash(*input.Login, *input.Password)
 		user.Hash = hashed
 	}
 
 	if err := database.DB.Save(&user).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to update user",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to update user",
 		})
 	}
 

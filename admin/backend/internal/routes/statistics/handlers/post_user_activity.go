@@ -15,28 +15,28 @@ import (
 // @Accept json
 // @Produce json
 // @Param input body models.UserActivityCreate true "Request parameters"
-// @Success 200 {object} string "Success message"
-// @Failure 400 {object} string "Validation error"
-// @Failure 500 {object} string "Server error"
+// @Success 200 {object} models.CreatedResponse "Success message"
+// @Failure 400 {object} models.ErrorResponse "Validation error"
+// @Failure 500 {object} models.ErrorResponse "Server error"
 // @Router /statistics/add-activity [post]
 func PostUserActivity(c *fiber.Ctx) error {
 	data := &models.UserActivityCreate{}
 
 	if err := c.BodyParser(data); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Invalid request body",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "Invalid request body",
 		})
 	}
 
 	if data.UserID == 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Field 'user_id' cannot be empty",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "Field 'user_id' cannot be empty",
 		})
 	}
 
 	if data.Date.IsZero() {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Field 'date' cannot be empty",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "Field 'date' cannot be empty",
 		})
 	}
 
@@ -46,14 +46,13 @@ func PostUserActivity(c *fiber.Ctx) error {
 	}
 
 	if err := database.DB.Create(&record).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to record user activity",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "Failed to record user activity",
 		})
 	}
 	
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "User activity recorded successfully",
-		"id": record.ID,
+	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
+		Message: "User activity recorded successfully",
+		ID: record.ID,
 	})
-
 }

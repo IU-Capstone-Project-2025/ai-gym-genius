@@ -61,37 +61,25 @@ const docTemplate = `{
                     "400": {
                         "description": "Invalid request body or missing fields",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "401": {
                         "description": "Incorrect password",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "User not found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Failed to query database or create token",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -99,7 +87,6 @@ const docTemplate = `{
         },
         "/exercises": {
             "post": {
-                "description": "Create a new exercise",
                 "consumes": [
                     "application/json"
                 ],
@@ -125,34 +112,26 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.CreatedResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             }
         },
         "/exercises/{id}": {
-            "delete": {
-                "description": "Delete a exercise by their unique ID",
+            "get": {
                 "consumes": [
                     "application/json"
                 ],
@@ -162,7 +141,39 @@ const docTemplate = `{
                 "tags": [
                     "exercises"
                 ],
-                "summary": "Delete a exercise by ID",
+                "summary": "Get an exercise by id",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.ExerciseRead"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "exercises"
+                ],
+                "summary": "Delete an exercise by id",
                 "parameters": [
                     {
                         "type": "integer",
@@ -176,43 +187,30 @@ const docTemplate = `{
                     "200": {
                         "description": "Exercise deleted successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Exercise Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             },
             "patch": {
-                "description": "Update exercise details by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -222,7 +220,7 @@ const docTemplate = `{
                 "tags": [
                     "exercises"
                 ],
-                "summary": "Update an existing exercise",
+                "summary": "Update an existing exercise by ID",
                 "parameters": [
                     {
                         "description": "Exercise update payload",
@@ -245,35 +243,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Exercise Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -369,19 +357,19 @@ const docTemplate = `{
                     "200": {
                         "description": "Success message",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.CreatedResponse"
                         }
                     },
                     "400": {
                         "description": "Validation error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Server error",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -429,16 +417,12 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             },
             "post": {
-                "description": "Create a new user with login and password",
                 "consumes": [
                     "application/json"
                 ],
@@ -464,26 +448,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.CreatedResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -548,7 +525,6 @@ const docTemplate = `{
                 }
             },
             "delete": {
-                "description": "Delete a user by their unique ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -572,43 +548,30 @@ const docTemplate = `{
                     "200": {
                         "description": "User deleted successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "User Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             },
             "patch": {
-                "description": "Update user details by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -618,7 +581,7 @@ const docTemplate = `{
                 "tags": [
                     "users"
                 ],
-                "summary": "Update an existing user",
+                "summary": "Update an existing user by ID",
                 "parameters": [
                     {
                         "type": "integer",
@@ -639,37 +602,27 @@ const docTemplate = `{
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK",
+                        "description": "Updated Successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "User Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -703,27 +656,23 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "object",
-                                "additionalProperties": true
+                                "type": "array",
+                                "items": {
+                                    "$ref": "#/definitions/handlers.MonthlyStat"
+                                }
                             }
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -731,7 +680,6 @@ const docTemplate = `{
         },
         "/workouts": {
             "post": {
-                "description": "Create a new workout with duration, start time, description, and weight",
                 "consumes": [
                     "application/json"
                 ],
@@ -757,26 +705,19 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.CreatedResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -784,7 +725,6 @@ const docTemplate = `{
         },
         "/workouts/{id}": {
             "get": {
-                "description": "Retrieve a workout by their unique ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -814,34 +754,24 @@ const docTemplate = `{
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Workout Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             },
             "delete": {
-                "description": "Delete a workout by their unique ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -865,43 +795,30 @@ const docTemplate = `{
                     "200": {
                         "description": "Workout deleted successfully",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Workout Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
             },
             "patch": {
-                "description": "Update workout details by ID",
                 "consumes": [
                     "application/json"
                 ],
@@ -911,7 +828,7 @@ const docTemplate = `{
                 "tags": [
                     "workouts"
                 ],
-                "summary": "Update an existing workout",
+                "summary": "Update an existing workout by ID",
                 "parameters": [
                     {
                         "description": "Workout update payload",
@@ -934,35 +851,25 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": true
+                            "$ref": "#/definitions/models.MessageResponse"
                         }
                     },
                     "400": {
                         "description": "Bad Request",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {
                         "description": "Workout Not Found",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "type": "object",
-                            "additionalProperties": {
-                                "type": "string"
-                            }
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     }
                 }
@@ -970,6 +877,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "handlers.MonthlyStat": {
+            "type": "object",
+            "properties": {
+                "count": {
+                    "type": "integer"
+                },
+                "month": {
+                    "type": "string"
+                }
+            }
+        },
         "handlers.intervalResult": {
             "type": "object",
             "properties": {
@@ -995,6 +913,19 @@ const docTemplate = `{
                 }
             }
         },
+        "models.CreatedResponse": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "example": 12345
+                },
+                "message": {
+                    "type": "string",
+                    "example": "User created successfully"
+                }
+            }
+        },
         "models.ErrorResponse": {
             "type": "object",
             "properties": {
@@ -1007,6 +938,21 @@ const docTemplate = `{
         "models.ExerciseCreate": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Push-ups are a basic exercise that works the chest, shoulders, and triceps."
+                },
+                "muscle_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "chest",
+                        "back",
+                        "triceps"
+                    ]
+                },
                 "name": {
                     "type": "string"
                 },
@@ -1015,11 +961,86 @@ const docTemplate = `{
                 }
             }
         },
+        "models.ExerciseRead": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Push-ups are a basic exercise that works the chest, shoulders, and triceps."
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
+                "muscle_groups": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "chest",
+                        "back",
+                        "triceps"
+                    ]
+                },
+                "name": {
+                    "type": "string"
+                },
+                "url": {
+                    "description": "URL to the exercise image",
+                    "type": "string",
+                    "example": "https://example.com/image.jpg"
+                }
+            }
+        },
+        "models.ExerciseSetModel": {
+            "type": "object",
+            "properties": {
+                "exercise_id": {
+                    "type": "integer"
+                },
+                "reps": {
+                    "type": "integer"
+                },
+                "weight": {
+                    "type": "number"
+                }
+            }
+        },
         "models.ExerciseUpdate": {
             "type": "object",
             "properties": {
+                "description": {
+                    "type": "string",
+                    "example": "Push-ups are a basic exercise that works the chest, shoulders, and triceps."
+                },
+                "image_path": {
+                    "description": "URL to the exercise image",
+                    "type": "string",
+                    "example": "https://example.com/image.jpg"
+                },
+                "muscle_group": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "chest",
+                        "back",
+                        "triceps"
+                    ]
+                },
                 "url": {
                     "type": "string"
+                }
+            }
+        },
+        "models.MessageResponse": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "example": "Descriptive message"
                 }
             }
         },
@@ -1145,12 +1166,28 @@ const docTemplate = `{
                 },
                 "surname": {
                     "type": "string"
+                },
+                "total_time_spent_ns": {
+                    "description": "in seconds",
+                    "type": "integer",
+                    "example": 3600
                 }
             }
         },
         "models.WorkoutCreate": {
             "type": "object",
             "properties": {
+                "duration_ns": {
+                    "description": "in seconds",
+                    "type": "integer",
+                    "example": 60
+                },
+                "exercise_sets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExerciseSetModel"
+                    }
+                },
                 "timestamp": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
@@ -1164,6 +1201,21 @@ const docTemplate = `{
         "models.WorkoutRead": {
             "type": "object",
             "properties": {
+                "duration_ns": {
+                    "description": "in nanoseconds",
+                    "type": "string",
+                    "example": "60"
+                },
+                "exercise_sets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExerciseSetModel"
+                    }
+                },
+                "id": {
+                    "type": "integer",
+                    "example": 1
+                },
                 "timestamp": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
@@ -1177,6 +1229,12 @@ const docTemplate = `{
         "models.WorkoutUpdate": {
             "type": "object",
             "properties": {
+                "exercise_sets": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/models.ExerciseSetModel"
+                    }
+                },
                 "timestamp": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"

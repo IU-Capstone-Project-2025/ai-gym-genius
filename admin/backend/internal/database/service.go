@@ -50,6 +50,7 @@ func InitDatabase() error {
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		dbHost, dbUser, dbPassword, dbName, dbPort,
 	)
+	
 	switch config.C.AppEnv {
 	case "PROD":
 		DB, err = gorm.Open(
@@ -59,6 +60,7 @@ func InitDatabase() error {
 	case "DEV":
 		DB, err = gorm.Open(sqlite.Open("devDb.db"))
 	}
+	
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}

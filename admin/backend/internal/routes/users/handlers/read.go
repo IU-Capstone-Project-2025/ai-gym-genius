@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/models"
 	"admin/internal/database/schemas"
+	"admin/internal/models"
 
 	"errors"
 
@@ -27,8 +27,8 @@ func GetUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
 	if err != nil || id < 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "'id' parameter is malformed; should be > 0",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "'id' parameter is malformed; should be > 0",
 		})
 	}
 
@@ -36,28 +36,28 @@ func GetUser(c *fiber.Ctx) error {
 
 	if err := database.DB.First(user, id).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-				"error": "user not found",
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error: "user not found",
 			})
 		}
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to retrieve user",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to retrieve user",
 		})
 	}
 
 	userRead := models.UserRead{
-		ID:    user.ID,
-		Login: user.Login,
-		Name:  user.Name,
-		Surname: user.Surname,
-		Email: user.Email,
-		SubscriptionType: user.SubscriptionType,
-		Status: user.Status,
-		LastActivity: user.LastActivity,
-		NumberOfWorkouts: user.NumberOfWorkouts,
-		TotalTimeSpent: user.TotalTimeSpent,
-		StreakCount: user.StreakCount,
-		AverageWorkoutDuration: user.AverageWorkoutDuration,
+		ID:                       user.ID,
+		Login:                    user.Login,
+		Name:                     user.Name,
+		Surname:                  user.Surname,
+		Email:                    user.Email,
+		SubscriptionType:         user.SubscriptionType,
+		Status:                   user.Status,
+		LastActivity:             user.LastActivity,
+		NumberOfWorkouts:         user.NumberOfWorkouts,
+		TotalTimeSpentNS:         int64(user.TotalTimeSpent.Seconds()),
+		StreakCount:              user.StreakCount,
+		AverageWorkoutDurationNS: int64(user.AverageWorkoutDuration.Seconds()),
 	}
 
 	return c.Status(fiber.StatusOK).JSON(userRead)
@@ -71,8 +71,8 @@ func GetUser(c *fiber.Ctx) error {
 // @Produce json
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Number of users per page" default(10)
-// @Success 200 {array} models.UserRead
-// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Success 200 {object} []models.UserRead
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users [get]
 func GetUsersPaginate(c *fiber.Ctx) error {
 	page := c.QueryInt("page", 1)
@@ -88,26 +88,26 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 
 	var users []schemas.User
 	if err := database.DB.Limit(limit).Offset(offset).Find(&users).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "failed to retrieve users",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to retrieve users",
 		})
 	}
 
 	userReads := make([]models.UserRead, len(users))
 	for i, user := range users {
 		userReads[i] = models.UserRead{
-			ID:    user.ID,
-			Login: user.Login,
-			Name:  user.Name,
-			Surname: user.Surname,
-			Email: user.Email,
-			SubscriptionType: user.SubscriptionType,
-			Status: user.Status,
-			LastActivity: user.LastActivity,
-			NumberOfWorkouts: user.NumberOfWorkouts,
-			TotalTimeSpent: user.TotalTimeSpent,
-			StreakCount: user.StreakCount,
-			AverageWorkoutDuration: user.AverageWorkoutDuration,
+			ID:                       user.ID,
+			Login:                    user.Login,
+			Name:                     user.Name,
+			Surname:                  user.Surname,
+			Email:                    user.Email,
+			SubscriptionType:         user.SubscriptionType,
+			Status:                   user.Status,
+			LastActivity:             user.LastActivity,
+			NumberOfWorkouts:         user.NumberOfWorkouts,
+			TotalTimeSpentNS:         user.TotalTimeSpent.Nanoseconds(),
+			StreakCount:              user.StreakCount,
+			AverageWorkoutDurationNS: user.AverageWorkoutDuration.Nanoseconds(),
 		}
 	}
 

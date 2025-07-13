@@ -1,15 +1,16 @@
 package handlers
 
 import (
-    "admin/internal/database"
-    "admin/internal/database/schemas"
-    
-    "errors"
-    "strconv"
-    "time"
+	"admin/internal/database"
+	"admin/internal/database/schemas"
+	"admin/internal/models"
 
-    "github.com/gofiber/fiber/v2"
-    "gorm.io/gorm"
+	"errors"
+	"strconv"
+	"time"
+
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 var (
@@ -55,34 +56,34 @@ func parseStep(stepStr string) (step, error) {
 // @Param start_date query string true "Start date/time in RFC3339 format (e.g., 2025-06-01T00:00:00Z)"
 // @Param end_date query string true "End date/time in RFC3339 format (e.g., 2025-06-10T00:00:00Z)"
 // @Param step query string true "Time interval step duration, format: <number><unit> where unit is 'h' for hours or 'd' for days (e.g., '24h', '7d')" example("24h")
-// @Success 200 {array} intervalResult "Array of interval results containing start time, end time, and user count"
+// @Success 200 {object} []intervalResult "Array of interval results containing start time, end time, and user count"
 // @Failure 400 {object} models.ErrorResponse "Invalid input parameters (missing, malformed, or invalid date range)"
 // @Failure 500 {object} models.ErrorResponse "Internal server error while processing the request"
 // @Router /statistics/active-users [get]
 func GetNumberOfActiveUsers(c *fiber.Ctx) error {
     params := params{}
     if err := c.QueryParser(&params); err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "Missing or malformed query parameters",
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: "Missing or malformed query parameters",
         })
     }
 
     if params.StartDate.IsZero() || params.EndDate.IsZero() {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "Both start_date and end_date are required",
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: "Both start_date and end_date are required",
         })
     }
 
     if params.EndDate.Before(params.StartDate) {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "end_date must be after start_date",
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: "end_date must be after start_date",
         })
     }
 
     step, err := parseStep(params.Step)
     if err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": err.Error(),
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: err.Error(),
         })
     }
 
@@ -93,8 +94,8 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
     case 'd':
         intervalDuration = time.Duration(step.value) * 24 * time.Hour
     default:
-        return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "error": "invalid step unit, must be 'h' or 'd'",
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: "invalid step unit, must be 'h' or 'd'",
         })
     }
 
@@ -122,13 +123,13 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
             Count(&count).Error
 
         if err != nil && err != gorm.ErrRecordNotFound {
-            return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-                "error": "Failed to query database",
+            return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+                Error: "Failed to query database",
             })
         }
 
         intervals[i].Count = count
     }
     
-    return c.JSON(intervals)
+    return c.Status(fiber.StatusOK).JSON(intervals)
 }

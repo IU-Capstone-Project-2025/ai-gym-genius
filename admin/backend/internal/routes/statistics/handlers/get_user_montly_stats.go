@@ -2,8 +2,10 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"github.com/gofiber/fiber/v2"
+	"admin/internal/models"
 	"time"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // GetUserActivityStats
@@ -13,39 +15,31 @@ import (
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
-// @Success 200 {array} map[string]interface{} "Monthly activity statistics"
-// @Failure 400 {object} map[string]string "Bad Request"
-// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Success 200 {array} []MonthlyStat "Monthly activity statistics"
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/{id}/activity [get]
 func GetUserActivityStats(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("id")
 	if err != nil || userID < 1 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "invalid user id",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "invalid user id",
 		})
 	}
 
-	stats, err := GetUserMonthlyStats(uint(userID))
+	montlyStats, err := GetUserMonthlyStats(uint(userID))
 	if err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "could not fetch stats",
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "could not fetch stats",
 		})
 	}
 
-	result := []fiber.Map{}
-	for _, stat := range stats {
-		result = append(result, fiber.Map{
-			"month": stat.Month.Format("2006-01"),
-			"count": stat.Count,
-		})
-	}
-
-	return c.JSON(result)
+	return c.Status(fiber.StatusOK).JSON(montlyStats)
 }
 
 type MonthlyStat struct {
-	Month time.Time
-	Count int
+	Month time.Time `json:"month"`
+	Count int `json:"count"`
 }
 
 func GetUserMonthlyStats(userID uint) ([]MonthlyStat, error) {

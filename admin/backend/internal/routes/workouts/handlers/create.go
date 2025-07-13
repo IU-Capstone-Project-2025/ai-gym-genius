@@ -2,97 +2,88 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/models"
 	"admin/internal/database/schemas"
-	"github.com/gofiber/fiber/v2"
+	"admin/internal/models"
+	"errors"
 	"time"
-	"encoding/json"
+
+	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm"
 )
 
 // CreateWorkout
 // @Summary Create a new workout
-// @Description Create a new workout with duration, start time, description, and weight
 // @Tags workouts
 // @Accept json
 // @Produce json
 // @Param workout body models.WorkoutCreate true "Workout create payload"
-// @Success 200 {object} map[string]interface{}
-// @Failure 400 {object} map[string]string "Bad Request"
-// @Failure 500 {object} map[string]string "Internal Server Error"
+// @Success 200 {object} models.CreatedResponse
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /workouts [post]
 func CreateWorkout(c *fiber.Ctx) error {
 	workoutCreate := &models.WorkoutCreate{}
 
 	if err := c.BodyParser(workoutCreate); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": err.Error(),
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: err.Error(),
 		})
 	}
 
 	if workoutCreate.UserID < 1 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "User ID must be greater than 0",
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "User ID must be greater than 0",
 		})
 	}
 
-	if workoutCreate.Duration < 1 {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Duration must be greater than 0",
+	workoutDuration := time.Duration(workoutCreate.DurationNS)
+
+	if workoutDuration < 1 {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "Duration must be greater than 0",
 		})
 	}
 
-	if workoutCreate.Timestamp.IsZero() {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-			"error": "Timestamp must be provided",
+	if workoutCreate.StartTime.IsZero() {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "Timestamp must be provided",
 		})
 	}
 
-	jsonData, err := json.Marshal(workoutCreate.ExerciseSets)
-    if err != nil {
-        return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": "failed to marshal exercises"})
-    }
-
-		workout := &schemas.Workout{
-		UserID:      workoutCreate.UserID,
-		Duration:    workoutCreate.Duration,
-		Timestamp:   workoutCreate.Timestamp,
-		ExerciseSets:  jsonData,
-	}
-
-	user := &schemas.User{}
-	if err := database.DB.First(user, workout.UserID).Error; err != nil {
-		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
-			"error": "User not found",
+	var exerciseSets []schemas.ExerciseSet
+	for _, exerciseSet := range workoutCreate.ExerciseSets {
+		exerciseSets = append(exerciseSets, schemas.ExerciseSet{
+			ExerciseID: exerciseSet.ExerciseID,
+			Weight:     exerciseSet.Weight,
+			Reps:       exerciseSet.Reps,
 		})
 	}
 
-	// Check if the user is active
-	if user.Status != "active" {
-		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
-			"error": "User is not active",
-		})
-	}
-
-	user.NumberOfWorkouts++
-	user.TotalTimeSpent += workout.Duration
-	user.AverageWorkoutDuration = user.TotalTimeSpent / time.Duration(user.NumberOfWorkouts)
-
-	if err := database.DB.Save(user).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to update user workout count",
-		})
+	workout := &schemas.Workout{
+		UserID:       workoutCreate.UserID,
+		Duration:     workoutDuration,
+		StartTime:    workoutCreate.StartTime,
+		ExerciseSets: exerciseSets,
 	}
 
 	if err := database.DB.Create(workout).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
-			"error": "Failed to create workout",
-		})
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error: "User for this workout not found",
+			})
+		} else if errors.Is(err, schemas.ErrUserNotActive) {
+			return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+				Error: "User for this workout is not active",
+			})
+		} else {
+			return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+				Error: "Failed to create workout",
+			})
+		}
 	}
 
-	
-
-	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"message": "Workout created successfully",
-		"id":      workout.ID,
+	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
+		Message: "Workout created successfully",
+		ID:      workout.ID,
 	})
 }
