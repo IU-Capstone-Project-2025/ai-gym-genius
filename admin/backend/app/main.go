@@ -25,6 +25,7 @@ func main() {
 	if err := database.InitDatabase(); err != nil {
 		panic(err) // failed to connect or migrate
 	}
+	
 	app := fiber.New()
 
 	app.Use(cors.New(cors.Config{

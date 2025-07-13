@@ -14,21 +14,22 @@ import (
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 
-	"os"
 	"encoding/json"
+	"os"
+
 	"gorm.io/gorm/clause"
 )
 
 var DB *gorm.DB
 
-var(
-	secret = config.C.Secret
-	jwtSecret = config.C.JwtSecret
-	dbHost = config.C.DbHost
-	dbUser = config.C.DbUser
+var (
+	secret     = config.C.Secret
+	jwtSecret  = config.C.JwtSecret
+	dbHost     = config.C.DbHost
+	dbUser     = config.C.DbUser
 	dbPassword = config.C.DbPassword
-	dbName = config.C.DbName
-	dbPort = config.C.DbPort
+	dbName     = config.C.DbName
+	dbPort     = config.C.DbPort
 )
 
 func Hash(login, password string) string {
@@ -39,10 +40,10 @@ func Hash(login, password string) string {
 
 func CreateTokenForUser(user schemas.Admin) (string, error) {
 	claims := jwt.MapClaims{
-		"id":  user.ID,
+		"id":    user.ID,
 		"login": user.Login,
-		"role": "user",
-		"exp":  time.Now().Add(time.Hour * 72).Unix(),
+		"role":  "user",
+		"exp":   time.Now().Add(time.Hour * 72).Unix(),
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 	return token.SignedString([]byte(jwtSecret))
@@ -55,7 +56,7 @@ func InitDatabase() error {
 		"host=%s user=%s password=%s dbname=%s port=%s sslmode=disable",
 		dbHost, dbUser, dbPassword, dbName, dbPort,
 	)
-	
+
 	switch config.C.AppEnv {
 	case "PROD":
 		DB, err = gorm.Open(
@@ -65,7 +66,7 @@ func InitDatabase() error {
 	case "DEV":
 		DB, err = gorm.Open(sqlite.Open("devDb.db"))
 	}
-	
+
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
 	}
@@ -86,7 +87,7 @@ func InitDatabase() error {
 }
 
 // reads assets/exercises.json and upserts them into the db
-func UpsertStaticExercises () error {
+func UpsertStaticExercises() error {
 	type exerciseJSON struct {
 		ID           int      `json:"id"`
 		Name         string   `json:"name"`
