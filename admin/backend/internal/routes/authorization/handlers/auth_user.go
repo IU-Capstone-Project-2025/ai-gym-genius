@@ -44,7 +44,7 @@ func LoginHandler(c *fiber.Ctx) error {
 	}
 
 	var user schemas.Admin
-	if err := database.DB.Where("Login = ?", data.Login).First(&user).Error; err != nil {
+	if err := database.DB.Where("login = ?", data.Login).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
 				Error: "User not found",

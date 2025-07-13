@@ -35,7 +35,8 @@ func Hash(login, password string) string {
 
 func CreateTokenForUser(user schemas.Admin) (string, error) {
 	claims := jwt.MapClaims{
-		"sub":  user.ID,
+		"id":  user.ID,
+		"login": user.Login,
 		"role": "user",
 		"exp":  time.Now().Add(time.Hour * 72).Unix(),
 	}

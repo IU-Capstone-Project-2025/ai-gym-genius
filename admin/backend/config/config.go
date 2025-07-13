@@ -33,6 +33,7 @@ func init() {
 	
 	// set up default logger
 	var logHandler slog.Handler
+	
 	switch C.AppEnv {
 	case "DEV":
 		logHandler = slog.NewTextHandler(os.Stdout, nil)
@@ -41,6 +42,7 @@ func init() {
 	default:
 		logHandler = slog.NewTextHandler(os.Stdout, nil)
 	}
+	
 	logger := slog.New(logHandler)
 	slog.SetDefault(logger)
 }
