@@ -142,6 +142,15 @@ const docTemplate = `{
                     "exercises"
                 ],
                 "summary": "Get an exercise by id",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Exercise ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -656,10 +665,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "type": "array",
-                                "items": {
-                                    "$ref": "#/definitions/handlers.MonthlyStat"
-                                }
+                                "$ref": "#/definitions/handlers.MonthlyStat"
                             }
                         }
                     },

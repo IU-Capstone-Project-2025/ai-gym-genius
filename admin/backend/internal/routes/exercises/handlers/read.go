@@ -16,6 +16,7 @@ import (
 // @Tags exercises
 // @Accept json
 // @Produce json
+// @Param id path int true "Exercise ID"
 // @Success 200 {object} models.ExerciseRead
 // @Failure 400 {object} models.ErrorResponse "Bad Request"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"

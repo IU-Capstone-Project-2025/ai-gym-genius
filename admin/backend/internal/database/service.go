@@ -1,9 +1,9 @@
 package database
 
 import (
-	"admin/internal/database/schemas"
 	"admin/config"
-	
+	"admin/internal/database/schemas"
+
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
@@ -13,6 +13,10 @@ import (
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+
+	"os"
+	"encoding/json"
+	"gorm.io/gorm/clause"
 )
 
 var DB *gorm.DB
@@ -78,6 +82,48 @@ func InitDatabase() error {
 		return fmt.Errorf("failed to migrate database: %w", err)
 	}
 
-	return nil
+	return UpsertStaticExercises()
 }
 
+// reads assets/exercises.json and upserts them into the db
+func UpsertStaticExercises () error {
+	type exerciseJSON struct {
+		ID           int      `json:"id"`
+		Name         string   `json:"name"`
+		Description  string   `json:"description"`
+		MuscleGroups []string `json:"muscleGroups"`
+		ImagePath    string   `json:"imagePath"`
+	}
+
+	data, err := os.ReadFile("assets/exercises.json")
+	if err != nil {
+		return err
+	}
+
+	var exercisesJSON []exerciseJSON
+	err = json.Unmarshal(data, &exercisesJSON)
+	if err != nil {
+		return err
+	}
+
+	var exercises []schemas.Exercise
+	for _, e := range exercisesJSON {
+		exercises = append(exercises, schemas.Exercise{
+			ID:           uint(e.ID),
+			Name:         e.Name,
+			Description:  e.Description,
+			MuscleGroups: e.MuscleGroups,
+			URL:          e.ImagePath,
+		})
+	}
+
+	err = DB.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "name"}},
+		UpdateAll: true,
+	}).Create(&exercises).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
+}

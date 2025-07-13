@@ -379,6 +379,12 @@ paths:
     get:
       consumes:
       - application/json
+      parameters:
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -696,9 +702,7 @@ paths:
           description: Monthly activity statistics
           schema:
             items:
-              items:
-                $ref: '#/definitions/handlers.MonthlyStat'
-              type: array
+              $ref: '#/definitions/handlers.MonthlyStat'
             type: array
         "400":
           description: Bad Request

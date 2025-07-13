@@ -37,7 +37,7 @@ func main() {
 
 	CombineRoutes(app)
 	
-	app.Use(func(c *fiber.Ctx) error {
+	app.Use(func(c *fiber.Ctx) error { // 404 handler
 		return c.SendStatus(fiber.StatusNotFound)
 	})
 	

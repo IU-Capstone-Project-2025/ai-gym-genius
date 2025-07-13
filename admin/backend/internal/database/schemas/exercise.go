@@ -12,5 +12,6 @@ type ExerciseSet struct {
 	Weight     float64 `gorm:"not null"`
 	Reps       uint    `gorm:"not null"`
 	ExerciseID uint
+	Exercise   Exercise
 	WorkoutID  uint
 }
