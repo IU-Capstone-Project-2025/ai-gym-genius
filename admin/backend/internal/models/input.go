@@ -50,13 +50,13 @@ type UserUpdate struct {
 	NumberOfWorkouts         *uint      `json:"number_of_workouts" example:"0"`
 	TotalTimeSpentNS         *int64     `json:"total_time_spent_ns" example:"3600"` // in seconds
 	StreakCount              *uint      `json:"streak_count" example:"0"`
-	AverageWorkoutDurationNS *int64     `json:"average_workout_duration_ns" swaggerignore:"true" example:"3600"` // in seconds
+	AverageWorkoutDurationNS *int64     `json:"average_workout_duration_ns" example:"3600"` // in seconds
 	Password                 *string    `json:"password"`
 }
 
 type WorkoutUpdate struct {
 	UserID       *uint               `json:"user_id" example:"12345"`
-	DurationNS   *int64              `json:"duration_ns" swaggerignore:"true" example:"60"`
+	DurationNS   *int64              `json:"duration_ns" example:"60"`
 	StartTime    *time.Time          `json:"timestamp" example:"2023-10-01T12:00:00Z"`
 	ExerciseSets *[]ExerciseSetModel `json:"exercise_sets"`
 }

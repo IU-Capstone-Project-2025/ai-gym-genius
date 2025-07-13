@@ -14,14 +14,14 @@ type UserRead struct {
 	Status                   string    `json:"status" example:"active"`          // e.g., "active", "inactive", "banned"
 	LastActivity             time.Time `json:"last_activity" example:"2023-10-01T12:00:00Z"`
 	NumberOfWorkouts         uint      `json:"number_of_workouts" example:"0"`
-	TotalTimeSpentNS         int64     `json:"total_time_spent_ns" swaggerignore:"true" example:"3600"` // in nanoseconds
+	TotalTimeSpentNS         int64     `json:"total_time_spent_ns" example:"3600"` // in nanoseconds
 	StreakCount              uint      `json:"streak_count" example:"0"`
-	AverageWorkoutDurationNS int64     `json:"average_workout_duration_ns" swaggerignore:"true" example:"3600"` // in nanoseconds
+	AverageWorkoutDurationNS int64     `json:"average_workout_duration_ns" example:"3600"` // in nanoseconds
 }
 
 type WorkoutRead struct {
 	ID           uint               `json:"id" example:"1"`
-	DurationNS   int64              `json:"duration_ns" swaggertype:"string" example:"60"` // in nanoseconds
+	DurationNS   int64              `json:"duration_ns" example:"60"` // in nanoseconds
 	Timestamp    time.Time          `json:"timestamp" example:"2023-10-01T12:00:00Z"`
 	UserID       uint               `json:"user_id" example:"12345"`
 	ExerciseSets []ExerciseSetModel `json:"exercise_sets"`
