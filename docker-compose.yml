@@ -27,17 +27,6 @@ services:
     env_file:
       - .env
 
-  minio:
-    image: bitnami/minio:latest
-    restart: unless-stopped
-    ports:
-      - "9000:9000"
-      - "9001:9001"
-    env_file:
-      - ./.env
-    volumes:
-      - minio_data:/data
-
   backend:
     build:
       context: ./admin/backend
