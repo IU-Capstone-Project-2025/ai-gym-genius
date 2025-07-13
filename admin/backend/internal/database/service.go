@@ -88,34 +88,15 @@ func InitDatabase() error {
 
 // reads assets/exercises.json and upserts them into the db
 func UpsertStaticExercises() error {
-	type exerciseJSON struct {
-		ID           int      `json:"id"`
-		Name         string   `json:"name"`
-		Description  string   `json:"description"`
-		MuscleGroups []string `json:"muscleGroups"`
-		ImagePath    string   `json:"imagePath"`
-	}
-
 	data, err := os.ReadFile("assets/exercises.json")
 	if err != nil {
 		return err
 	}
 
-	var exercisesJSON []exerciseJSON
-	err = json.Unmarshal(data, &exercisesJSON)
+	var exercises []schemas.Exercise
+	err = json.Unmarshal(data, &exercises)
 	if err != nil {
 		return err
-	}
-
-	var exercises []schemas.Exercise
-	for _, e := range exercisesJSON {
-		exercises = append(exercises, schemas.Exercise{
-			ID:           uint(e.ID),
-			Name:         e.Name,
-			Description:  e.Description,
-			MuscleGroups: e.MuscleGroups,
-			URL:          e.ImagePath,
-		})
 	}
 
 	err = DB.Clauses(clause.OnConflict{

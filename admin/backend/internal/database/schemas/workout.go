@@ -10,9 +10,9 @@ import (
 type Workout struct {
 	ID           uint          `gorm:"primaryKey"`
 	UserID       uint          `gorm:"not null"`
-	User         User          `gorm:"foreignKey:UserID;constraint:OnUpdate:CASCADE,OnDelete:CASCADE"`
+	User 		 User          `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Duration     time.Duration `gorm:"not null"`
-	StartTime    time.Time     `gorm:"not null"` // Timestamp of the workout
+	StartTime    time.Time     `gorm:"not null"`
 	ExerciseSets []ExerciseSet
 }
 
@@ -36,14 +36,13 @@ func (w *Workout) BeforeCreate(tx *gorm.DB) (err error) {
 
 // update user stats
 func (w *Workout) AfterCreate(tx *gorm.DB) (err error) {
-	result :=
-		tx.Model(&User{}).
-		Where("id = ?", w.UserID).
-		Updates(map[string]any{
-			"number_of_workouts":       gorm.Expr("number_of_workouts + 1"),
-			"total_time_spent":         gorm.Expr("total_time_spent + ?", w.Duration),
-			"average_workout_duration": gorm.Expr("(total_time_spent + ?) / (number_of_workouts + 1)", w.Duration),
-			"last_activity":            time.Now(),
-		})
-	return result.Error
+    var user User
+    if err := tx.First(&user, w.UserID).Error; err != nil {
+        return err
+    }
+	user.NumberOfWorkouts++
+	user.TotalTimeSpent += w.Duration
+	user.AverageWorkoutDuration = user.TotalTimeSpent / time.Duration(user.NumberOfWorkouts)
+
+    return tx.Save(user).Error
 }

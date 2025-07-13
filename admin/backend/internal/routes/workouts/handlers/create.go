@@ -65,7 +65,7 @@ func CreateWorkout(c *fiber.Ctx) error {
 		StartTime:    workoutCreate.StartTime,
 		ExerciseSets: exerciseSets,
 	}
-
+	
 	if err := database.DB.Create(workout).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
