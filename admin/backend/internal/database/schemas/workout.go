@@ -13,7 +13,7 @@ type Workout struct {
 	User 		 User          `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Duration     time.Duration `gorm:"not null"`
 	StartTime    time.Time     `gorm:"not null"`
-	ExerciseSets []ExerciseSet
+	ExerciseSets []ExerciseSet `gorm:"foreignKey:WorkoutID;constraint:OnDelete:CASCADE"`
 }
 
 var (

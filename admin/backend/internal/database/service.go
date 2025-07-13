@@ -66,6 +66,8 @@ func InitDatabase() error {
 	case "DEV":
 		DB, err = gorm.Open(sqlite.Open("devDb.db"))
 	}
+	
+	DB = DB.Debug()
 
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)

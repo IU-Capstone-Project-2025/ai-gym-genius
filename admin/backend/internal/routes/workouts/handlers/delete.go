@@ -6,6 +6,7 @@ import (
 	"admin/internal/models"
 
 	"github.com/gofiber/fiber/v2"
+	"gorm.io/gorm/clause"
 )
 
 // DeleteWorkout
@@ -28,7 +29,7 @@ func DeleteWorkout(c *fiber.Ctx) error {
 		})
 	}
 	
-	result := database.DB.Delete(&schemas.Workout{}, id)
+	result := database.DB.Select(clause.Associations).Delete(&schemas.Workout{}, id)
 	
 	if err := result.Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
