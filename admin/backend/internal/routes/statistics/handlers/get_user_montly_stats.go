@@ -15,7 +15,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param id path int true "User ID"
-// @Success 200 {array} []MonthlyStat "Monthly activity statistics"
+// @Success 200 {object} []MonthlyStat "Monthly activity statistics"
 // @Failure 400 {object} models.ErrorResponse "Bad Request"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/{id}/activity [get]
