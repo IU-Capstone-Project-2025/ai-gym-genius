@@ -104,9 +104,6 @@ definitions:
       weight:
         example: 10
         type: number
-      workout_id:
-        example: 10
-        type: integer
     type: object
   models.ExerciseUpdate:
     properties:
@@ -749,6 +746,24 @@ paths:
       summary: Get user activity statistics
       tags:
       - statistics
+  /users/count:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: integer
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get the total number of users
+      tags:
+      - users
   /workouts:
     post:
       consumes:

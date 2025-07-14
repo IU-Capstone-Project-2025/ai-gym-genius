@@ -113,3 +113,26 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(userReads)
 }
+
+
+// GetUserCount
+// @Summary Get the total number of users
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.CountResponse "User count object"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
+// @Router /users/count [get]
+func GetUserCount(c *fiber.Ctx) error {
+    var count int64
+    
+    if err := database.DB.Model(&schemas.User{}).Count(&count).Error; err != nil {
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: "failed to count users",
+        })
+    }
+    
+    return c.Status(fiber.StatusOK).JSON(models.CountResponse{
+        Count: count,
+    })
+}

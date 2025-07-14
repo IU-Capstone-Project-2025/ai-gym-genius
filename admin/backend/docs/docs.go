@@ -475,6 +475,34 @@ const docTemplate = `{
                 }
             }
         },
+        "/users/count": {
+            "get": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get the total number of users",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users/{id}": {
             "get": {
                 "description": "Retrieve a user by their unique ID",
@@ -1141,10 +1169,6 @@ const docTemplate = `{
                 },
                 "weight": {
                     "type": "number",
-                    "example": 10
-                },
-                "workout_id": {
-                    "type": "integer",
                     "example": 10
                 }
             }

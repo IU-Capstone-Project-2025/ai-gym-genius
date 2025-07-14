@@ -54,3 +54,7 @@ type CreatedResponse struct {
 type ErrorResponse struct {
 	Error string `json:"error" example:"A descriptive error message"`
 }
+
+type CountResponse struct {
+	Count int64 `json:"count" example:"10"`
+}
