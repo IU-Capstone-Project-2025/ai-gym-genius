@@ -18,6 +18,7 @@ import (
 	"os"
 
 	"gorm.io/gorm/clause"
+	"gorm.io/gorm/logger"
 )
 
 var DB *gorm.DB
@@ -61,11 +62,21 @@ func InitDatabase() error {
 	case "PROD":
 		DB, err = gorm.Open(
 			postgres.Open(dsn),
-			&gorm.Config{TranslateError: true}, // fix to properly return errors in pg
+			&gorm.Config{
+				TranslateError: true, // fix to properly return errors
+				Logger: logger.Default.LogMode(logger.Silent), // silence the gorm logger
+			}, 
 		)
+		// DB = DB.Debug() // debug postgres queries if needed
 	case "DEV":
-		DB, err = gorm.Open(sqlite.Open("devDb.db"))
-		DB = DB.Debug()
+		DB, err = gorm.Open(
+			sqlite.Open("devDb.db"),
+			&gorm.Config{
+				TranslateError: true, // fix to properly return errors
+				// Logger: logger.Default.LogMode(logger.Silent), // silence the gorm logger
+			}, 
+		)
+		DB = DB.Debug() // outputs generated sql to stdout
 	}
 	
 

@@ -1,28 +1,26 @@
 package middleware
 
 import (
-	"log/slog"
-	"strings"
-	
+	"time"
+
+	"github.com/rs/zerolog/log"
 	"github.com/gofiber/fiber/v2"
 )
 
 func LoggingMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
+		start := time.Now()
 		err := c.Next()
-		response := ""
-		path := c.Path()
-		// do not log swagger or welcome page responses not to clutter the logs
-		if !(c.Method() == "GET" && (strings.HasPrefix(path, "/swagger/") || path == "/")) {
-			response = string(c.Response().Body())
-		}
-		slog.Info(
-			"request",
-			"method", c.Method(),
-			"path", path,
-			"status", c.Response().StatusCode(),
-			"response", response,
-		)
+		latency := time.Since(start)
+		
+		log.Info().
+			Str("method", c.Method()).
+			Str("path", c.Path()).
+			Int("status", c.Response().StatusCode()).
+			Str("request_id", c.Locals("requestid").(string)).
+			Float64("latency_ms", latency.Seconds()*1000).
+			Msg("request")
+
 		return err
 	}
 }
