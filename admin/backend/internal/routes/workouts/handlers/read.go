@@ -4,6 +4,7 @@ import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
+	
 	"errors"
 
 	"github.com/gofiber/fiber/v2"
@@ -43,9 +44,10 @@ func GetWorkout(c *fiber.Ctx) error {
 		})
 	}
 
-	var exerciseSets []models.ExerciseSetModel
+	var exerciseSets []models.ExerciseSetRead
 	for _, exerciseSet := range workout.ExerciseSets {
-		exerciseSets = append(exerciseSets, models.ExerciseSetModel{
+		exerciseSets = append(exerciseSets, models.ExerciseSetRead{
+			WorkoutID:  exerciseSet.WorkoutID,
 			ExerciseID: exerciseSet.ExerciseID,
 			Weight:     exerciseSet.Weight,
 			Reps:       exerciseSet.Reps,

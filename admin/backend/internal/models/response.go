@@ -19,12 +19,19 @@ type UserRead struct {
 	AverageWorkoutDurationNS int64     `json:"average_workout_duration_ns" example:"3600"` // in nanoseconds
 }
 
+type ExerciseSetRead struct {
+	Weight     float64 `json:"weight"      example:"10"`
+	Reps       uint    `json:"reps"        example:"10"`
+	ExerciseID uint    `json:"exercise_id" example:"10"`
+	WorkoutID  uint    `json:"-"           example:"10"`
+}
+
 type WorkoutRead struct {
-	ID           uint               `json:"id" example:"1"`
-	DurationNS   int64              `json:"duration_ns" example:"60"` // in nanoseconds
-	Timestamp    time.Time          `json:"timestamp" example:"2023-10-01T12:00:00Z"`
-	UserID       uint               `json:"user_id" example:"12345"`
-	ExerciseSets []ExerciseSetModel `json:"exercise_sets"`
+	ID           uint                `json:"id" example:"1"`
+	DurationNS   int64               `json:"duration_ns" example:"60"` // in nanoseconds
+	Timestamp    time.Time           `json:"timestamp" example:"2023-10-01T12:00:00Z"`
+	UserID       uint                `json:"user_id" example:"12345"`
+	ExerciseSets []ExerciseSetRead `json:"exercise_sets"`
 }
 
 type ExerciseRead struct {

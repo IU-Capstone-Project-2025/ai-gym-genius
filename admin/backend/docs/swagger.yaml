@@ -81,14 +81,32 @@ definitions:
         example: https://example.com/image.jpg
         type: string
     type: object
-  models.ExerciseSetModel:
+  models.ExerciseSetCreate:
     properties:
       exercise_id:
+        example: 10
         type: integer
       reps:
+        example: 10
         type: integer
       weight:
+        example: 10
         type: number
+    type: object
+  models.ExerciseSetRead:
+    properties:
+      exercise_id:
+        example: 10
+        type: integer
+      reps:
+        example: 10
+        type: integer
+      weight:
+        example: 10
+        type: number
+      workout_id:
+        example: 10
+        type: integer
     type: object
   models.ExerciseUpdate:
     properties:
@@ -140,10 +158,15 @@ definitions:
         example: "123"
         type: string
       surname:
+        example: Wick
         type: string
     type: object
   models.UserRead:
     properties:
+      average_workout_duration_ns:
+        description: in nanoseconds
+        example: 3600
+        type: integer
       email:
         example: john_doe@gmail.com
         type: string
@@ -173,11 +196,19 @@ definitions:
       surname:
         example: Doe
         type: string
+      total_time_spent_ns:
+        description: in nanoseconds
+        example: 3600
+        type: integer
       username:
         type: string
     type: object
   models.UserUpdate:
     properties:
+      average_workout_duration_ns:
+        description: in seconds
+        example: 3600
+        type: integer
       email:
         example: john_doe@gmail.com
         type: string
@@ -214,14 +245,14 @@ definitions:
   models.WorkoutCreate:
     properties:
       duration_ns:
-        description: in seconds
+        description: in nanoseconds
         example: 60
         type: integer
       exercise_sets:
         items:
-          $ref: '#/definitions/models.ExerciseSetModel'
+          $ref: '#/definitions/models.ExerciseSetCreate'
         type: array
-      timestamp:
+      start_time:
         example: "2023-10-01T12:00:00Z"
         type: string
       user_id:
@@ -232,11 +263,11 @@ definitions:
     properties:
       duration_ns:
         description: in nanoseconds
-        example: "60"
-        type: string
+        example: 60
+        type: integer
       exercise_sets:
         items:
-          $ref: '#/definitions/models.ExerciseSetModel'
+          $ref: '#/definitions/models.ExerciseSetRead'
         type: array
       id:
         example: 1
@@ -250,11 +281,14 @@ definitions:
     type: object
   models.WorkoutUpdate:
     properties:
+      duration_ns:
+        example: 60
+        type: integer
       exercise_sets:
         items:
-          $ref: '#/definitions/models.ExerciseSetModel'
+          $ref: '#/definitions/models.ExerciseSetCreate'
         type: array
-      timestamp:
+      start_time:
         example: "2023-10-01T12:00:00Z"
         type: string
       user_id:
@@ -842,6 +876,80 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Update an existing workout by ID
+      tags:
+      - workouts
+  /workouts/{id}/exercise_set:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Exercise ID
+        in: query
+        name: exercise_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Exercise Set Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an exercise set from a workout
+      tags:
+      - workouts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ExerciseSet create payload
+        in: body
+        name: ExerciseSet
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExerciseSetCreate'
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Exercise Set Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Append an exercise set to a workout
       tags:
       - workouts
 swagger: "2.0"

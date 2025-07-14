@@ -5,38 +5,38 @@ import (
 )
 
 type UserCreate struct {
-	Login    string `json:"login" example:"john123"`
-	Name     string `json:"name" example:"John"`
-	Surname  string `json:"surname"`
-	Email    string `json:"email" example:"john_doe@gmail.com"`
+	Login    string `json:"login"    example:"john123"`
+	Name     string `json:"name"     example:"John"`
+	Surname  string `json:"surname"  example:"Wick"`
+	Email    string `json:"email"    example:"john_doe@gmail.com"`
 	Password string `json:"password" example:"123"`
 }
 
-type ExerciseSetModel struct {
-	Reps       uint    `json:"reps"`
-	Weight     float64 `json:"weight"`
-	ExerciseID uint    `json:"exercise_id"`
+type ExerciseSetCreate struct {
+	Reps       uint    `json:"reps"        example:"10"`
+	Weight     float64 `json:"weight"      example:"10"`
+	ExerciseID uint    `json:"exercise_id" example:"10"`
 }
 
 type WorkoutCreate struct {
-	UserID       uint               `json:"user_id" example:"12345"`
-	DurationNS   int64              `json:"duration_ns" example:"60"` // in seconds
-	StartTime    time.Time          `json:"timestamp" example:"2023-10-01T12:00:00Z"`
-	ExerciseSets []ExerciseSetModel `json:"exercise_sets"`
+	UserID       uint                `json:"user_id"     example:"12345"`
+	DurationNS   int64               `json:"duration_ns" example:"60"` // in nanoseconds
+	StartTime    time.Time           `json:"start_time"  example:"2023-10-01T12:00:00Z"`
+	ExerciseSets []ExerciseSetCreate `json:"exercise_sets"`
 }
 
 type ExerciseCreate struct {
 	Name         string   `json:"name"`
-	Description  string   `json:"description" example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
+	Description  string   `json:"description"   example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
 	MuscleGroups []string `json:"muscle_groups" example:"chest,back,triceps"`
 	URL          string   `json:"url"`
 }
 
 type ExerciseUpdate struct {
 	Name         *string   `json:"url"`
-	Description  *string   `json:"description" example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
+	Description  *string   `json:"description"  example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
 	MuscleGroups *[]string `json:"muscle_group" example:"chest,back,triceps"`
-	URL          *string   `json:"image_path" example:"https://example.com/image.jpg"` // URL to the exercise image
+	URL          *string   `json:"image_path"   example:"https://example.com/image.jpg"` // URL to the exercise image
 }
 
 type UserUpdate struct {
@@ -55,10 +55,10 @@ type UserUpdate struct {
 }
 
 type WorkoutUpdate struct {
-	UserID       *uint               `json:"user_id" example:"12345"`
-	DurationNS   *int64              `json:"duration_ns" example:"60"`
-	StartTime    *time.Time          `json:"timestamp" example:"2023-10-01T12:00:00Z"`
-	ExerciseSets *[]ExerciseSetModel `json:"exercise_sets"`
+	UserID       *uint                `json:"user_id"     example:"12345"`
+	DurationNS   *int64               `json:"duration_ns" example:"60"`
+	StartTime    *time.Time           `json:"start_time"  example:"2023-10-01T12:00:00Z"`
+	ExerciseSets *[]ExerciseSetCreate `json:"exercise_sets"`
 }
 
 type AuthInput struct {

@@ -880,6 +880,118 @@ const docTemplate = `{
                     }
                 }
             }
+        },
+        "/workouts/{id}/exercise_set": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workouts"
+                ],
+                "summary": "Append an exercise set to a workout",
+                "parameters": [
+                    {
+                        "description": "ExerciseSet create payload",
+                        "name": "ExerciseSet",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/models.ExerciseSetCreate"
+                        }
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Workout ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Exercise Set Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "workouts"
+                ],
+                "summary": "Delete an exercise set from a workout",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Workout ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "description": "Exercise ID",
+                        "name": "exercise_id",
+                        "in": "query",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.MessageResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "Exercise Set Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
         }
     },
     "definitions": {
@@ -999,17 +1111,41 @@ const docTemplate = `{
                 }
             }
         },
-        "models.ExerciseSetModel": {
+        "models.ExerciseSetCreate": {
             "type": "object",
             "properties": {
                 "exercise_id": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 },
                 "reps": {
-                    "type": "integer"
+                    "type": "integer",
+                    "example": 10
                 },
                 "weight": {
-                    "type": "number"
+                    "type": "number",
+                    "example": 10
+                }
+            }
+        },
+        "models.ExerciseSetRead": {
+            "type": "object",
+            "properties": {
+                "exercise_id": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "reps": {
+                    "type": "integer",
+                    "example": 10
+                },
+                "weight": {
+                    "type": "number",
+                    "example": 10
+                },
+                "workout_id": {
+                    "type": "integer",
+                    "example": 10
                 }
             }
         },
@@ -1082,13 +1218,19 @@ const docTemplate = `{
                     "example": "123"
                 },
                 "surname": {
-                    "type": "string"
+                    "type": "string",
+                    "example": "Wick"
                 }
             }
         },
         "models.UserRead": {
             "type": "object",
             "properties": {
+                "average_workout_duration_ns": {
+                    "description": "in nanoseconds",
+                    "type": "integer",
+                    "example": 3600
+                },
                 "email": {
                     "type": "string",
                     "example": "john_doe@gmail.com"
@@ -1127,6 +1269,11 @@ const docTemplate = `{
                     "type": "string",
                     "example": "Doe"
                 },
+                "total_time_spent_ns": {
+                    "description": "in nanoseconds",
+                    "type": "integer",
+                    "example": 3600
+                },
                 "username": {
                     "type": "string"
                 }
@@ -1135,6 +1282,11 @@ const docTemplate = `{
         "models.UserUpdate": {
             "type": "object",
             "properties": {
+                "average_workout_duration_ns": {
+                    "description": "in seconds",
+                    "type": "integer",
+                    "example": 3600
+                },
                 "email": {
                     "type": "string",
                     "example": "john_doe@gmail.com"
@@ -1184,17 +1336,17 @@ const docTemplate = `{
             "type": "object",
             "properties": {
                 "duration_ns": {
-                    "description": "in seconds",
+                    "description": "in nanoseconds",
                     "type": "integer",
                     "example": 60
                 },
                 "exercise_sets": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ExerciseSetModel"
+                        "$ref": "#/definitions/models.ExerciseSetCreate"
                     }
                 },
-                "timestamp": {
+                "start_time": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
                 },
@@ -1209,13 +1361,13 @@ const docTemplate = `{
             "properties": {
                 "duration_ns": {
                     "description": "in nanoseconds",
-                    "type": "string",
-                    "example": "60"
+                    "type": "integer",
+                    "example": 60
                 },
                 "exercise_sets": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ExerciseSetModel"
+                        "$ref": "#/definitions/models.ExerciseSetRead"
                     }
                 },
                 "id": {
@@ -1235,13 +1387,17 @@ const docTemplate = `{
         "models.WorkoutUpdate": {
             "type": "object",
             "properties": {
+                "duration_ns": {
+                    "type": "integer",
+                    "example": 60
+                },
                 "exercise_sets": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/models.ExerciseSetModel"
+                        "$ref": "#/definitions/models.ExerciseSetCreate"
                     }
                 },
-                "timestamp": {
+                "start_time": {
                     "type": "string",
                     "example": "2023-10-01T12:00:00Z"
                 },
