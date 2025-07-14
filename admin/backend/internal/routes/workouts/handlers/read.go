@@ -27,7 +27,7 @@ func GetWorkout(c *fiber.Ctx) error {
 
 	if err != nil || id < 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "'id' parameter is malformed; should be > 0",
+			Error: "id parameter is malformed; should be > 0",
 		})
 	}
 

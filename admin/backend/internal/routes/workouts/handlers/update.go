@@ -201,7 +201,10 @@ func DeleteExerciseSet(c *fiber.Ctx) error {
 		Delete(&schemas.ExerciseSet{
 			WorkoutID: uint(workoutID), ExerciseID: uint(exerciseID),
 		})
-			
+	
+		
+	// TODO add a hook (?? wtf gorm again) to check RowsAffected (below check doesnt work)
+	// to see if workouts or exercise were not found
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{

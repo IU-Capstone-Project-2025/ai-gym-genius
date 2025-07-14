@@ -27,19 +27,19 @@ func LoginHandler(c *fiber.Ctx) error {
 
 	if err := c.BodyParser(data); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Invalid request body",
+			Error: "invalid request body",
 		})
 	}
 
 	if data.Login == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Field 'login' cannot be empty",
+			Error: "field login cannot be empty",
 		})
 	}
 
 	if data.Password == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Field 'password' cannot be empty",
+			Error: "field password cannot be empty",
 		})
 	}
 
@@ -47,33 +47,32 @@ func LoginHandler(c *fiber.Ctx) error {
 	if err := database.DB.Where("login = ?", data.Login).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
-				Error: "User not found",
-			})
-		} else {
-			return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-				Error: "Failed to query database",
+				Error: "user not found",
 			})
 		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to query database",
+		})
 	}
 
 	hash := database.Hash(data.Login, data.Password)
 
 	if user.Hash != hash {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Incorrect password",
+			Error: "incorrect password",
 		})
 	}
 
 	token, err := database.CreateTokenForUser(user)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "Failed to create token",
+			Error: "failed to create token",
 		})
 	}
 
 	c.Set("Authorization", "Bearer " + token)
 
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
-		Message: "Logged in successfully",
+		Message: "logged in successfully",
 	})
 }

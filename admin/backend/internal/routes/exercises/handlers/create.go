@@ -31,7 +31,7 @@ func AddExercise(c *fiber.Ctx) error {
 
 	if exerciseCreate.Name == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Name must be provided",
+			Error: "name must be provided",
 		})
 	}
 
@@ -49,12 +49,12 @@ func AddExercise(c *fiber.Ctx) error {
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "Failed to create exercise",
+			Error: "failed to create exercise",
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
-		Message: "Exercise created successfully",
+		Message: "exercise created successfully",
 		ID:      exercise.ID,
 	})
 }

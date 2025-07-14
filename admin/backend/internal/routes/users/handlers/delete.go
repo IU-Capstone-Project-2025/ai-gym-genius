@@ -25,7 +25,7 @@ func DeleteUser(c *fiber.Ctx) error {
 
 	if err != nil || id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "required 'id' parameter is malformed; should be > 0",
+			Error: "required id parameter is malformed; should be > 0",
 		})
 	}
 

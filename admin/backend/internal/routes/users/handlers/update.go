@@ -27,7 +27,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil || id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "invalid user ID",
+			Error: "invalid user id",
 		})
 	}
 

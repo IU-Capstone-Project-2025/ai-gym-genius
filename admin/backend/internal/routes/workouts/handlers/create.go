@@ -32,7 +32,7 @@ func CreateWorkout(c *fiber.Ctx) error {
 
 	if workoutCreate.UserID < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "User ID must be greater than 0",
+			Error: "user id must be greater than 0",
 		})
 	}
 
@@ -40,13 +40,13 @@ func CreateWorkout(c *fiber.Ctx) error {
 
 	if workoutDuration < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Duration must be greater than 0",
+			Error: "duration must be greater than 0",
 		})
 	}
 
 	if workoutCreate.StartTime.IsZero() {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Timestamp must be provided",
+			Error: "timestamp must be provided",
 		})
 	}
 
@@ -69,21 +69,21 @@ func CreateWorkout(c *fiber.Ctx) error {
 	if err := database.DB.Create(workout).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
-				Error: "User for this workout not found",
+				Error: "user for this workout not found",
 			})
 		} else if errors.Is(err, schemas.ErrUserNotActive) {
 			return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-				Error: "User for this workout is not active",
+				Error: "user for this workout is not active",
 			})
 		} else {
 			return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-				Error: "Failed to create workout",
+				Error: "failed to create workout",
 			})
 		}
 	}
 
 	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
-		Message: "Workout created successfully",
+		Message: "forkout created successfully",
 		ID:      workout.ID,
 	})
 }

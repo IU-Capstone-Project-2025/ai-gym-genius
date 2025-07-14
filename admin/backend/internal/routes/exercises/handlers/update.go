@@ -27,7 +27,7 @@ func UpdateExercise(c *fiber.Ctx) error {
 
 	if err != nil || id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "malformed 'id' parameter; should be > 0",
+			Error: "malformed id parameter; should be > 0",
 		})
 	}
 
@@ -80,6 +80,6 @@ func UpdateExercise(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
-		Message: "Exercise updated successfully",
+		Message: "exercise updated successfully",
 	})
 }

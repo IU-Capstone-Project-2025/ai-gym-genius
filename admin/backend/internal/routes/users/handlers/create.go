@@ -44,12 +44,12 @@ func CreateUser(c *fiber.Ctx) error {
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "Failed to create user",
+			Error: "failed to create user",
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
-		Message: "User created successfully",
+		Message: "user created successfully",
 		ID:      user.ID,
 	})
 }

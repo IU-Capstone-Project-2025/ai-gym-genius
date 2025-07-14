@@ -64,13 +64,13 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
     params := params{}
     if err := c.QueryParser(&params); err != nil {
         return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-            Error: "Missing or malformed query parameters",
+            Error: "missing or malformed query parameters",
         })
     }
 
     if params.StartDate.IsZero() || params.EndDate.IsZero() {
         return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-            Error: "Both start_date and end_date are required",
+            Error: "both start_date and end_date are required",
         })
     }
 
@@ -124,7 +124,7 @@ func GetNumberOfActiveUsers(c *fiber.Ctx) error {
 
         if err != nil && err != gorm.ErrRecordNotFound {
             return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-                Error: "Failed to query database",
+                Error: "failed to query database",
             })
         }
 
