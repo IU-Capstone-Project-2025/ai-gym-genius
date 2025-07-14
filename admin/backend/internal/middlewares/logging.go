@@ -10,16 +10,18 @@ import (
 func LoggingMiddleware() fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		err := c.Next()
-		// do not log swagger requests not to clutter the logs
-		if c.Method() == "GET" && strings.HasPrefix(c.Path(), "/swagger/") {
-			return err
+		response := ""
+		path := c.Path()
+		// do not log swagger or welcome page responses not to clutter the logs
+		if !(c.Method() == "GET" && (strings.HasPrefix(path, "/swagger/") || path == "/")) {
+			response = string(c.Response().Body())
 		}
 		slog.Info(
 			"request",
 			"method", c.Method(),
-			"path", c.Path(),
+			"path", path,
 			"status", c.Response().StatusCode(),
-			"response", string(c.Response().Body()),
+			"response", response,
 		)
 		return err
 	}
