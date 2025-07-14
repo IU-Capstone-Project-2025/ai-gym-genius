@@ -70,7 +70,7 @@ func LoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	c.Set("Authorization", "Bearer " + token)
+	c.Set("Authorization", "Bearer "+token)
 
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
 		Message: "logged in successfully",

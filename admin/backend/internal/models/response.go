@@ -27,10 +27,10 @@ type ExerciseSetRead struct {
 }
 
 type WorkoutRead struct {
-	ID           uint                `json:"id" example:"1"`
-	DurationNS   int64               `json:"duration_ns" example:"60"` // in nanoseconds
-	Timestamp    time.Time           `json:"timestamp" example:"2023-10-01T12:00:00Z"`
-	UserID       uint                `json:"user_id" example:"12345"`
+	ID           uint              `json:"id" example:"1"`
+	DurationNS   int64             `json:"duration_ns" example:"60"` // in nanoseconds
+	Timestamp    time.Time         `json:"timestamp" example:"2023-10-01T12:00:00Z"`
+	UserID       uint              `json:"user_id" example:"12345"`
 	ExerciseSets []ExerciseSetRead `json:"exercise_sets"`
 }
 

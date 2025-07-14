@@ -4,7 +4,7 @@ import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
-	
+
 	"errors"
 	"time"
 
@@ -59,7 +59,6 @@ func UpdateWorkout(c *fiber.Ctx) error {
 		workout.UserID = *workoutUpdate.UserID
 	}
 
-	
 	if workoutUpdate.DurationNS != nil {
 		workout.Duration = time.Duration(*workoutUpdate.DurationNS)
 	}
@@ -67,30 +66,30 @@ func UpdateWorkout(c *fiber.Ctx) error {
 	if workoutUpdate.StartTime != nil {
 		workout.StartTime = *workoutUpdate.StartTime
 	}
-	
+
 	// replace exercise sets
 	if workoutUpdate.ExerciseSets != nil {
 		exerciseSets := []schemas.ExerciseSet{}
 		for _, exerciseSet := range *workoutUpdate.ExerciseSets {
 			exerciseSet := &schemas.ExerciseSet{
 				ExerciseID: exerciseSet.ExerciseID,
-				Reps: exerciseSet.Reps,
-				Weight: exerciseSet.Weight,
+				Reps:       exerciseSet.Reps,
+				Weight:     exerciseSet.Weight,
 			}
 			exerciseSets = append(exerciseSets, *exerciseSet)
 		}
-		
+
 		err =
 			database.DB.
-			Unscoped().
-			Model(workout).
-			Association("ExerciseSets").
-			Unscoped().
-			Replace(exerciseSets)
-			
+				Unscoped().
+				Model(workout).
+				Association("ExerciseSets").
+				Unscoped().
+				Replace(exerciseSets)
+
 		if err != nil {
 			if errors.Is(err, gorm.ErrForeignKeyViolated) {
-				return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse {
+				return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 					Error: "invalid exercise_id provided",
 				})
 			}
@@ -105,7 +104,6 @@ func UpdateWorkout(c *fiber.Ctx) error {
 	})
 }
 
-
 // AppendExerciseSet
 // @Summary Append an exercise set to a workout
 // @Tags workouts
@@ -119,34 +117,34 @@ func UpdateWorkout(c *fiber.Ctx) error {
 // @Failure 404 {object} models.ErrorResponse "Exercise Set Not Found"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /workouts/{id}/exercise_set [post]
-func AppendExerciseSet (c *fiber.Ctx) error {
+func AppendExerciseSet(c *fiber.Ctx) error {
 	workoutID, err := c.ParamsInt("id")
-	
+
 	if err != nil || workoutID < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "invalid workout id",
 		})
 	}
-	
+
 	exerciseSetCreate := &models.ExerciseSetCreate{}
 	if err := c.BodyParser(exerciseSetCreate); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "invalid request body",
 		})
 	}
-	
+
 	exerciseSet := &schemas.ExerciseSet{
 		ExerciseID: exerciseSetCreate.ExerciseID,
-		Reps: exerciseSetCreate.Reps,
-		Weight: exerciseSetCreate.Weight,
+		Reps:       exerciseSetCreate.Reps,
+		Weight:     exerciseSetCreate.Weight,
 	}
-	
+
 	err =
 		database.DB.
-		Model(&schemas.Workout{ID: uint(workoutID)}).
-		Association("ExerciseSets").
-		Append(exerciseSet)
-	
+			Model(&schemas.Workout{ID: uint(workoutID)}).
+			Association("ExerciseSets").
+			Append(exerciseSet)
+
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) ||
 			errors.Is(err, gorm.ErrForeignKeyViolated) {
@@ -158,7 +156,7 @@ func AppendExerciseSet (c *fiber.Ctx) error {
 			Error: "Failed to append an exercise set to the workout",
 		})
 	}
-	
+
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
 		Message: "Exercise set appended successfully",
 	})
@@ -184,25 +182,24 @@ func DeleteExerciseSet(c *fiber.Ctx) error {
 			Error: "invalid workout id",
 		})
 	}
-	
+
 	exerciseID := c.QueryInt("exercise_id")
 	if exerciseID < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "invalid or missing exercise_id query param",
 		})
 	}
-	
+
 	err =
 		database.DB.
-		Unscoped(). // perform hard-delete instead of soft-delete. wtf gorm??
-		Model(&schemas.Workout{ID: uint(workoutID)}).
-		Association("ExerciseSets").
-		Unscoped().
-		Delete(&schemas.ExerciseSet{
-			WorkoutID: uint(workoutID), ExerciseID: uint(exerciseID),
-		})
-	
-		
+			Unscoped(). // perform hard-delete instead of soft-delete. wtf gorm??
+			Model(&schemas.Workout{ID: uint(workoutID)}).
+			Association("ExerciseSets").
+			Unscoped().
+			Delete(&schemas.ExerciseSet{
+				WorkoutID: uint(workoutID), ExerciseID: uint(exerciseID),
+			})
+
 	// TODO add a hook (?? wtf gorm again) to check RowsAffected (below check doesnt work)
 	// to see if workouts or exercise were not found
 	if err != nil {
@@ -215,7 +212,7 @@ func DeleteExerciseSet(c *fiber.Ctx) error {
 			Error: "failed to delete an exercise set from the workout",
 		})
 	}
-	
+
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
 		Message: "exercise set deleted successfully",
 	})

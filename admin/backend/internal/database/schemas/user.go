@@ -22,14 +22,14 @@ type User struct {
 	Hash                   string        `gorm:"not null" json:"-"`
 }
 
-func (u *User) BeforeCreate(tx *gorm.DB) error {           
-	u.SubscriptionType = "free" // Default subscription type
-	u.Status = "active" // Default status
+func (u *User) BeforeCreate(tx *gorm.DB) error {
+	u.SubscriptionType = "free"       // Default subscription type
+	u.Status = "active"               // Default status
 	u.LastActivity = time.Now().UTC() // Set current time as last activity
-	u.NumberOfWorkouts = 0 // Initial number of workouts
-	u.TotalTimeSpent = 0  // Initial total time spent
-	u.StreakCount = 0 // Initial streak count
-	u.AverageWorkoutDuration = 0  // Initial average workout duration
+	u.NumberOfWorkouts = 0            // Initial number of workouts
+	u.TotalTimeSpent = 0              // Initial total time spent
+	u.StreakCount = 0                 // Initial streak count
+	u.AverageWorkoutDuration = 0      // Initial average workout duration
 	return nil
 }
 

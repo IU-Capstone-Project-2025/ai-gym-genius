@@ -7,8 +7,8 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
 // @title Gym Genius API
@@ -26,7 +26,7 @@ func main() {
 	if err := database.InitDatabase(); err != nil {
 		panic(err) // failed to connect or migrate
 	}
-	
+
 	app := fiber.New()
 
 	// set up middleware
@@ -40,6 +40,6 @@ func main() {
 	app.Use(middleware.LoggingMiddleware())
 
 	CombineRoutes(app)
-	
+
 	log.Fatal(app.Listen(":3000"))
 }

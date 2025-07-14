@@ -22,14 +22,14 @@ func CombineRoutes(app *fiber.App) {
 	users.SetUpUserRoutes(app)
 	workouts.SetUpWorkoutRoutes(app)
 	exercises.SetupExerciseRoutes(app)
-	
+
 	app.Get("/swagger/*", swagger.WrapHandler)
-	
+
 	// healthcheck
 	app.Get("/ping", func(c *fiber.Ctx) error {
 		return c.SendString("pong")
 	})
-	
+
 	// welcome page
 	app.Get("/", func(c *fiber.Ctx) error {
 		html, err := welcomePage.ReadFile("welcome.html")

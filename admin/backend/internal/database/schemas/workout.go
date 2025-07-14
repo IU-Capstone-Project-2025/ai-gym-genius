@@ -10,7 +10,7 @@ import (
 type Workout struct {
 	ID           uint          `gorm:"primaryKey"`
 	UserID       uint          `gorm:"not null"`
-	User 		 User          `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
+	User         User          `gorm:"foreignKey:UserID;constraint:OnDelete:CASCADE"`
 	Duration     time.Duration `gorm:"not null"`
 	StartTime    time.Time     `gorm:"not null"`
 	ExerciseSets []ExerciseSet `gorm:"foreignKey:WorkoutID;constraint:OnDelete:CASCADE"`
@@ -36,13 +36,13 @@ func (w *Workout) BeforeCreate(tx *gorm.DB) (err error) {
 
 // update user stats
 func (w *Workout) AfterCreate(tx *gorm.DB) (err error) {
-    var user User
-    if err := tx.First(&user, w.UserID).Error; err != nil {
-        return err
-    }
+	var user User
+	if err := tx.First(&user, w.UserID).Error; err != nil {
+		return err
+	}
 	user.NumberOfWorkouts++
 	user.TotalTimeSpent += w.Duration
 	user.AverageWorkoutDuration = user.TotalTimeSpent / time.Duration(user.NumberOfWorkouts)
 
-    return tx.Save(user).Error
+	return tx.Save(user).Error
 }

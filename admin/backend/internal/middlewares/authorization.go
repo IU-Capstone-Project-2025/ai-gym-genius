@@ -12,10 +12,12 @@ import (
 
 var jwtSecret = config.C.JwtSecret
 
-type userIDKeyT struct {}
+type userIDKeyT struct{}
+
 var IDKey userIDKeyT
 
-type userLoginKeyT struct {}
+type userLoginKeyT struct{}
+
 var LoginKey userLoginKeyT
 
 func JWTMiddleware(c *fiber.Ctx) error {

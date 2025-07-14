@@ -27,21 +27,21 @@ func DeleteWorkout(c *fiber.Ctx) error {
 			Error: "required 'id' parameter is malformed; should be > 0",
 		})
 	}
-	
+
 	result := database.DB.Select("ExerciseSets").Delete(&schemas.Workout{}, id)
-	
+
 	if err := result.Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error: "failed to delete workout",
 		})
 	}
-	
+
 	if result.RowsAffected == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
 			Error: "workout not found",
 		})
 	}
-	
+
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
 		Message: "workout deleted successfully",
 	})

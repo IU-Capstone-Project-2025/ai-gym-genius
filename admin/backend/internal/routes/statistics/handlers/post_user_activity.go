@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"admin/internal/database"
-	"admin/internal/models"
 	"admin/internal/database/schemas"
+	"admin/internal/models"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -50,9 +50,9 @@ func PostUserActivity(c *fiber.Ctx) error {
 			Error: "Failed to record user activity",
 		})
 	}
-	
+
 	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
 		Message: "User activity recorded successfully",
-		ID: record.ID,
+		ID:      record.ID,
 	})
 }

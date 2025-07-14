@@ -39,7 +39,7 @@ func GetUserActivityStats(c *fiber.Ctx) error {
 
 type MonthlyStat struct {
 	Month time.Time `json:"month"`
-	Count int `json:"count"`
+	Count int       `json:"count"`
 }
 
 func GetUserMonthlyStats(userID uint) ([]MonthlyStat, error) {

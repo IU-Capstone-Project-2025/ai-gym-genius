@@ -10,8 +10,8 @@ func AddAdmin(login string, password string) error {
 	hash := database.Hash(login, password)
 
 	admin := schemas.Admin{
-		Login:  login,
-		Hash: hash,
+		Login: login,
+		Hash:  hash,
 	}
 
 	if err := database.DB.Create(&admin).Error; err != nil {

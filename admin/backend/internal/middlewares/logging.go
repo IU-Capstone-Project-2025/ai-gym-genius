@@ -3,8 +3,8 @@ package middleware
 import (
 	"time"
 
-	"github.com/rs/zerolog/log"
 	"github.com/gofiber/fiber/v2"
+	"github.com/rs/zerolog/log"
 )
 
 func LoggingMiddleware() fiber.Handler {
@@ -12,7 +12,7 @@ func LoggingMiddleware() fiber.Handler {
 		start := time.Now()
 		err := c.Next()
 		latency := time.Since(start)
-		
+
 		log.Info().
 			Str("method", c.Method()).
 			Str("path", c.Path()).

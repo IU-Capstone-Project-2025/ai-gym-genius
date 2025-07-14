@@ -63,9 +63,9 @@ func InitDatabase() error {
 		DB, err = gorm.Open(
 			postgres.Open(dsn),
 			&gorm.Config{
-				TranslateError: true, // fix to properly return errors
-				Logger: logger.Default.LogMode(logger.Silent), // silence the gorm logger
-			}, 
+				TranslateError: true,                                  // fix to properly return errors
+				Logger:         logger.Default.LogMode(logger.Silent), // silence the gorm logger
+			},
 		)
 		// DB = DB.Debug() // debug postgres queries if needed
 	case "DEV":
@@ -74,11 +74,10 @@ func InitDatabase() error {
 			&gorm.Config{
 				TranslateError: true, // fix to properly return errors
 				// Logger: logger.Default.LogMode(logger.Silent), // silence the gorm logger
-			}, 
+			},
 		)
 		DB = DB.Debug() // outputs generated sql to stdout
 	}
-	
 
 	if err != nil {
 		return fmt.Errorf("failed to connect to database: %w", err)
