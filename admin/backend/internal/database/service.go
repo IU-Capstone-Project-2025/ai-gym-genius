@@ -8,7 +8,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"time"
-
+	"admin/internal/models"
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
@@ -109,6 +109,11 @@ func UpsertStaticData() error {
 		return fmt.Errorf("failed to upsert static exercises: %w", err)
 	}
 
+	err = UpsertStaticWorkouts()
+	if err != nil {	
+		return fmt.Errorf("failed to upsert static workouts: %w", err)
+	}
+
 	return nil
 }
 
@@ -154,6 +159,46 @@ func UpsertStaticExercises() error {
 	}).Create(&exercises).Error
 	if err != nil {
 		return err
+	}
+
+	return nil
+}
+
+func UpsertStaticWorkouts() error {
+	data, err := os.ReadFile("assets/workouts.json")
+	if err != nil {
+		return err
+	}
+
+	var workoutsCreate []models.WorkoutCreate
+
+	err = json.Unmarshal(data, &workoutsCreate)
+	if err != nil {
+		return err
+	}
+
+	for _, workoutCreate := range workoutsCreate {
+		workoutDuration := time.Duration(workoutCreate.DurationNS)
+
+		var exerciseSets []schemas.ExerciseSet
+		for _, exerciseSet := range workoutCreate.ExerciseSets {
+			exerciseSets = append(exerciseSets, schemas.ExerciseSet{
+				ExerciseID: exerciseSet.ExerciseID,
+				Weight:     exerciseSet.Weight,
+				Reps:       exerciseSet.Reps,
+			})
+		}
+
+		workout := &schemas.Workout{
+			UserID:       workoutCreate.UserID,
+			Duration:     workoutDuration,
+			StartTime:    workoutCreate.StartTime,
+			ExerciseSets: exerciseSets,
+		}
+
+		if err := DB.Create(&workout).Error; err != nil {
+			return err
+		}
 	}
 
 	return nil
