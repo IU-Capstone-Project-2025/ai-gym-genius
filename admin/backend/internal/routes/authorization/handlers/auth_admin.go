@@ -22,7 +22,7 @@ import (
 // @Failure 401 {object} models.ErrorResponse "Incorrect password"
 // @Failure 500 {object} models.ErrorResponse "Failed to query database or create token"
 // @Router /auth [post]
-func UserLoginHandler(c *fiber.Ctx) error {
+func AdminLoginHandler(c *fiber.Ctx) error {
 	data := &models.AuthInput{}
 
 	if err := c.BodyParser(data); err != nil {
@@ -43,8 +43,8 @@ func UserLoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	var user schemas.User
-	if err := database.DB.Where("login = ?", data.Login).First(&user).Error; err != nil {
+	var admin schemas.Admin
+	if err := database.DB.Where("login = ?", data.Login).First(&admin).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
 				Error: "user not found",
@@ -57,13 +57,13 @@ func UserLoginHandler(c *fiber.Ctx) error {
 
 	hash := database.Hash(data.Login, data.Password)
 
-	if user.Hash != hash {
+	if admin.Hash != hash {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
 			Error: "incorrect password",
 		})
 	}
 
-	token, err := database.CreateTokenForUser(user)
+	token, err := database.CreateTokenForAdmin(admin)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error: "failed to create token",

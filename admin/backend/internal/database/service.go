@@ -31,6 +31,7 @@ var (
 	dbPassword = config.C.DbPassword
 	dbName     = config.C.DbName
 	dbPort     = config.C.DbPort
+	adminPassword = config.C.AdminPassword
 )
 
 func Hash(login, password string) string {
@@ -39,7 +40,18 @@ func Hash(login, password string) string {
 	return hex.EncodeToString(hash[:])
 }
 
-func CreateTokenForUser(user schemas.Admin) (string, error) {
+func CreateTokenForAdmin(user schemas.Admin) (string, error) {
+	claims := jwt.MapClaims{
+		"id":    user.ID,
+		"login": user.Login,
+		"role":  "admin",
+		"exp":   time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(jwtSecret))
+}
+
+func CreateTokenForUser(user schemas.User) (string, error) {
 	claims := jwt.MapClaims{
 		"id":    user.ID,
 		"login": user.Login,
@@ -112,6 +124,29 @@ func UpsertStaticData() error {
 	err = UpsertStaticWorkouts()
 	if err != nil {	
 		return fmt.Errorf("failed to upsert static workouts: %w", err)
+	}
+
+	return nil
+}
+
+func UpsertStaticAdmins() error {
+	data, err := os.ReadFile("assets/admins.json")
+	if err != nil {
+		return err
+	}
+
+	var admins []schemas.Admin
+	err = json.Unmarshal(data, &admins)
+	if err != nil {
+		return err
+	}
+
+	err = DB.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "login"}},
+		UpdateAll: true,
+	}).Create(&admins).Error
+	if err != nil {
+		return err
 	}
 
 	return nil

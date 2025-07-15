@@ -82,7 +82,7 @@ func CreateWorkout(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(models.CreatedResponse{
-		Message: "forkout created successfully",
+		Message: "workout created successfully",
 		ID:      workout.ID,
 	})
 }
