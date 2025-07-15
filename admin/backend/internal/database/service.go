@@ -154,10 +154,21 @@ func UpsertStaticUsers() error {
 		return err
 	}
 
-	var users []schemas.User
-	err = json.Unmarshal(data, &users)
+	var rawUsers []models.UserCreate
+	err = json.Unmarshal(data, &rawUsers)
 	if err != nil {
 		return err
+	}
+
+	var users []schemas.User
+	for _, u := range rawUsers {
+		users = append(users, schemas.User{
+			Name: u.Name,
+			Surname: u.Surname,
+			Login: u.Login,
+			Email: u.Email,
+			Hash:  Hash(u.Login, u.Password),
+		})
 	}
 
 	err = DB.Clauses(clause.OnConflict{

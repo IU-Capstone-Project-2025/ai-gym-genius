@@ -9,19 +9,19 @@ import (
 	"gorm.io/gorm"
 )
 
-// LoginHandler godoc
-// @Summary User Login
-// @Description Authenticate a user with login and password, returning a token
+// AdminLoginHandler godoc
+// @Summary Admin Login
+// @Description Authenticate an admin with login and password, returning a token
 // @Tags auth
 // @Accept json
 // @Produce json
 // @Param authInput body models.AuthInput true "Login and Password"
-// @Success 200 {object} map[string]string "User logged in successfully"
+// @Success 200 {object} map[string]string "Admin logged in successfully"
 // @Failure 400 {object} models.ErrorResponse "Invalid request body or missing fields"
-// @Failure 404 {object} models.ErrorResponse "User not found"
+// @Failure 404 {object} models.ErrorResponse "Admin not found"
 // @Failure 401 {object} models.ErrorResponse "Incorrect password"
 // @Failure 500 {object} models.ErrorResponse "Failed to query database or create token"
-// @Router /auth [post]
+// @Router /auth_admin [post]
 func AdminLoginHandler(c *fiber.Ctx) error {
 	data := &models.AuthInput{}
 

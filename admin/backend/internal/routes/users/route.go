@@ -2,7 +2,7 @@ package users
 
 import (
 	"admin/internal/routes/users/handlers"
-
+	"admin/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -12,5 +12,5 @@ func SetUpUserRoutes(app *fiber.App) {
 	app.Get("/users/count", handlers.GetUserCount)
 	app.Get("/users/:id", handlers.GetUser)
 	app.Patch("/users/:id", handlers.UpdateUser)
-	app.Delete("/users/:id", handlers.DeleteUser)
+	app.Delete("/users", middleware.JWTMiddleware, handlers.DeleteUser)
 }
