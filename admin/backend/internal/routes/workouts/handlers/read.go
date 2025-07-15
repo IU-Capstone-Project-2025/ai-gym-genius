@@ -4,9 +4,7 @@ import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
-
 	"errors"
-
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )

@@ -4,7 +4,6 @@ import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
-	
 	"github.com/gofiber/fiber/v2"
 )
 

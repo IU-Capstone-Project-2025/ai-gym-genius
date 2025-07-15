@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/rs/zerolog/log"
-
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
