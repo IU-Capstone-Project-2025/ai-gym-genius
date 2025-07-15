@@ -95,7 +95,42 @@ func InitDatabase() error {
 		return fmt.Errorf("failed to migrate database: %w", err)
 	}
 
-	return UpsertStaticExercises()
+	return UpsertStaticData()
+}
+
+func UpsertStaticData() error {
+	if err := UpsertStaticUsers(); err != nil {
+		return fmt.Errorf("failed to upsert static users: %w", err)
+	}
+
+	if err := UpsertStaticExercises(); err != nil {
+		return fmt.Errorf("failed to upsert static exercises: %w", err)
+	}
+
+	return nil
+}
+
+func UpsertStaticUsers() error {
+	data, err := os.ReadFile("assets/users.json")
+	if err != nil {
+		return err
+	}
+
+	var users []schemas.User
+	err = json.Unmarshal(data, &users)
+	if err != nil {
+		return err
+	}
+
+	err = DB.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "email"}},
+		UpdateAll: true,
+	}).Create(&users).Error
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 // reads assets/exercises.json and upserts them into the db
