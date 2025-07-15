@@ -3,6 +3,7 @@ package handlers
 import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
+	middleware "admin/internal/middlewares"
 	"admin/internal/models"
 
 	"github.com/gofiber/fiber/v2"
@@ -20,9 +21,10 @@ import (
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/{id} [delete]
 func DeleteUser(c *fiber.Ctx) error {
-	id, err := c.ParamsInt("id")
+	middleware.JWTMiddleware(c)
+	id := c.Locals(middleware.IDKey).(int64)
 
-	if err != nil || id < 1 {
+	if id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "required id parameter is malformed; should be > 0",
 		})

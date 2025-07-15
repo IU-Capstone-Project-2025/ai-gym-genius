@@ -137,7 +137,10 @@ func UpsertStaticAdmins() error {
 	admin.Login = "admin"
 	admin.Hash = Hash(admin.Login, adminPassword)
 
-	err := DB.Create(&admin).Error
+	err := DB.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "login"}},
+		UpdateAll: true,
+	}).Create(&admin).Error
 	if err != nil {
 		return err
 	}
