@@ -3,20 +3,17 @@ package database
 import (
 	"admin/config"
 	"admin/internal/database/schemas"
-
+	"admin/internal/models"
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
 	"time"
-	"admin/internal/models"
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-
 	"encoding/json"
 	"os"
-
 	"gorm.io/gorm/clause"
 	"gorm.io/gorm/logger"
 )
@@ -116,6 +113,11 @@ func UpsertStaticData() error {
 		return fmt.Errorf("failed to upsert static users: %w", err)
 	}
 
+	err = UpsertStaticAdmins()
+	if err != nil {
+		return fmt.Errorf("failed to upsert static admins: %w", err)
+	}
+
 	err = UpsertStaticExercises()
 	if err != nil {
 		return fmt.Errorf("failed to upsert static exercises: %w", err)
@@ -130,21 +132,12 @@ func UpsertStaticData() error {
 }
 
 func UpsertStaticAdmins() error {
-	data, err := os.ReadFile("assets/admins.json")
-	if err != nil {
-		return err
-	}
+	var admin schemas.Admin
+	
+	admin.Login = "admin"
+	admin.Hash = Hash(admin.Login, adminPassword)
 
-	var admins []schemas.Admin
-	err = json.Unmarshal(data, &admins)
-	if err != nil {
-		return err
-	}
-
-	err = DB.Clauses(clause.OnConflict{
-		Columns:   []clause.Column{{Name: "login"}},
-		UpdateAll: true,
-	}).Create(&admins).Error
+	err := DB.Create(&admin).Error
 	if err != nil {
 		return err
 	}
