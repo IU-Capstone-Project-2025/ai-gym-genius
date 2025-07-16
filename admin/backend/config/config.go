@@ -2,7 +2,6 @@ package config
 
 import (
 	"github.com/rs/zerolog/log"
-
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
 )
@@ -16,6 +15,7 @@ type Config struct {
 	DbPassword string `envconfig:"DB_PASSWORD" required:"true"`
 	DbName     string `envconfig:"DB_NAME"     required:"true"`
 	DbPort     string `envconfig:"DB_PORT"     required:"true"`
+	AdminPassword string `envconfig:"ADMIN_PASSWORD" required:"true"`
 }
 
 var C Config

@@ -23,6 +23,12 @@ definitions:
       password:
         type: string
     type: object
+  models.CountResponse:
+    properties:
+      count:
+        example: 10
+        type: integer
+    type: object
   models.CreatedResponse:
     properties:
       id:
@@ -292,7 +298,7 @@ definitions:
         example: 12345
         type: integer
     type: object
-host: localhost:3000
+host: api.говно.site
 info:
   contact:
     email: support@swagger.io
@@ -306,7 +312,47 @@ info:
   title: Gym Genius API
   version: "1.0"
 paths:
-  /auth:
+  /auth_admin:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an admin with login and password, returning a token
+      parameters:
+      - description: Login and Password
+        in: body
+        name: authInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Admin logged in successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request body or missing fields
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Incorrect password
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Admin not found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Failed to query database or create token
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Admin Login
+      tags:
+      - auth
+  /auth_user:
     post:
       consumes:
       - application/json
@@ -629,6 +675,14 @@ paths:
           description: Bad Request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: User Not Found
           schema:
@@ -644,12 +698,6 @@ paths:
       consumes:
       - application/json
       description: Retrieve a user by their unique ID
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
       produces:
       - application/json
       responses:
@@ -754,9 +802,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: User count object
           schema:
-            type: integer
+            $ref: '#/definitions/models.CountResponse'
         "500":
           description: Internal Server Error
           schema:

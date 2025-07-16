@@ -5,7 +5,7 @@ import (
 	"admin/internal/database/schemas"
 	"admin/internal/models"
 	"errors"
-
+	middleware "admin/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -21,6 +21,21 @@ import (
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /exercises [post]
 func AddExercise(c *fiber.Ctx) error {
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "This endpoint is restricted to admin users only",
+		})
+	}
+
 	exerciseCreate := &models.ExerciseCreate{}
 
 	if err := c.BodyParser(exerciseCreate); err != nil {

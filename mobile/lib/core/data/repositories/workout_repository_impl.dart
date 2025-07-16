@@ -1,7 +1,7 @@
 import '/core/domain/entities/workout_entity.dart';
-import '/core/domain/repositories/training_repository.dart';
+import '../../domain/repositories/workout_repository.dart';
 
-class TrainingRepositoryImpl implements TrainingRepository {
+class WorkoutRepositoryImpl implements WorkoutRepository {
   @override
   Future<WorkoutEntity?> fetchWorkout(int workoutId) {
     // TODO: implement fetchWorkout

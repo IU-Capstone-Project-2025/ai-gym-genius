@@ -1,6 +1,6 @@
 import '/core/domain/entities/workout_entity.dart';
 
-abstract interface class TrainingRepository {
+abstract interface class WorkoutRepository {
   Future<void> saveWorkout(WorkoutEntity entity);
   Future<List<WorkoutEntity>> fetchWorkouts();
   Future<WorkoutEntity?> fetchWorkout(int workoutId);

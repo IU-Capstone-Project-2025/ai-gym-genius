@@ -20,6 +20,10 @@ type userLoginKeyT struct{}
 
 var LoginKey userLoginKeyT
 
+type userRoleKeyT struct{}
+
+var RoleKey userRoleKeyT
+
 func JWTMiddleware(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
@@ -57,6 +61,7 @@ func JWTMiddleware(c *fiber.Ctx) error {
 
 		c.Locals(IDKey, claims["id"])
 		c.Locals(LoginKey, claims["login"])
+		c.Locals(RoleKey, claims["role"])
 	} else {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
 			Error: "Invalid token claims",

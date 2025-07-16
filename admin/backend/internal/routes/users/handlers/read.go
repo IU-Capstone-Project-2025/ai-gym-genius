@@ -3,8 +3,8 @@ package handlers
 import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
+	middleware "admin/internal/middlewares"
 	"admin/internal/models"
-
 	"errors"
 
 	"github.com/gofiber/fiber/v2"
@@ -17,7 +17,6 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param id path int true "User ID"
 // @Success 200 {object} models.UserRead
 // @Failure 400 {object} map[string]string "Bad Request"
 // @Failure 404 {object} map[string]string "User Not Found"
@@ -26,9 +25,32 @@ import (
 func GetUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
-	if err != nil || id < 0 {
+	if err != nil || id <= 0 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "'id' parameter is malformed; should be > 0",
+		})
+	}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if int(userID) != id && role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only get your own account",
 		})
 	}
 
@@ -87,6 +109,21 @@ type userQueryParams struct {
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users [get]
 func GetUsersPaginate(c *fiber.Ctx) error {
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only get your own account",
+		})
+	}
+
 	params := &userQueryParams{}
 
 	if err := c.QueryParser(params); err != nil {
@@ -96,41 +133,41 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 	}
 
 	errMessage := ""
-	if !schemas.UserStatuses[params.UserStatus] {
+	if !schemas.UserStatusExists[params.UserStatus] {
 		errMessage = "invalid user_status query param"
-	} else if !schemas.SubscriptionStatuses[params.SubscriptionStatus] {
-		errMessage = "invalid user_status query param"
-	} else if !schemas.SubscriptionPlans[params.SubscriptionPlan] {
-		errMessage = "invalid user_status query param"
+	} else if !schemas.SubscriptionStatusExists[params.SubscriptionStatus] {
+		errMessage = "invalid subscription_status query param"
+	} else if !schemas.SubscriptionPlanExists[params.SubscriptionPlan] {
+		errMessage = "invalid subscription_plan query param"
 	}
 	if errMessage != "" {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: errMessage,
 		})
 	}
-	
+
 	offset := (params.Page - 1) * params.Limit
-	
+
 	var users []schemas.User
-	
+
 	err :=
 		database.DB.
-		Limit(params.Limit).
-		Offset(offset).
-		Where(&schemas.User{
-			SubscriptionPlan:   params.SubscriptionPlan,
-			SubscriptionStatus: params.SubscriptionStatus,
-			Status:             params.UserStatus,
-		}).
-		Find(&users).
-		Error
-	
+			Limit(params.Limit).
+			Offset(offset).
+			Where(&schemas.User{
+				SubscriptionPlan:   params.SubscriptionPlan,
+				SubscriptionStatus: params.SubscriptionStatus,
+				Status:             params.UserStatus,
+			}).
+			Find(&users).
+			Error
+
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "failed to find users",
 		})
 	}
-	
+
 	userReads := make([]models.UserRead, len(users))
 	for i, user := range users {
 		userReads[i] = models.UserRead{
@@ -161,6 +198,21 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/count [get]
 func GetUserCount(c *fiber.Ctx) error {
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "This endpoint is only accessible to admins",
+		})
+	}
+
 	var count int64
 
 	if err := database.DB.Model(&schemas.User{}).Count(&count).Error; err != nil {

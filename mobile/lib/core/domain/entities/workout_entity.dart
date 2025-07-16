@@ -8,7 +8,7 @@ class WorkoutEntity {
   final String? description;
   final double? weight;
 
-  WorkoutEntity({
+  const WorkoutEntity({
     required this.id,
     required this.duration,
     required this.startTime,

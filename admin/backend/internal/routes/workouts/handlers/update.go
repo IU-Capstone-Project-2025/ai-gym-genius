@@ -4,12 +4,11 @@ import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
-
 	"errors"
 	"time"
-
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
+	"admin/internal/middlewares"
 )
 
 // UpdateWorkout
@@ -33,14 +32,6 @@ func UpdateWorkout(c *fiber.Ctx) error {
 		})
 	}
 
-	workoutUpdate := &models.WorkoutUpdate{}
-
-	if err := c.BodyParser(workoutUpdate); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "invalid request body",
-		})
-	}
-
 	workout := &schemas.Workout{}
 
 	if err := database.DB.First(workout, id).Error; err != nil {
@@ -51,6 +42,37 @@ func UpdateWorkout(c *fiber.Ctx) error {
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error: "failed to query workout",
+		})
+	}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if int(userID) != int(workout.UserID) && role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only update your own workouts",
+		})
+	}
+
+	workoutUpdate := &models.WorkoutUpdate{}
+
+	if err := c.BodyParser(workoutUpdate); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "invalid request body",
 		})
 	}
 
@@ -126,6 +148,34 @@ func AppendExerciseSet(c *fiber.Ctx) error {
 		})
 	}
 
+	workout := &schemas.Workout{}
+
+	if err := database.DB.First(workout, workoutID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error: "workout not found",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to query workout",
+		})
+	}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	if int(userID) != int(workout.UserID) {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only update your own exercise sets",
+		})
+	}
+
 	exerciseSetCreate := &models.ExerciseSetCreate{}
 	if err := c.BodyParser(exerciseSetCreate); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
@@ -180,6 +230,34 @@ func DeleteExerciseSet(c *fiber.Ctx) error {
 	if err != nil || workoutID < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "invalid workout id",
+		})
+	}
+
+	workout := &schemas.Workout{}
+
+	if err := database.DB.First(workout, workoutID).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+				Error: "workout not found",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to query workout",
+		})
+	}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	if int(userID) != int(workout.UserID) {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can delete only your own exercise sets",
 		})
 	}
 

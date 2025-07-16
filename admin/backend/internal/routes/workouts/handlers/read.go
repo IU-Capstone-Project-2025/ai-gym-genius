@@ -4,11 +4,10 @@ import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
-
 	"errors"
-
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
+	"admin/internal/middlewares"
 )
 
 // GetWorkout
@@ -41,6 +40,29 @@ func GetWorkout(c *fiber.Ctx) error {
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error: "failed to retrieve workout",
+		})
+	}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if int(userID) != int(workout.UserID) && role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only get your own workouts",
 		})
 	}
 

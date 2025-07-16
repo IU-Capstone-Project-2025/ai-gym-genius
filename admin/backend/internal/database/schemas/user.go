@@ -7,9 +7,9 @@ import (
 )
 
 var (
-	UserStatuses         = map[string]bool{"active": true, "inactive": true, "banned": true}
-	SubscriptionStatuses = map[string]bool{"active": true, "expired": true, "cancelled": true}
-	SubscriptionPlans    = map[string]bool{"free": true, "basic": true, "pro": true}
+	UserStatusExists         = map[string]bool{"active": true, "inactive": true, "banned": true}
+	SubscriptionStatusExists = map[string]bool{"active": true, "expired": true, "cancelled": true}
+	SubscriptionPlanExists   = map[string]bool{"free": true, "basic": true, "pro": true}
 )
 
 type User struct {

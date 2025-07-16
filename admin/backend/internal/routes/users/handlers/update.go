@@ -6,7 +6,7 @@ import (
 	"admin/internal/models"
 	"errors"
 	"time"
-
+	"admin/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -25,9 +25,33 @@ import (
 // @Router /users/{id} [patch]
 func UpdateUser(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
+
 	if err != nil || id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "invalid user id",
+		})
+	}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+	roleRaw := c.Locals(middleware.RoleKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
+
+	if int(userID) != id && role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only udpate your own account",
 		})
 	}
 

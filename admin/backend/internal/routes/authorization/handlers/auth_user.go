@@ -9,7 +9,7 @@ import (
 	"gorm.io/gorm"
 )
 
-// LoginHandler godoc
+// UserLoginHandler godoc
 // @Summary User Login
 // @Description Authenticate a user with login and password, returning a token
 // @Tags auth
@@ -21,8 +21,8 @@ import (
 // @Failure 404 {object} models.ErrorResponse "User not found"
 // @Failure 401 {object} models.ErrorResponse "Incorrect password"
 // @Failure 500 {object} models.ErrorResponse "Failed to query database or create token"
-// @Router /auth [post]
-func LoginHandler(c *fiber.Ctx) error {
+// @Router /auth_user [post]
+func UserLoginHandler(c *fiber.Ctx) error {
 	data := &models.AuthInput{}
 
 	if err := c.BodyParser(data); err != nil {
@@ -43,7 +43,7 @@ func LoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	var user schemas.Admin
+	var user schemas.User
 	if err := database.DB.Where("login = ?", data.Login).First(&user).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
