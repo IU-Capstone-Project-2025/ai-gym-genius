@@ -298,7 +298,7 @@ definitions:
         example: 12345
         type: integer
     type: object
-host: localhost:3000
+host: api.говно.site
 info:
   contact:
     email: support@swagger.io
@@ -594,31 +594,6 @@ paths:
       tags:
       - statistics
   /users:
-    delete:
-      consumes:
-      - application/json
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User deleted successfully
-          schema:
-            $ref: '#/definitions/models.MessageResponse'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "404":
-          description: User Not Found
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Delete a user by ID
-      tags:
-      - users
     get:
       consumes:
       - application/json
@@ -680,16 +655,49 @@ paths:
       tags:
       - users
   /users/{id}:
-    get:
+    delete:
       consumes:
       - application/json
-      description: Retrieve a user by their unique ID
       parameters:
       - description: User ID
         in: path
         name: id
         required: true
         type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "403":
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: User Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a user by ID
+      tags:
+      - users
+    get:
+      consumes:
+      - application/json
+      description: Retrieve a user by their unique ID
       produces:
       - application/json
       responses:
