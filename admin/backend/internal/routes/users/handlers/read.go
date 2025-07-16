@@ -17,7 +17,6 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
-// @Param id path int true "User ID"
 // @Success 200 {object} models.UserRead
 // @Failure 400 {object} map[string]string "Bad Request"
 // @Failure 404 {object} map[string]string "User Not Found"

@@ -5,6 +5,7 @@ import (
 	"admin/internal/database/schemas"
 	middleware "admin/internal/middlewares"
 	"admin/internal/models"
+	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -14,45 +15,62 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param id path int true "User ID"
 // @Success 200 {object} models.MessageResponse "User deleted successfully"
 // @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 401 {object} models.ErrorResponse "Unauthorized"
+// @Failure 403 {object} models.ErrorResponse "Forbidden"
 // @Failure 404 {object} models.ErrorResponse "User Not Found"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
-// @Router /users [delete]
+// @Router /users/{id} [delete]
 func DeleteUser(c *fiber.Ctx) error {
-	id := c.Locals(middleware.IDKey)
+	targetIDParam := c.Params("id")
+	
+	targetID, err := strconv.Atoi(targetIDParam)
+	if err != nil || targetID <= 0 {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "Invalid user ID in path",
+		})
+	}
 
-	idFloat, ok := id.(float64)
+	userIDRaw := c.Locals(middleware.IDKey)
+	roleRaw := c.Locals(middleware.RoleKey)
 
+	userID, ok := userIDRaw.(float64)
 	if !ok {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Unauthorized or invalid token",
+			Error: "Unauthorized or invalid token (user ID)",
 		})
 	}
 
-	userID := int(idFloat)
-
-	if userID < 1 {
-		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "required id parameter is malformed; should be > 0",
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
 		})
 	}
 
-	result := database.DB.Delete(&schemas.User{}, userID)
+	if int(userID) != targetID && role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only delete your own account",
+		})
+	}
+
+	result := database.DB.Delete(&schemas.User{}, targetID)
 
 	if err := result.Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "failed to delete user",
+			Error: "Failed to delete user",
 		})
 	}
 
 	if result.RowsAffected == 0 {
 		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
-			Error: "user not found",
+			Error: "User not found",
 		})
 	}
 
 	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
-		Message: "user deleted successfully",
+		Message: "User deleted successfully",
 	})
 }
