@@ -51,7 +51,7 @@ func GetUser(c *fiber.Ctx) error {
 		Name:                     user.Name,
 		Surname:                  user.Surname,
 		Email:                    user.Email,
-		SubscriptionType:         user.SubscriptionType,
+		SubscriptionType:         user.SubscriptionPlan,
 		Status:                   user.Status,
 		LastActivity:             user.LastActivity,
 		NumberOfWorkouts:         user.NumberOfWorkouts,
@@ -63,6 +63,14 @@ func GetUser(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(userRead)
 }
 
+type userQueryParams struct {
+	Page               int    `query:"page"`
+	Limit              int    `query:"limit"`
+	UserStatus         string `query:"user_status"`
+	SubscriptionPlan   string `query:"subscription_plan"`
+	SubscriptionStatus string `query:"subscription_status"`
+}
+
 // GetUserPaginate
 // @Summary Get paginated list of users
 // @Description Retrieve a paginated list of users with optional page and limit query parameters
@@ -71,28 +79,58 @@ func GetUser(c *fiber.Ctx) error {
 // @Produce json
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Number of users per page" default(10)
+// @Param user_status query string false "User status to fliter by" default(null)
+// @Param subscription_plan query string false "Subscription plan to filter by" default(null)
+// @Param subscription_status query string false "Subscription status to filter by" default(null)
 // @Success 200 {object} []models.UserRead
+// @Failure 400 {object} models.ErrorResponse "Malformed query parameters"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users [get]
 func GetUsersPaginate(c *fiber.Ctx) error {
-	page := c.QueryInt("page", 1)
-	if page < 1 {
-		page = 1
-	}
-	limit := c.QueryInt("limit", 10)
-	if limit < 1 {
-		limit = 10
-	}
+	params := &userQueryParams{}
 
-	offset := (page - 1) * limit
-
-	var users []schemas.User
-	if err := database.DB.Limit(limit).Offset(offset).Find(&users).Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "failed to retrieve users",
+	if err := c.QueryParser(params); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "malformed query parameters",
 		})
 	}
 
+	errMessage := ""
+	if !schemas.UserStatuses[params.UserStatus] {
+		errMessage = "invalid user_status query param"
+	} else if !schemas.SubscriptionStatuses[params.SubscriptionStatus] {
+		errMessage = "invalid user_status query param"
+	} else if !schemas.SubscriptionPlans[params.SubscriptionPlan] {
+		errMessage = "invalid user_status query param"
+	}
+	if errMessage != "" {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: errMessage,
+		})
+	}
+	
+	offset := (params.Page - 1) * params.Limit
+	
+	var users []schemas.User
+	
+	err :=
+		database.DB.
+		Limit(params.Limit).
+		Offset(offset).
+		Where(&schemas.User{
+			SubscriptionPlan:   params.SubscriptionPlan,
+			SubscriptionStatus: params.SubscriptionStatus,
+			Status:             params.UserStatus,
+		}).
+		Find(&users).
+		Error
+	
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "failed to find users",
+		})
+	}
+	
 	userReads := make([]models.UserRead, len(users))
 	for i, user := range users {
 		userReads[i] = models.UserRead{
@@ -101,7 +139,7 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 			Name:                     user.Name,
 			Surname:                  user.Surname,
 			Email:                    user.Email,
-			SubscriptionType:         user.SubscriptionType,
+			SubscriptionType:         user.SubscriptionPlan,
 			Status:                   user.Status,
 			LastActivity:             user.LastActivity,
 			NumberOfWorkouts:         user.NumberOfWorkouts,
@@ -114,7 +152,6 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(userReads)
 }
 
-
 // GetUserCount
 // @Summary Get the total number of users
 // @Tags users
@@ -124,15 +161,15 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/count [get]
 func GetUserCount(c *fiber.Ctx) error {
-    var count int64
-    
-    if err := database.DB.Model(&schemas.User{}).Count(&count).Error; err != nil {
-        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-            Error: "failed to count users",
-        })
-    }
-    
-    return c.Status(fiber.StatusOK).JSON(models.CountResponse{
-        Count: count,
-    })
+	var count int64
+
+	if err := database.DB.Model(&schemas.User{}).Count(&count).Error; err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: "failed to count users",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(models.CountResponse{
+		Count: count,
+	})
 }
