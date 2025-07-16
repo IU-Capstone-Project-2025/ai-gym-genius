@@ -18,8 +18,8 @@ type User struct {
 	Name                   string        `gorm:"not null"`
 	Surname                string        `gorm:"not null"`
 	Email                  string        `gorm:"not null;uniqueIndex"`
-	SubscriptionPlan       string        `gorm:"not null;check:subscription_type IN ('free', 'basic', 'pro')"`                        // free, basic, pro
-	SubscriptionStatus     string        `gorm:"not null;check:subscription_statys IN ('active', 'expired', 'cancelled', 'pending')"` //active, expired, pending
+	SubscriptionPlan       string        `gorm:"not null;check:subscription_plan IN ('free', 'basic', 'pro')"`                        // free, basic, pro
+	SubscriptionStatus     string        `gorm:"not null;check:subscription_status IN ('active', 'expired', 'cancelled', 'pending')"` //active, expired, pending
 	Status                 string        `gorm:"not null;check:status IN ('active', 'inactive', 'banned')"`                           // active, inactive, pending
 	LastActivity           time.Time     `gorm:"not null"`                                                                            // e.g., timestamp of last activity
 	NumberOfWorkouts       uint          `gorm:"not null"`                                                                            // e.g., number of workouts completed
