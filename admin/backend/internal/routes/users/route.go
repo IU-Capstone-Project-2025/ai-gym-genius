@@ -8,9 +8,9 @@ import (
 
 func SetUpUserRoutes(app *fiber.App) {
 	app.Post("/users/", handlers.CreateUser)
-	app.Get("/users/", handlers.GetUsersPaginate)
-	app.Get("/users/count", handlers.GetUserCount)
-	app.Get("/users/:id", handlers.GetUser)
-	app.Patch("/users/:id", handlers.UpdateUser)
+	app.Get("/users/", middleware.JWTMiddleware, handlers.GetUsersPaginate)
+	app.Get("/users/count", middleware.JWTMiddleware, handlers.GetUserCount)
+	app.Get("/users/:id", middleware.JWTMiddleware, handlers.GetUser)
+	app.Patch("/users/:id", middleware.JWTMiddleware, handlers.UpdateUser)
 	app.Delete("/users/:id", middleware.JWTMiddleware, handlers.DeleteUser)
 }
