@@ -20,15 +20,25 @@ import (
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users [delete]
 func DeleteUser(c *fiber.Ctx) error {
-	id := c.Locals(middleware.IDKey).(int64)
+	id := c.Locals(middleware.IDKey)
 
-	if id < 1 {
+	idFloat, ok := id.(float64)
+
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token",
+		})
+	}
+
+	userID := int(idFloat)
+
+	if userID < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "required id parameter is malformed; should be > 0",
 		})
 	}
 
-	result := database.DB.Delete(&schemas.User{}, id)
+	result := database.DB.Delete(&schemas.User{}, userID)
 
 	if err := result.Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
