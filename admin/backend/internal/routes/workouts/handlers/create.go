@@ -8,6 +8,7 @@ import (
 	"time"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
+	middleware "admin/internal/middlewares"
 )
 
 // CreateWorkout
@@ -22,6 +23,21 @@ import (
 // @Router /workouts [post]
 func CreateWorkout(c *fiber.Ctx) error {
 	workoutCreate := &models.WorkoutCreate{}
+
+	userIDRaw := c.Locals(middleware.IDKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	if int(userID) != int(workoutCreate.UserID) {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "You can only delete your own workouts",
+		})
+	}
 
 	if err := c.BodyParser(workoutCreate); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
