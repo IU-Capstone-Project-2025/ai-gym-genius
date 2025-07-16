@@ -3,9 +3,12 @@ package main
 import (
 	_ "admin/docs"
 	"admin/internal/database"
-	middleware "admin/internal/middlewares"
+	"admin/internal/middlewares"
+	"log"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/gofiber/fiber/v2/middleware/requestid"
 )
 
 // @title Gym Genius API
@@ -20,23 +23,23 @@ import (
 // @host localhost:3000
 // @BasePath /
 func main() {
+	if err := database.InitDatabase(); err != nil {
+		panic(err) // failed to connect or migrate
+	}
+
 	app := fiber.New()
 
+	// set up middleware
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 		AllowMethods: "GET, POST, PATCH, DELETE",
 	}))
-
+	// sets X-Request-ID header with uuids
+	app.Use(requestid.New())
 	app.Use(middleware.LoggingMiddleware())
-
-	if err := database.InitDatabase(); err != nil {
-		panic(err) // failed to connect or migrate
-	}
 
 	CombineRoutes(app)
 
-	if err := app.Listen(":3000"); err != nil {
-		panic("Failed to start the server: " + err.Error())
-	}
+	log.Fatal(app.Listen(":3000"))
 }

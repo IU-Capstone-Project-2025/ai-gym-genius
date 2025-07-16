@@ -1,31 +1,18 @@
 package schemas
 
-// TODO verify schemas
-
 type Exercise struct {
-	ID   uint   `gorm:"primaryKey;autoincrement"`
-	Name string `gorm:"not null"`
-	URL  string
+	ID           uint     `gorm:"primaryKey;autoincrement"           json:"id"`
+	Name         string   `gorm:"not null;uniqueIndex"               json:"name"`
+	Description  string   `gorm:"not null"                           json:"description"`
+	MuscleGroups []string `gorm:"type:text;serializer:json;not null" json:"muscleGroups"`
+	URL          string   `gorm:"not null"                           json:"imagePath"`
 }
 
-// type MuscleGroup struct {
-// 	ID            uint            `gorm:"primaryKey"`
-// 	Name          string          `gorm:"unique;not null"`
-// 	ExerciseInfos []*ExerciseInfo `gorm:"many2many:exercise_info_muscle_groups;constraint:OnDelete:CASCADE;"`
-// }
-
-// type Exercise struct {
-// 	ID             uint `gorm:"primaryKey"`
-// 	WorkoutID      uint
-// 	Workout        Workout `gorm:"constraint:OnDelete:CASCADE;"`
-// 	ExerciseInfoID uint
-// 	ExerciseInfo   ExerciseInfo
-// }
-
 type ExerciseSet struct {
-	ID         uint    `gorm:"primaryKey"`
 	Weight     float64 `gorm:"not null"`
 	Reps       uint    `gorm:"not null"`
-	ExerciseID uint
-	Exercise   Exercise `gorm:"constraint:OnDelete:CASCADE;"`
+	ExerciseID uint    `gorm:"primaryKey;autoIncrement:false"`
+	WorkoutID  uint    `gorm:"primaryKey;autoIncrement:false"`
+	Exercise   Exercise
+	Workout    Workout
 }

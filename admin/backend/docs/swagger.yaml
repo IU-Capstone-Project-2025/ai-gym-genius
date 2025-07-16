@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  handlers.MonthlyStat:
+    properties:
+      count:
+        type: integer
+      month:
+        type: string
+    type: object
   handlers.intervalResult:
     properties:
       count:
@@ -16,6 +23,21 @@ definitions:
       password:
         type: string
     type: object
+  models.CountResponse:
+    properties:
+      count:
+        example: 10
+        type: integer
+    type: object
+  models.CreatedResponse:
+    properties:
+      id:
+        example: 12345
+        type: integer
+      message:
+        example: User created successfully
+        type: string
+    type: object
   models.ErrorResponse:
     properties:
       error:
@@ -24,14 +46,96 @@ definitions:
     type: object
   models.ExerciseCreate:
     properties:
+      description:
+        example: Push-ups are a basic exercise that works the chest, shoulders, and
+          triceps.
+        type: string
+      muscle_groups:
+        example:
+        - chest
+        - back
+        - triceps
+        items:
+          type: string
+        type: array
       name:
         type: string
       url:
         type: string
     type: object
+  models.ExerciseRead:
+    properties:
+      description:
+        example: Push-ups are a basic exercise that works the chest, shoulders, and
+          triceps.
+        type: string
+      id:
+        example: 1
+        type: integer
+      muscle_groups:
+        example:
+        - chest
+        - back
+        - triceps
+        items:
+          type: string
+        type: array
+      name:
+        type: string
+      url:
+        description: URL to the exercise image
+        example: https://example.com/image.jpg
+        type: string
+    type: object
+  models.ExerciseSetCreate:
+    properties:
+      exercise_id:
+        example: 10
+        type: integer
+      reps:
+        example: 10
+        type: integer
+      weight:
+        example: 10
+        type: number
+    type: object
+  models.ExerciseSetRead:
+    properties:
+      exercise_id:
+        example: 10
+        type: integer
+      reps:
+        example: 10
+        type: integer
+      weight:
+        example: 10
+        type: number
+    type: object
   models.ExerciseUpdate:
     properties:
+      description:
+        example: Push-ups are a basic exercise that works the chest, shoulders, and
+          triceps.
+        type: string
+      image_path:
+        description: URL to the exercise image
+        example: https://example.com/image.jpg
+        type: string
+      muscle_group:
+        example:
+        - chest
+        - back
+        - triceps
+        items:
+          type: string
+        type: array
       url:
+        type: string
+    type: object
+  models.MessageResponse:
+    properties:
+      message:
+        example: Descriptive message
         type: string
     type: object
   models.UserActivityCreate:
@@ -44,87 +148,155 @@ definitions:
     type: object
   models.UserCreate:
     properties:
+      email:
+        example: john_doe@gmail.com
+        type: string
       login:
-        description: Login    string `json:"login"`
-        example: john
+        example: john123
+        type: string
+      name:
+        example: John
         type: string
       password:
-        description: |-
-          Surname  string `json:"surname"`
-          Phone    string `json:"phone"`
         example: "123"
+        type: string
+      surname:
+        example: Wick
         type: string
     type: object
   models.UserRead:
     properties:
+      average_workout_duration_ns:
+        description: in nanoseconds
+        example: 3600
+        type: integer
+      email:
+        example: john_doe@gmail.com
+        type: string
       id:
+        example: 12345
+        type: integer
+      last_activity:
+        example: "2023-10-01T12:00:00Z"
+        type: string
+      name:
+        example: John
+        type: string
+      number_of_workouts:
+        example: 0
+        type: integer
+      status:
+        description: e.g., "active", "inactive", "banned"
+        example: active
+        type: string
+      streak_count:
+        example: 0
+        type: integer
+      subscription_type:
+        description: e.g., "free", "basic", "pro"
+        example: free
+        type: string
+      surname:
+        example: Doe
+        type: string
+      total_time_spent_ns:
+        description: in nanoseconds
+        example: 3600
         type: integer
       username:
         type: string
     type: object
   models.UserUpdate:
     properties:
+      average_workout_duration_ns:
+        description: in seconds
+        example: 3600
+        type: integer
+      email:
+        example: john_doe@gmail.com
+        type: string
+      last_activity:
+        example: "2023-10-01T12:00:00Z"
+        type: string
       login:
         type: string
-      password:
-        description: |-
-          Surname  *string `json:"surname"`
-          Phone    *string `json:"phone"`
+      name:
+        example: John
         type: string
+      number_of_workouts:
+        example: 0
+        type: integer
+      password:
+        type: string
+      status:
+        description: e.g., "active", "inactive", "banned"
+        example: active
+        type: string
+      streak_count:
+        example: 0
+        type: integer
+      subscription_type:
+        example: free
+        type: string
+      surname:
+        type: string
+      total_time_spent_ns:
+        description: in seconds
+        example: 3600
+        type: integer
     type: object
   models.WorkoutCreate:
     properties:
-      description:
-        example: Morning workout
-        type: string
-      duration:
+      duration_ns:
+        description: in nanoseconds
         example: 60
         type: integer
+      exercise_sets:
+        items:
+          $ref: '#/definitions/models.ExerciseSetCreate'
+        type: array
       start_time:
         example: "2023-10-01T12:00:00Z"
         type: string
-      weight:
-        example: 70.5
-        type: number
+      user_id:
+        example: 12345
+        type: integer
     type: object
   models.WorkoutRead:
     properties:
-      description:
-        example: Morning workout
-        type: string
-      duration:
+      duration_ns:
+        description: in nanoseconds
         example: 60
         type: integer
-      start_time:
+      exercise_sets:
+        items:
+          $ref: '#/definitions/models.ExerciseSetRead'
+        type: array
+      id:
+        example: 1
+        type: integer
+      timestamp:
         example: "2023-10-01T12:00:00Z"
         type: string
-      weight:
-        example: 70.5
-        type: number
+      user_id:
+        example: 12345
+        type: integer
     type: object
   models.WorkoutUpdate:
     properties:
-      description:
-        example: Morning workout
-        type: string
-      duration:
+      duration_ns:
         example: 60
         type: integer
+      exercise_sets:
+        items:
+          $ref: '#/definitions/models.ExerciseSetCreate'
+        type: array
       start_time:
         example: "2023-10-01T12:00:00Z"
         type: string
-      weight:
-        example: 70.5
-        type: number
-    type: object
-  schemas.User:
-    properties:
-      hash:
-        type: string
-      id:
+      user_id:
+        example: 12345
         type: integer
-      login:
-        type: string
     type: object
 host: localhost:3000
 info:
@@ -140,7 +312,47 @@ info:
   title: Gym Genius API
   version: "1.0"
 paths:
-  /auth:
+  /auth_admin:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate an admin with login and password, returning a token
+      parameters:
+      - description: Login and Password
+        in: body
+        name: authInput
+        required: true
+        schema:
+          $ref: '#/definitions/models.AuthInput'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Admin logged in successfully
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "400":
+          description: Invalid request body or missing fields
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "401":
+          description: Incorrect password
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Admin not found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Failed to query database or create token
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Admin Login
+      tags:
+      - auth
+  /auth_user:
     post:
       consumes:
       - application/json
@@ -164,27 +376,19 @@ paths:
         "400":
           description: Invalid request body or missing fields
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "401":
           description: Incorrect password
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: User not found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Failed to query database or create token
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: User Login
       tags:
       - auth
@@ -192,7 +396,6 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new exercise
       parameters:
       - description: Exercise create payload
         in: body
@@ -206,20 +409,15 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.CreatedResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new exercise
       tags:
       - exercises
@@ -227,7 +425,6 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a exercise by their unique ID
       parameters:
       - description: Exercise ID
         in: path
@@ -240,34 +437,52 @@ paths:
         "200":
           description: Exercise deleted successfully
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.MessageResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Exercise Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Delete a exercise by ID
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an exercise by id
+      tags:
+      - exercises
+    get:
+      consumes:
+      - application/json
+      parameters:
+      - description: Exercise ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.ExerciseRead'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get an exercise by id
       tags:
       - exercises
     patch:
       consumes:
       - application/json
-      description: Update exercise details by ID
       parameters:
       - description: Exercise update payload
         in: body
@@ -286,27 +501,20 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.MessageResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Exercise Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update an existing exercise
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an existing exercise by ID
       tags:
       - exercises
   /statistics/active-users:
@@ -373,19 +581,44 @@ paths:
         "200":
           description: Success message
           schema:
-            type: string
+            $ref: '#/definitions/models.CreatedResponse'
         "400":
           description: Validation error
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Server error
           schema:
-            type: string
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Record user activity
       tags:
       - statistics
   /users:
+    delete:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User deleted successfully
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: User Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete a user by ID
+      tags:
+      - users
     get:
       consumes:
       - application/json
@@ -414,16 +647,13 @@ paths:
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Get paginated list of users
       tags:
       - users
     post:
       consumes:
       - application/json
-      description: Create a new user with login and password
       parameters:
       - description: User create payload
         in: body
@@ -437,64 +667,19 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.CreatedResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new user
       tags:
       - users
   /users/{id}:
-    delete:
-      consumes:
-      - application/json
-      description: Delete a user by their unique ID
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: User deleted successfully
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "404":
-          description: User Not Found
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Delete a user by ID
-      tags:
-      - users
     get:
       consumes:
       - application/json
@@ -536,7 +721,6 @@ paths:
     patch:
       consumes:
       - application/json
-      description: Update user details by ID
       parameters:
       - description: User ID
         in: path
@@ -553,56 +737,77 @@ paths:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Updated Successfully
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.MessageResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: User Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update an existing user
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an existing user by ID
       tags:
       - users
-  /users/all:
+  /users/{id}/activity:
     get:
-      description: Retrieves a list of all users from the database.
+      consumes:
+      - application/json
+      description: Retrieve monthly activity statistics for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
         "200":
-          description: OK
+          description: Monthly activity statistics
           schema:
             items:
-              $ref: '#/definitions/schemas.User'
+              $ref: '#/definitions/handlers.MonthlyStat'
             type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            type: string
-      summary: Get all users
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get user activity statistics
+      tags:
+      - statistics
+  /users/count:
+    get:
+      consumes:
+      - application/json
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User count object
+          schema:
+            $ref: '#/definitions/models.CountResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Get the total number of users
       tags:
       - users
   /workouts:
     post:
       consumes:
       - application/json
-      description: Create a new workout with duration, start time, description, and
-        weight
       parameters:
       - description: Workout create payload
         in: body
@@ -616,20 +821,15 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.CreatedResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Create a new workout
       tags:
       - workouts
@@ -637,7 +837,6 @@ paths:
     delete:
       consumes:
       - application/json
-      description: Delete a workout by their unique ID
       parameters:
       - description: Workout ID
         in: path
@@ -650,34 +849,25 @@ paths:
         "200":
           description: Workout deleted successfully
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.MessageResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Workout Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Delete a workout by ID
       tags:
       - workouts
     get:
       consumes:
       - application/json
-      description: Retrieve a workout by their unique ID
       parameters:
       - description: Workout ID
         in: path
@@ -694,28 +884,21 @@ paths:
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Workout Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
       summary: Get a workout by ID
       tags:
       - workouts
     patch:
       consumes:
       - application/json
-      description: Update workout details by ID
       parameters:
       - description: Workout update payload
         in: body
@@ -734,27 +917,94 @@ paths:
         "200":
           description: OK
           schema:
-            additionalProperties: true
-            type: object
+            $ref: '#/definitions/models.MessageResponse'
         "400":
           description: Bad Request
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "404":
           description: Workout Not Found
           schema:
-            additionalProperties:
-              type: string
-            type: object
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: Update an existing workout
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Update an existing workout by ID
+      tags:
+      - workouts
+  /workouts/{id}/exercise_set:
+    delete:
+      consumes:
+      - application/json
+      parameters:
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Exercise ID
+        in: query
+        name: exercise_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Exercise Set Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Delete an exercise set from a workout
+      tags:
+      - workouts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: ExerciseSet create payload
+        in: body
+        name: ExerciseSet
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExerciseSetCreate'
+      - description: Workout ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.MessageResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Exercise Set Not Found
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Append an exercise set to a workout
       tags:
       - workouts
 swagger: "2.0"
