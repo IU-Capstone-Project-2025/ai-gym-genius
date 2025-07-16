@@ -25,18 +25,51 @@
     
     <div class="flex-grow"></div>
     
-    <NuxtLink to="/auth" v-if="authButtonVisible">
+    <!-- User menu when authenticated -->
+    <div v-if="isAuthenticated && user" class="flex items-center gap-4">
+      <span class="text-sm text-gray-600 dark:text-gray-300">
+        {{ user.name }}
+      </span>
+      <UDropdown
+        :items="userMenuItems"
+        :popper="{ placement: 'bottom-end' }"
+      >
+        <UAvatar 
+          :alt="user.name" 
+          size="sm"
+          class="cursor-pointer"
+        />
+      </UDropdown>
+    </div>
+    
+    <!-- Login button when not authenticated -->
+    <NuxtLink to="/auth" v-else-if="authButtonVisible">
       <UButton>Login</UButton>
     </NuxtLink>
   </div>
 </template>
 
 <script setup lang="ts">
+const { user, isAuthenticated, logout } = useAuth()
 
 const authButtonVisible = computed(() => {
-  return useRoute().name !== 'auth';
+  return useRoute().name !== 'auth'
 })
 
+const userMenuItems = [
+  [{
+    label: 'Profile',
+    icon: 'i-heroicons-user-circle',
+    disabled: true // TODO: Implement profile page
+  }],
+  [{
+    label: 'Logout',
+    icon: 'i-heroicons-arrow-left-on-rectangle',
+    click: async () => {
+      await logout()
+    }
+  }]
+]
 </script>
 
 <style scoped>
