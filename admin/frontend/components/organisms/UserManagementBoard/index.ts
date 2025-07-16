@@ -1,0 +1,1 @@
+export { default as UserManagementBoard } from './ui/UserManagementBoard.vue'
