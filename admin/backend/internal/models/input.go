@@ -46,14 +46,14 @@ type ExerciseCreate struct {
 	Name         string   `json:"name"`
 	Description  string   `json:"description"   example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
 	MuscleGroups []string `json:"muscle_groups" example:"chest,back,triceps"`
-	ImagePath          string   `json:"url"`
+	ImagePath    string   `json:"url"`
 }
 
 type ExerciseUpdate struct {
 	Name         *string   `json:"url"`
 	Description  *string   `json:"description"  example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
 	MuscleGroups *[]string `json:"muscle_group" example:"chest,back,triceps"`
-	ImagePath          *string   `json:"image_path"   example:"https://example.com/image.jpg"` // URL to the exercise image
+	ImagePath    *string   `json:"image_path"   example:"https://example.com/image.jpg"` // URL to the exercise image
 }
 
 type UserUpdate struct {
@@ -87,4 +87,10 @@ type AuthInput struct {
 type UserActivityCreate struct {
 	UserID uint      `json:"user_id" example:"12345"`
 	Date   time.Time `json:"date"`
+}
+
+type UserActivityCreateFull struct {
+	ID     uint      `json:"id" example:"1"`
+	UserID uint      `json:"user_id" example:"15"`
+	Date   time.Time `json:"date" example:"2024-04-15T11:00:00Z"`
 }

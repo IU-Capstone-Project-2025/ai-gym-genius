@@ -256,3 +256,31 @@ func UpsertStaticWorkouts() error {
 
 	return nil
 }
+
+func UpsertStaticUserActivities() error {
+	data, err := os.ReadFile("assets/user_activities.json")
+	if err != nil {
+		return err
+	}
+
+	var userActivityCreates []models.UserActivityCreateFull
+
+	err = json.Unmarshal(data, &userActivityCreates)
+	if err != nil {
+		return err
+	}
+
+	for _, userActivityCreate := range userActivityCreates {
+		userActivity := &schemas.UserActivity{
+			UserID:       userActivityCreate.UserID,
+			ID: userActivityCreate.ID,
+			Date: userActivityCreate.Date,
+		}
+
+		if err := DB.Create(userActivity).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
