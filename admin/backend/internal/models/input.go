@@ -29,14 +29,14 @@ type ExerciseCreate struct {
 	Name         string   `json:"name"`
 	Description  string   `json:"description"   example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
 	MuscleGroups []string `json:"muscle_groups" example:"chest,back,triceps"`
-	URL          string   `json:"url"`
+	ImagePath          string   `json:"url"`
 }
 
 type ExerciseUpdate struct {
 	Name         *string   `json:"url"`
 	Description  *string   `json:"description"  example:"Push-ups are a basic exercise that works the chest, shoulders, and triceps."`
 	MuscleGroups *[]string `json:"muscle_group" example:"chest,back,triceps"`
-	URL          *string   `json:"image_path"   example:"https://example.com/image.jpg"` // URL to the exercise image
+	ImagePath          *string   `json:"image_path"   example:"https://example.com/image.jpg"` // URL to the exercise image
 }
 
 type UserUpdate struct {

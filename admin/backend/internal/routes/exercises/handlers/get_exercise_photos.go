@@ -9,6 +9,19 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// GetExercisePhoto
+// @Description Get an exercise photo by its ID
+// @Security BearerAuth
+// @Summary Get an exercise photo by ID
+// @Tags exercises
+// @Accept json
+// @Produce json
+// @Param id path int true "Exercise ID"
+// @Success 200 {object} models.MessageResponse "Exercise photo retrieved successfully"
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 404 {object} models.ErrorResponse "Exercise Not Found"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
+// @Router /exercises/photo/{id} [get]
 func GetExercisePhoto(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 
@@ -40,7 +53,10 @@ func GetExercisePhoto(c *fiber.Ctx) error {
 		})
 	}
 
-	return c.SendFile(exercise.URL)
+	return c.JSON(models.PhotoResponse{
+		Message: "Exercise photo path returned successfully",
+		Data:    exercise.ImagePath,
+	})
 }
 
 // func GetAllExercisePhotos(c *fiber.Ctx) error {

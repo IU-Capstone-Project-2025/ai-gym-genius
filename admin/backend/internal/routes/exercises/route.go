@@ -9,6 +9,7 @@ import (
 func SetupExerciseRoutes(app *fiber.App) {
 	app.Post("/exercises/", middleware.JWTMiddleware, handlers.AddExercise)
 	app.Get("/exercises/", middleware.JWTMiddleware, handlers.GetExercisesPaginate)
+	app.Get("/exercises/photo/:id", middleware.JWTMiddleware, handlers.GetExercisePhoto)
 	app.Get("/exercises/:id", middleware.JWTMiddleware, handlers.GetExerciseByID)
 	app.Patch("/exercises/:id", middleware.JWTMiddleware, handlers.UpdateExercise)
 	app.Delete("/exercises/:id", middleware.JWTMiddleware, handlers.DeleteExercise)

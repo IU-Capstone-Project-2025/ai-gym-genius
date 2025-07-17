@@ -47,6 +47,11 @@ type MessageResponse struct {
 	Message string `json:"message" example:"Descriptive message"`
 }
 
+type PhotoResponse struct {
+	Message string `json:"message" example:"Descriptive message"`
+	Data	string `json:"data" example:"https://example.com/image.jpg"` // URL to the exercise photo
+}
+
 type CreatedResponse struct {
 	Message string `json:"message" example:"User created successfully"`
 	ID      uint   `json:"id" example:"12345"`
