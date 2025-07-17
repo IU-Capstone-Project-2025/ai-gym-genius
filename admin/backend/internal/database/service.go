@@ -129,6 +129,11 @@ func UpsertStaticData() error {
 		return fmt.Errorf("failed to upsert static workouts: %w", err)
 	}
 
+	err = UpsertStaticUserActivities()
+	if err != nil {
+		return fmt.Errorf("failed to upsert static user activities: %w", err)
+	}
+	
 	return nil
 }
 
