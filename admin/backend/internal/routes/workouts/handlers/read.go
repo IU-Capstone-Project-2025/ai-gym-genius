@@ -77,6 +77,7 @@ func GetWorkout(c *fiber.Ctx) error {
 	}
 
 	workoutRead := models.WorkoutRead{
+		ID: 		 workout.ID,
 		DurationNS:   workout.Duration.Nanoseconds(),
 		Timestamp:    workout.StartTime,
 		UserID:       workout.UserID,
