@@ -1,77 +1,139 @@
 <template>
   <UCard class="auth__login-form">
     <template #header>
-      {{ header }}
+      Log In
     </template>
 
     <div class="flex flex-col gap-y-4">
-      <UInput
-          placeholder="Login"
-          size="xl"
-          autocomplete="off"
-          v-model="login"
-      />
-      <UInput
-          placeholder="Password"
-          size="xl"
-          type="password"
-          autocomplete="new-password"
-          v-model="password"
+      <UFormGroup
+          label="Login"
+          :error="errors.login"
+          class="space-y-1"
+      >
+        <UInput
+            class="w-full"
+            placeholder="Enter your login"
+            size="xl"
+            autocomplete="off"
+            v-model="login"
+            :disabled="isLoading"
+            @blur="validateField('login')"
+        />
+      </UFormGroup>
+
+      <UFormGroup
+          label="Password"
+          :error="errors.password"
+          class="space-y-1"
+      >
+        <UInput
+            class="w-full"
+            placeholder="Enter your password"
+            size="xl"
+            type="password"
+            autocomplete="new-password"
+            v-model="password"
+            :disabled="isLoading"
+            @blur="validateField('password')"
+            @keyup.enter="handleLogin"
+        />
+      </UFormGroup>
+
+      <UAlert
+          v-if="generalError"
+          color="red"
+          variant="solid"
+          :title="generalError"
+          class="mb-4"
       />
     </div>
 
     <template #footer>
-      <div class="grid grid-cols-1 justify-items-end">
-        <div class="flex gap-x-2">
-          <UButton
-              :variant="type === 'sign_in' ? 'outline' : 'solid'"
-              :color="type === 'sign_in' ? 'neutral' : 'primary'"
-              size="xl"
-              @click="type === 'sign_up' ? actionButtonClick() : emit('switch', 'sign_up')"
-          >
-            Sign up
-          </UButton>
-
-          <UButton
-              size="xl"
-              :variant="type === 'sign_in' ? 'solid' : 'outline'"
-              :color="type === 'sign_in' ? 'primary' : 'neutral'"
-              @click="type === 'sign_in' ? actionButtonClick() : emit('switch', 'sign_in')"
-          >
-            Log in
-          </UButton>
-        </div>
+      <div class="flex justify-end">
+        <UButton
+            size="xl"
+            color="primary"
+            :loading="isLoading"
+            :disabled="isLoading"
+            @click="handleLogin"
+        >
+          {{ isLoading ? 'Logging in...' : 'Log in' }}
+        </UButton>
       </div>
     </template>
   </UCard>
 </template>
 
 <script setup lang="ts">
+import {loginSchema} from '~/utils/validation/auth'
+import type {ZodError} from 'zod'
 
 const props = defineProps<{
-  type: "sign_in" | "sign_up"
+  isLoading?: boolean
 }>();
 
 const emit = defineEmits<{
-  (e: "switch", value: "sign_in" | "sign_up"),
-  (e: "action", login_: string, password_: string)
+  (e: "submit", login: string, password: string): void
 }>()
 
-const header = computed(() => {
-  return props.type === "sign_in" ? "Log In" : "Sign up"
+const login = ref("");
+const password = ref("");
+const errors = ref({
+  login: '',
+  password: ''
 });
+const generalError = ref('');
 
-const login: Ref<string> = ref("");
-const password: Ref<string> = ref("");
+const validateField = (field: 'login' | 'password') => {
+  try {
+    const data = {login: login.value, password: password.value};
+    loginSchema.parse(data);
+    errors.value[field] = '';
+  } catch (error) {
+    if (error instanceof Error && 'errors' in error) {
+      const zodError = error as ZodError;
+      const fieldError = zodError.errors.find(e => e.path[0] === field);
+      if (fieldError) {
+        errors.value[field] = fieldError.message;
+      }
+    }
+  }
+};
 
+const validateForm = (): boolean => {
+  // Clear previous errors
+  errors.value.login = '';
+  errors.value.password = '';
+  generalError.value = '';
 
-const actionButtonClick = () => {
-  if (!login.value || !password.value) {
+  return login.value && password.value;
+};
+
+const handleLogin = () => {
+  console.log('handleLogin in AuthForm called')
+  generalError.value = '';
+
+  if (!validateForm()) {
+    generalError.value = "All fields must be filled";
+    console.log('Validation failed');
     return;
   }
 
-  emit('action', login.value, password.value);
+  console.log('Emitting submit event with:', login.value, password.value)
+  emit('submit', login.value, password.value);
 }
+
+// Clear general error when user starts typing
+watch([login, password], () => {
+  generalError.value = '';
+});
+
+// Show error passed from parent
+defineExpose({
+  setError: (error: string) => {
+    generalError.value = error;
+  }
+});
 
 </script>
 

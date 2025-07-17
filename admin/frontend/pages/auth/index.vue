@@ -1,9 +1,9 @@
 <template>
   <div class="h-full flex items-center justify-center">
     <AuthForm
-        :type="type"
-        @switch="value => type = value"
-        @action="(login, password) => action(login, password)"
+        ref="authFormRef"
+        :is-loading="isLoading"
+        @submit="handleLogin"
     />
   </div>
 </template>
@@ -17,19 +17,32 @@ definePageMeta({
 })
 
 const { login: authLogin, isLoading } = useAuth()
-const type: Ref<"sign_in" | "sign_up"> = ref("sign_in")
+const toast = useToast()
+const authFormRef = ref<InstanceType<typeof AuthForm>>()
 
-const action = async (email: string, password: string) => {
-  if (type.value === 'sign_in') {
-    try {
-      await authLogin({ email, password })
-    } catch (error) {
-      console.error('Login failed:', error)
-      // TODO: Show error message to user
+const handleLogin = async (login: string, password: string) => {
+  console.log('handleLogin called with:', { login, password })
+  try {
+    await authLogin({ login, password })
+    toast.add({
+      title: 'Success',
+      description: 'Logged in successfully',
+      color: 'green'
+    })
+  } catch (error: any) {
+    console.error('Login failed:', error)
+    
+    // Show error in the form
+    if (authFormRef.value) {
+      authFormRef.value.setError(error.message || 'Login failed. Please check your credentials.')
     }
-  } else {
-    // TODO: Implement sign up functionality
-    console.warn('Sign up not implemented yet')
+    
+    // Also show toast for error
+    toast.add({
+      title: 'Login Failed',
+      description: error.message || 'Please check your credentials and try again',
+      color: 'red'
+    })
   }
 }
 </script>

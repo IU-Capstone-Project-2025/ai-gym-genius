@@ -1,5 +1,7 @@
 import { ref, computed } from 'vue'
 import type { Ref } from 'vue'
+import { authService } from '~/services/auth.service'
+import { validateLoginForm } from '~/utils/validation/auth'
 
 export interface AuthUser {
   id: string
@@ -9,7 +11,7 @@ export interface AuthUser {
 }
 
 export interface LoginCredentials {
-  email: string
+  login: string
   password: string
 }
 
@@ -38,32 +40,40 @@ export const useAuth = () => {
 
   const login = async (credentials: LoginCredentials): Promise<void> => {
     isLoading.value = true
+    console.log('Login attempt with credentials:', credentials)
     
     try {
-      // TODO: Replace with actual API call
-      const response = await $fetch('/api/auth/login', {
-        method: 'POST',
-        body: credentials
-      })
+      console.log('Calling API...')
+      // Call the backend API
+      const response = await authService.login(credentials)
+      console.log('API response:', response)
 
-      // For now, mock the response
-      const mockResponse = {
-        token: 'mock-jwt-token',
-        user: {
-          id: '1',
-          email: credentials.email,
+      // Store the token
+      token.value = response.token
+
+      // If user data is provided in response, use it; otherwise, create minimal user object
+      if (response.user) {
+        user.value = {
+          id: response.user.id,
+          email: response.user.email,
+          name: response.user.name,
+          role: response.user.role as 'admin' | 'super_admin'
+        }
+      } else {
+        // Create minimal user object from login credentials
+        user.value = {
+          id: '1', // This should ideally come from the backend
+          email: credentials.login, // Using login as email for now
           name: 'Admin User',
-          role: 'admin' as const
+          role: 'admin'
         }
       }
 
-      token.value = mockResponse.token
-      user.value = mockResponse.user
-
       // Navigate to dashboard after successful login
       await navigateTo('/')
-    } catch (error) {
+    } catch (error: any) {
       console.error('Login error:', error)
+      // Re-throw the error so it can be handled by the component
       throw error
     } finally {
       isLoading.value = false
@@ -125,7 +135,7 @@ export const useAuth = () => {
     user: readonly(user),
     token: readonly(token),
     isAuthenticated: readonly(isAuthenticated),
-    isLoading: readonly(isLoading),
+    isLoading,
     login,
     logout,
     checkAuth
