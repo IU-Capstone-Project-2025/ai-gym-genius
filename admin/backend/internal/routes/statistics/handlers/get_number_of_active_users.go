@@ -48,6 +48,7 @@ func parseStep(stepStr string) (step, error) {
 }
 
 // GetNumberOfActiveUsers
+// @Security BearerAuth
 // @Summary Get number of active users in time intervals
 // @Description Returns the count of distinct active users grouped by specified time intervals between start and end dates.
 // @Tags statistics

@@ -44,7 +44,8 @@ type UserUpdate struct {
 	Name                     *string    `json:"name" example:"John"`
 	Surname                  *string    `json:"surname"`
 	Email                    *string    `json:"email" example:"john_doe@gmail.com"`
-	SubscriptionType         *string    `json:"subscription_type" example:"free"`
+	SubscriptionPlan         *string    `json:"subscription_plan" example:"free"`
+	SubscriptionStatus       *string    `json:"subscription_status" example:"active"`
 	Status                   *string    `json:"status" example:"active"` // e.g., "active", "inactive", "banned"
 	LastActivity             *time.Time `json:"last_activity" example:"2023-10-01T12:00:00Z"`
 	NumberOfWorkouts         *uint      `json:"number_of_workouts" example:"0"`

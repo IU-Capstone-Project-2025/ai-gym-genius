@@ -11,6 +11,7 @@ import (
 )
 
 // GetExerciseByID
+// @Security BearerAuth
 // @Summary Get an exercise by id
 // @Tags exercises
 // @Accept json

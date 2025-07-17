@@ -9,6 +9,7 @@ import (
 )
 
 // DeleteExercise
+// @Security BearerAuth
 // @Summary Delete an exercise by id
 // @Tags exercises
 // @Accept json

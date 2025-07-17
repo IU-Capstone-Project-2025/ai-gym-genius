@@ -14,6 +14,10 @@ import (
 // @title Gym Genius API
 // @version 1.0
 // @description API for Gym Genius application
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token. Example: "Bearer {token}"
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.url http://www.swagger.io/support

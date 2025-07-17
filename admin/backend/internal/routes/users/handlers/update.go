@@ -12,6 +12,7 @@ import (
 )
 
 // UpdateUser
+// @Security BearerAuth
 // @Summary Update an existing user by ID
 // @Tags users
 // @Accept json
@@ -91,8 +92,8 @@ func UpdateUser(c *fiber.Ctx) error {
 		user.Email = *input.Email
 	}
 
-	if input.SubscriptionType != nil {
-		user.SubscriptionType = *input.SubscriptionType
+	if input.SubscriptionPlan != nil {
+		user.SubscriptionPlan = *input.SubscriptionPlan
 	}
 
 	if input.Status != nil {

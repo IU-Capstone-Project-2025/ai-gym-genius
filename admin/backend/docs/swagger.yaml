@@ -1,4 +1,3 @@
-basePath: /
 definitions:
   handlers.MonthlyStat:
     properties:
@@ -192,6 +191,10 @@ definitions:
       streak_count:
         example: 0
         type: integer
+      subscription_status:
+        description: e.g., "active", "expired", "cancelled"
+        example: active
+        type: string
       subscription_type:
         description: e.g., "free", "basic", "pro"
         example: free
@@ -235,8 +238,11 @@ definitions:
       streak_count:
         example: 0
         type: integer
-      subscription_type:
+      subscription_plan:
         example: free
+        type: string
+      subscription_status:
+        example: active
         type: string
       surname:
         type: string
@@ -298,17 +304,9 @@ definitions:
         example: 12345
         type: integer
     type: object
-host: api.говно.site
 info:
-  contact:
-    email: support@swagger.io
-    name: API Support
-    url: http://www.swagger.io/support
+  contact: {}
   description: API for Gym Genius application
-  license:
-    name: Apache 2.0
-    url: http://www.apache.org/licenses/LICENSE-2.0.html
-  termsOfService: http://swagger.io/terms/
   title: Gym Genius API
   version: "1.0"
 paths:
@@ -418,6 +416,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new exercise
       tags:
       - exercises
@@ -450,6 +450,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete an exercise by id
       tags:
       - exercises
@@ -477,6 +479,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get an exercise by id
       tags:
       - exercises
@@ -514,6 +518,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update an existing exercise by ID
       tags:
       - exercises
@@ -560,6 +566,8 @@ paths:
           description: Internal server error while processing the request
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get number of active users in time intervals
       tags:
       - statistics
@@ -590,7 +598,42 @@ paths:
           description: Server error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Record user activity
+      tags:
+      - statistics
+  /statistics/user/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve monthly activity statistics for a user
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Monthly activity statistics
+          schema:
+            items:
+              $ref: '#/definitions/handlers.MonthlyStat'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
+      summary: Get user activity statistics
       tags:
       - statistics
   /users:
@@ -610,6 +653,21 @@ paths:
         in: query
         name: limit
         type: integer
+      - default: active
+        description: User status to fliter by
+        in: query
+        name: user_status
+        type: string
+      - default: basic
+        description: Subscription plan to filter by
+        in: query
+        name: subscription_plan
+        type: string
+      - default: active
+        description: Subscription status to filter by
+        in: query
+        name: subscription_status
+        type: string
       produces:
       - application/json
       responses:
@@ -619,10 +677,16 @@ paths:
             items:
               $ref: '#/definitions/models.UserRead'
             type: array
+        "400":
+          description: Malformed query parameters
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
         "500":
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get paginated list of users
       tags:
       - users
@@ -651,6 +715,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Create a new user
       tags:
       - users
@@ -691,6 +757,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Delete a user by ID
       tags:
       - users
@@ -698,6 +766,12 @@ paths:
       consumes:
       - application/json
       description: Retrieve a user by their unique ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
@@ -723,6 +797,8 @@ paths:
             additionalProperties:
               type: string
             type: object
+      security:
+      - BearerAuth: []
       summary: Get a user by ID
       tags:
       - users
@@ -760,40 +836,11 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Update an existing user by ID
       tags:
       - users
-  /users/{id}/activity:
-    get:
-      consumes:
-      - application/json
-      description: Retrieve monthly activity statistics for a user
-      parameters:
-      - description: User ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Monthly activity statistics
-          schema:
-            items:
-              $ref: '#/definitions/handlers.MonthlyStat'
-            type: array
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Get user activity statistics
-      tags:
-      - statistics
   /users/count:
     get:
       consumes:
@@ -809,6 +856,8 @@ paths:
           description: Internal Server Error
           schema:
             $ref: '#/definitions/models.ErrorResponse'
+      security:
+      - BearerAuth: []
       summary: Get the total number of users
       tags:
       - users
@@ -1015,4 +1064,11 @@ paths:
       summary: Append an exercise set to a workout
       tags:
       - workouts
+securityDefinitions:
+  BearerAuth:
+    description: 'Type "Bearer" followed by a space and JWT token. Example: "Bearer
+      {token}"'
+    in: header
+    name: Authorization
+    type: apiKey
 swagger: "2.0"

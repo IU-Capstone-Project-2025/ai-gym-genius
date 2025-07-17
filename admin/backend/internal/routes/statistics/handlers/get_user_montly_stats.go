@@ -9,6 +9,7 @@ import (
 )
 
 // GetUserActivityStats
+// @Security BearerAuth
 // @Summary Get user activity statistics
 // @Description Retrieve monthly activity statistics for a user
 // @Tags statistics
@@ -18,7 +19,7 @@ import (
 // @Success 200 {object} []MonthlyStat "Monthly activity statistics"
 // @Failure 400 {object} models.ErrorResponse "Bad Request"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
-// @Router /users/{id}/activity [get]
+// @Router /statistics/user/{id} [get]
 func GetUserActivityStats(c *fiber.Ctx) error {
 	userID, err := c.ParamsInt("id")
 
@@ -63,9 +64,9 @@ func GetUserMonthlyStats(userID uint) ([]MonthlyStat, error) {
 
 	err := database.DB.
 		Table("workouts").
-		Select("DATE_TRUNC('month', timestamp) as month, COUNT(*) as count").
+		Select("DATE_TRUNC('month', start_time) as month, COUNT(DISTINCT id) as count").
 		Where("user_id = ?", userID).
-		Group("month").
+		Group("DATE_TRUNC('month', start_time)").
 		Order("month").
 		Scan(&stats).Error
 

@@ -11,6 +11,7 @@ import (
 )
 
 // DeleteUser
+// @Security BearerAuth
 // @Summary Delete a user by ID
 // @Tags users
 // @Accept json

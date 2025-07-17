@@ -11,6 +11,7 @@ import (
 )
 
 // UpdateExercise
+// @Security BearerAuth
 // @Summary Update an existing exercise by ID
 // @Tags exercises
 // @Accept json

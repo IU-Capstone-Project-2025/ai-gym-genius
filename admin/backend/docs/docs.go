@@ -9,16 +9,7 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "termsOfService": "http://swagger.io/terms/",
-        "contact": {
-            "name": "API Support",
-            "url": "http://www.swagger.io/support",
-            "email": "support@swagger.io"
-        },
-        "license": {
-            "name": "Apache 2.0",
-            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-        },
+        "contact": {},
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -148,6 +139,11 @@ const docTemplate = `{
         },
         "/exercises": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -193,6 +189,11 @@ const docTemplate = `{
         },
         "/exercises/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -234,6 +235,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -281,6 +287,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -339,6 +350,11 @@ const docTemplate = `{
         },
         "/statistics/active-users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Returns the count of distinct active users grouped by specified time intervals between start and end dates.",
                 "consumes": [
                     "application/json"
@@ -401,6 +417,11 @@ const docTemplate = `{
         },
         "/statistics/add-activity": {
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Records activity for a user on a specific date",
                 "consumes": [
                     "application/json"
@@ -445,8 +466,65 @@ const docTemplate = `{
                 }
             }
         },
+        "/statistics/user/{id}": {
+            "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
+                "description": "Retrieve monthly activity statistics for a user",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "statistics"
+                ],
+                "summary": "Get user activity statistics",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Monthly activity statistics",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/handlers.MonthlyStat"
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a paginated list of users with optional page and limit query parameters",
                 "consumes": [
                     "application/json"
@@ -472,6 +550,27 @@ const docTemplate = `{
                         "description": "Number of users per page",
                         "name": "limit",
                         "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "active",
+                        "description": "User status to fliter by",
+                        "name": "user_status",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "basic",
+                        "description": "Subscription plan to filter by",
+                        "name": "subscription_plan",
+                        "in": "query"
+                    },
+                    {
+                        "type": "string",
+                        "default": "active",
+                        "description": "Subscription status to filter by",
+                        "name": "subscription_status",
+                        "in": "query"
                     }
                 ],
                 "responses": {
@@ -484,6 +583,12 @@ const docTemplate = `{
                             }
                         }
                     },
+                    "400": {
+                        "description": "Malformed query parameters",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
+                        }
+                    },
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
@@ -493,6 +598,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -538,6 +648,11 @@ const docTemplate = `{
         },
         "/users/count": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -566,6 +681,11 @@ const docTemplate = `{
         },
         "/users/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Retrieve a user by their unique ID",
                 "consumes": [
                     "application/json"
@@ -577,6 +697,15 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -614,6 +743,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -673,6 +807,11 @@ const docTemplate = `{
                 }
             },
             "patch": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "consumes": [
                     "application/json"
                 ],
@@ -716,53 +855,6 @@ const docTemplate = `{
                     },
                     "404": {
                         "description": "User Not Found",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/models.ErrorResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/users/{id}/activity": {
-            "get": {
-                "description": "Retrieve monthly activity statistics for a user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "statistics"
-                ],
-                "summary": "Get user activity statistics",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "User ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Monthly activity statistics",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/handlers.MonthlyStat"
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -1357,6 +1449,11 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 0
                 },
+                "subscription_status": {
+                    "description": "e.g., \"active\", \"expired\", \"cancelled\"",
+                    "type": "string",
+                    "example": "active"
+                },
                 "subscription_type": {
                     "description": "e.g., \"free\", \"basic\", \"pro\"",
                     "type": "string",
@@ -1415,9 +1512,13 @@ const docTemplate = `{
                     "type": "integer",
                     "example": 0
                 },
-                "subscription_type": {
+                "subscription_plan": {
                     "type": "string",
                     "example": "free"
+                },
+                "subscription_status": {
+                    "type": "string",
+                    "example": "active"
                 },
                 "surname": {
                     "type": "string"
@@ -1504,14 +1605,22 @@ const docTemplate = `{
                 }
             }
         }
+    },
+    "securityDefinitions": {
+        "BearerAuth": {
+            "description": "Type \"Bearer\" followed by a space and JWT token. Example: \"Bearer {token}\"",
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "1.0",
-	Host:             "api.говно.site",
-	BasePath:         "/",
+	Host:             "",
+	BasePath:         "",
 	Schemes:          []string{},
 	Title:            "Gym Genius API",
 	Description:      "API for Gym Genius application",

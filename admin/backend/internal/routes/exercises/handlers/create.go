@@ -11,6 +11,7 @@ import (
 )
 
 // CreateExercise
+// @Security BearerAuth
 // @Summary Create a new exercise
 // @Tags exercises
 // @Accept json
