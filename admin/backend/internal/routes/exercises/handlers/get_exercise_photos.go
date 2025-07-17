@@ -59,35 +59,47 @@ func GetExercisePhoto(c *fiber.Ctx) error {
 	})
 }
 
-// func GetAllExercisePhotos(c *fiber.Ctx) error {
-// 	roleRaw := c.Locals(middleware.RoleKey)
+// GetAllExercisePhoto
+// @Description Get all exercise photos
+// @Security BearerAuth
+// @Summary Get all exercise photos
+// @Tags exercises
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.MessageResponse "Exercise photos retrieved successfully"
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 404 {object} models.ErrorResponse "Exercise Not Found"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
+// @Router /exercises/photo [get]
+func GetAllExercisePhotos(c *fiber.Ctx) error {
+	roleRaw := c.Locals(middleware.RoleKey)
 
-// 	role, ok := roleRaw.(string)
-// 	if !ok {
-// 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-// 			Error: "Unauthorized or invalid token (role)",
-// 		})
-// 	}
+	role, ok := roleRaw.(string)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (role)",
+		})
+	}
 
-// 	if role != "admin" {
-// 		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
-// 			Error: "This endpoint is restricted to admin users only",
-// 		})
-// 	}
+	if role != "admin" {
+		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
+			Error: "This endpoint is restricted to admin users only",
+		})
+	}
 
-// 	var exercises []schemas.Exercise
-// 	if err := database.DB.Find(&exercises).Error; err != nil {
-// 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-// 			Error: "Failed to fetch exercises",
-// 		})
-// 	}
+	var exercises []schemas.Exercise
+	if err := database.DB.Find(&exercises).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "Failed to fetch exercises",
+		})
+	}
 
-// 	photos := make([]string, len(exercises))
-// 	for i, ex := range exercises {
-// 		photos[i] = ex.URL
-// 	}
+	photos := make([]string, len(exercises))
+	for i, ex := range exercises {
+		photos[i] = ex.ImagePath
+	}
 
-// 	return c.JSON(fiber.Map{
-// 		"photos": photos,
-// 	})
-// }
+	return c.JSON(fiber.Map{
+		"photos": photos,
+	})
+}
