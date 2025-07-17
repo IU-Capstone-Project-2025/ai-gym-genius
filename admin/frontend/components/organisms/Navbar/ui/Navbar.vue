@@ -50,26 +50,26 @@
 </template>
 
 <script setup lang="ts">
-const { user, isAuthenticated, logout } = useAuth()
-
-const authButtonVisible = computed(() => {
-  return useRoute().name !== 'auth'
-})
-
-const userMenuItems = [
-  [{
-    label: 'Profile',
-    icon: 'i-heroicons-user-circle',
-    disabled: true // TODO: Implement profile page
-  }],
-  [{
-    label: 'Logout',
-    icon: 'i-heroicons-arrow-left-on-rectangle',
-    click: async () => {
-      await logout()
-    }
-  }]
-]
+// const { user, isAuthenticated, logout } = useAuth()
+//
+// const authButtonVisible = computed(() => {
+//   return useRoute().name !== 'auth'
+// })
+//
+// const userMenuItems = [
+//   [{
+//     label: 'Profile',
+//     icon: 'i-heroicons-user-circle',
+//     disabled: true // TODO: Implement profile page
+//   }],
+//   [{
+//     label: 'Logout',
+//     icon: 'i-heroicons-arrow-left-on-rectangle',
+//     click: async () => {
+//       await logout()
+//     }
+//   }]
+// ]
 </script>
 
 <style scoped>

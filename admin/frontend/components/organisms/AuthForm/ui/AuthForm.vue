@@ -17,7 +17,6 @@
             autocomplete="off"
             v-model="login"
             :disabled="isLoading"
-            @blur="validateField('login')"
         />
       </UFormGroup>
 
@@ -34,7 +33,6 @@
             autocomplete="new-password"
             v-model="password"
             :disabled="isLoading"
-            @blur="validateField('password')"
             @keyup.enter="handleLogin"
         />
       </UFormGroup>
@@ -65,8 +63,6 @@
 </template>
 
 <script setup lang="ts">
-import {loginSchema} from '~/utils/validation/auth'
-import type {ZodError} from 'zod'
 
 const props = defineProps<{
   isLoading?: boolean
@@ -84,22 +80,6 @@ const errors = ref({
 });
 const generalError = ref('');
 
-const validateField = (field: 'login' | 'password') => {
-  try {
-    const data = {login: login.value, password: password.value};
-    loginSchema.parse(data);
-    errors.value[field] = '';
-  } catch (error) {
-    if (error instanceof Error && 'errors' in error) {
-      const zodError = error as ZodError;
-      const fieldError = zodError.errors.find(e => e.path[0] === field);
-      if (fieldError) {
-        errors.value[field] = fieldError.message;
-      }
-    }
-  }
-};
-
 const validateForm = (): boolean => {
   // Clear previous errors
   errors.value.login = '';
@@ -109,7 +89,7 @@ const validateForm = (): boolean => {
   return login.value && password.value;
 };
 
-const handleLogin = () => {
+const handleLogin = async () => {
   console.log('handleLogin in AuthForm called')
   generalError.value = '';
 
@@ -121,6 +101,31 @@ const handleLogin = () => {
 
   console.log('Emitting submit event with:', login.value, password.value)
   emit('submit', login.value, password.value);
+
+  const userStore = useUserStore();
+  const toast = useToast()
+
+  const login_ = async (login: string, password: string) => {
+    userStore.login(login, password)
+        .then(result => {
+          toast.add({
+            title: 'Success',
+            description: 'Logged in successfully',
+            color: 'green'
+          })
+        })
+        .catch(error => {
+          generalError.value = error.statusCode === 404 ? "Invalid credentials" : "Network error. Try again"
+          toast.add({
+            title: 'Login Failed',
+            description: generalError.value,
+            color: 'red'
+          })
+        })
+  }
+
+  await login_(login.value, password.value);
+
 }
 
 // Clear general error when user starts typing
