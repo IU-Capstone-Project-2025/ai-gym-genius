@@ -11,6 +11,7 @@ type UserRead struct {
 	Surname                  string    `json:"surname" example:"Doe"`
 	Email                    string    `json:"email" example:"john_doe@gmail.com"`
 	SubscriptionType         string    `json:"subscription_type" example:"free"` // e.g., "free", "basic", "pro"
+	SubscriptionStatus       string    `json:"subscription_status" example:"active"` // e.g., "active", "expired", "cancelled"
 	Status                   string    `json:"status" example:"active"`          // e.g., "active", "inactive", "banned"
 	LastActivity             time.Time `json:"last_activity" example:"2023-10-01T12:00:00Z"`
 	NumberOfWorkouts         uint      `json:"number_of_workouts" example:"0"`
