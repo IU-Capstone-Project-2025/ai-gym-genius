@@ -57,6 +57,11 @@ type CreatedResponse struct {
 	ID      uint   `json:"id" example:"12345"`
 }
 
+type TokenResponse struct {
+	Message string `json:"message" example:"Token created successfully"`
+	Token string `json:"token" example:"token_value_here"` // JWT token
+}
+
 type ErrorResponse struct {
 	Error string `json:"error" example:"A descriptive error message"`
 }
