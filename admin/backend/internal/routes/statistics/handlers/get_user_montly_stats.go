@@ -9,6 +9,7 @@ import (
 )
 
 // GetUserActivityStats
+// @Security BearerAuth
 // @Summary Get user activity statistics
 // @Description Retrieve monthly activity statistics for a user
 // @Tags statistics

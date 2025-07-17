@@ -12,6 +12,7 @@ import (
 )
 
 // GetUser
+// @Security BearerAuth
 // @Summary Get a user by ID
 // @Description Retrieve a user by their unique ID
 // @Tags users
@@ -94,6 +95,7 @@ type userQueryParams struct {
 }
 
 // GetUserPaginate
+// @Security BearerAuth
 // @Summary Get paginated list of users
 // @Description Retrieve a paginated list of users with optional page and limit query parameters
 // @Tags users
@@ -190,6 +192,7 @@ func GetUsersPaginate(c *fiber.Ctx) error {
 }
 
 // GetUserCount
+// @Security BearerAuth
 // @Summary Get the total number of users
 // @Tags users
 // @Accept json

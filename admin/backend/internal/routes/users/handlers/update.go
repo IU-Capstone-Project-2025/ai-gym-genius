@@ -12,6 +12,7 @@ import (
 )
 
 // UpdateUser
+// @Security BearerAuth
 // @Summary Update an existing user by ID
 // @Tags users
 // @Accept json

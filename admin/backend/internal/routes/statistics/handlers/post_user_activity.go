@@ -9,6 +9,7 @@ import (
 )
 
 // PostUserActivity
+// @Security BearerAuth
 // @Summary Record user activity
 // @Description Records activity for a user on a specific date
 // @Tags statistics

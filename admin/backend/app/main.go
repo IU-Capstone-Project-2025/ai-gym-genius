@@ -22,6 +22,10 @@ import (
 // @license.url http://www.apache.org/licenses/LICENSE-2.0.html
 // @host api.говно.site
 // @BasePath /
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token. Example: "Bearer {token}"
 func main() {
 	if err := database.InitDatabase(); err != nil {
 		panic(err) // failed to connect or migrate

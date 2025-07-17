@@ -10,6 +10,7 @@ import (
 )
 
 // CreateUser
+// @Security BearerAuth
 // @Summary Create a new user
 // @Tags users
 // @Accept json
