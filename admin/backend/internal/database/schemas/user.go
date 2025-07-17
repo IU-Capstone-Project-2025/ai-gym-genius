@@ -30,7 +30,7 @@ type User struct {
 }
 
 func (u *User) BeforeCreate(tx *gorm.DB) error {
-	u.SubscriptionPlan = "free"       // Default subscription type
+	u.SubscriptionPlan = "basic"       // Default subscription type
 	u.SubscriptionStatus = "active" // Default subscription status
 	u.SubscriptionStatus = "active"
 	u.Status = "active"               // Default status

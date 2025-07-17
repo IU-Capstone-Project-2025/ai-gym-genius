@@ -18,6 +18,7 @@ import (
 // @Tags users
 // @Accept json
 // @Produce json
+// @Param id path int true "User ID"
 // @Success 200 {object} models.UserRead
 // @Failure 400 {object} map[string]string "Bad Request"
 // @Failure 404 {object} map[string]string "User Not Found"
@@ -103,9 +104,9 @@ type userQueryParams struct {
 // @Produce json
 // @Param page query int false "Page number" default(1)
 // @Param limit query int false "Number of users per page" default(10)
-// @Param user_status query string false "User status to fliter by" default(null)
-// @Param subscription_plan query string false "Subscription plan to filter by" default(null)
-// @Param subscription_status query string false "Subscription status to filter by" default(null)
+// @Param user_status query string false "User status to fliter by" default(active)
+// @Param subscription_plan query string false "Subscription plan to filter by" default(basic)
+// @Param subscription_status query string false "Subscription status to filter by" default(active)
 // @Success 200 {object} []models.UserRead
 // @Failure 400 {object} models.ErrorResponse "Malformed query parameters"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"

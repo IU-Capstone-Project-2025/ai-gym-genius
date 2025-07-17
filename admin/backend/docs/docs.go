@@ -553,21 +553,21 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "default": "null",
+                        "default": "active",
                         "description": "User status to fliter by",
                         "name": "user_status",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "default": "null",
+                        "default": "basic",
                         "description": "Subscription plan to filter by",
                         "name": "subscription_plan",
                         "in": "query"
                     },
                     {
                         "type": "string",
-                        "default": "null",
+                        "default": "active",
                         "description": "Subscription status to filter by",
                         "name": "subscription_status",
                         "in": "query"
@@ -697,6 +697,15 @@ const docTemplate = `{
                     "users"
                 ],
                 "summary": "Get a user by ID",
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "User ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
                 "responses": {
                     "200": {
                         "description": "OK",

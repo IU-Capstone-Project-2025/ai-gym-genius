@@ -653,17 +653,17 @@ paths:
         in: query
         name: limit
         type: integer
-      - default: "null"
+      - default: active
         description: User status to fliter by
         in: query
         name: user_status
         type: string
-      - default: "null"
+      - default: basic
         description: Subscription plan to filter by
         in: query
         name: subscription_plan
         type: string
-      - default: "null"
+      - default: active
         description: Subscription status to filter by
         in: query
         name: subscription_status
@@ -766,6 +766,12 @@ paths:
       consumes:
       - application/json
       description: Retrieve a user by their unique ID
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
       produces:
       - application/json
       responses:
