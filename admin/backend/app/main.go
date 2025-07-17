@@ -40,6 +40,7 @@ func main() {
 		AllowOrigins: "*",
 		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
 		AllowMethods: "GET, POST, PATCH, DELETE",
+		ExposeHeaders: "Authorization",
 	}))
 	// sets X-Request-ID header with uuids
 	app.Use(requestid.New())
