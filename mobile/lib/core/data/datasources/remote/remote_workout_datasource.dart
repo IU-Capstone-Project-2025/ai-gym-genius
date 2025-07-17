@@ -1,3 +1,5 @@
+import 'package:gym_genius/core/network/dio_service.dart';
+
 import '/core/data/models/workout_dto.dart';
 
 abstract class RemoteWorkoutDatasource {
@@ -6,6 +8,9 @@ abstract class RemoteWorkoutDatasource {
 }
 
 class APIWorkoutDatasource implements RemoteWorkoutDatasource {
+  APIWorkoutDatasource(this.client);
+  final DioService client;
+
   @override
   Future<String> getAIDescription(WorkoutDTO workout) {
     // TODO: implement getAIDescription
@@ -13,9 +18,7 @@ class APIWorkoutDatasource implements RemoteWorkoutDatasource {
   }
 
   @override
-  Future<void> saveWorkout(WorkoutDTO workout) {
-    // TODO: implement saveWorkout
-    throw UnimplementedError();
+  Future<void> saveWorkout(WorkoutDTO workout) async {
+    client.post('/workouts', data: workout.toJson());
   }
-
 }
