@@ -113,6 +113,7 @@ const handleLogin = async () => {
             description: 'Logged in successfully',
             color: 'green'
           })
+          navigateTo('/')
         })
         .catch(error => {
           generalError.value = error.statusCode === 404 ? "Invalid credentials" : "Network error. Try again"
