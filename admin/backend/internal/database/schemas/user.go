@@ -1,8 +1,12 @@
 package schemas
 
 import (
+	"admin/config"
+	"crypto/sha256"
+	"encoding/hex"
 	"time"
 
+	"github.com/dgrijalva/jwt-go"
 	"gorm.io/gorm"
 )
 
@@ -46,4 +50,33 @@ type Admin struct {
 	ID    uint   `gorm:"primaryKey"`
 	Login string `gorm:"uniqueIndex"`
 	Hash  string `gorm:"not null"`
+}
+
+
+func Hash(login, password string) string {
+	data := login + ":" + password + ":" + config.C.Secret
+	hash := sha256.Sum256([]byte(data))
+	return hex.EncodeToString(hash[:])
+}
+
+func (a *Admin) CreateToken() (string, error) {
+	claims := jwt.MapClaims{
+		"id":    a.ID,
+		"login": a.Login,
+		"role":  "admin",
+		"exp":   time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(config.C.JwtSecret))
+}
+
+func (u *User) CreateToken() (string, error) {
+	claims := jwt.MapClaims{
+		"id":    u.ID,
+		"login": u.Login,
+		"role":  "user",
+		"exp":   time.Now().Add(time.Hour * 72).Unix(),
+	}
+	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
+	return token.SignedString([]byte(config.C.JwtSecret))
 }

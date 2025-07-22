@@ -4,7 +4,6 @@ import (
 	"admin/internal/database"
 	"admin/internal/models"
 	"time"
-	"admin/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -26,21 +25,6 @@ func GetUserActivityStats(c *fiber.Ctx) error {
 	if err != nil || userID < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "invalid user id",
-		})
-	}
-
-	roleRaw := c.Locals(middleware.RoleKey)
-
-	role, ok := roleRaw.(string)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Unauthorized or invalid token (role)",
-		})
-	}
-
-	if role != "admin" {
-		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
-			Error: "This endpoint is restricted to admin users only",
 		})
 	}
 

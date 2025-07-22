@@ -5,14 +5,14 @@ import (
 	"admin/internal/database/schemas"
 	middleware "admin/internal/middlewares"
 	"admin/internal/models"
-	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
-// DeleteUser
+// DeleteUserByID
 // @Security BearerAuth
-// @Summary Delete a user by ID
+// @Summary Delete any user by ID (Admin only)
+// @Description Delete any user by their ID (Admin privileges required)
 // @Tags users
 // @Accept json
 // @Produce json
@@ -24,54 +24,49 @@ import (
 // @Failure 404 {object} models.ErrorResponse "User Not Found"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/{id} [delete]
-func DeleteUser(c *fiber.Ctx) error {
-	targetIDParam := c.Params("id")
-	
-	targetID, err := strconv.Atoi(targetIDParam)
-	if err != nil || targetID <= 0 {
-		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: "Invalid user ID in path",
-		})
-	}
+func DeleteUserByID(c *fiber.Ctx) error {
+    targetID, err := c.ParamsInt("id")
+    if err != nil || targetID <= 0 {
+        return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+            Error: "'id' parameter is malformed; should be > 0",
+        })
+    }
+    return deleteUserByID(uint(targetID), c)
+}
 
-	userIDRaw := c.Locals(middleware.IDKey)
-	roleRaw := c.Locals(middleware.RoleKey)
+// DeleteCurrentUser
+// @Security BearerAuth
+// @Summary Delete current user
+// @Description Delete the currently authenticated user's account
+// @Tags users
+// @Accept json
+// @Produce json
+// @Success 200 {object} models.MessageResponse "User deleted successfully"
+// @Failure 401 {object} models.ErrorResponse "Unauthorized"
+// @Failure 404 {object} models.ErrorResponse "User Not Found"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
+// @Router /users/me [delete]
+func DeleteCurrentUser(c *fiber.Ctx) error {
+    userID := c.Locals(middleware.IDKey).(uint)
+    return deleteUserByID(userID, c)
+}
 
-	userID, ok := userIDRaw.(float64)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Unauthorized or invalid token (user ID)",
-		})
-	}
+func deleteUserByID(id uint, c *fiber.Ctx) error {
+    result := database.DB.Delete(&schemas.User{}, id)
 
-	role, ok := roleRaw.(string)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Unauthorized or invalid token (role)",
-		})
-	}
+    if err := result.Error; err != nil {
+        return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+            Error: "failed to delete user",
+        })
+    }
 
-	if int(userID) != targetID && role != "admin" {
-		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
-			Error: "You can only delete your own account",
-		})
-	}
+    if result.RowsAffected == 0 {
+        return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
+            Error: "user not found",
+        })
+    }
 
-	result := database.DB.Delete(&schemas.User{}, targetID)
-
-	if err := result.Error; err != nil {
-		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "Failed to delete user",
-		})
-	}
-
-	if result.RowsAffected == 0 {
-		return c.Status(fiber.StatusNotFound).JSON(models.ErrorResponse{
-			Error: "User not found",
-		})
-	}
-
-	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
-		Message: "User deleted successfully",
-	})
+    return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
+        Message: "user deleted successfully",
+    })
 }

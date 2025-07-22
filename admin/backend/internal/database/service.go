@@ -4,14 +4,11 @@ import (
 	"admin/config"
 	"admin/internal/database/schemas"
 	"admin/internal/models"
-	"crypto/sha256"
-	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"os"
 	"time"
 
-	"github.com/dgrijalva/jwt-go"
 	"gorm.io/driver/postgres"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
@@ -22,8 +19,6 @@ import (
 var DB *gorm.DB
 
 var (
-	secret        = config.C.Secret
-	jwtSecret     = config.C.JwtSecret
 	dbHost        = config.C.DbHost
 	dbUser        = config.C.DbUser
 	dbPassword    = config.C.DbPassword
@@ -32,33 +27,6 @@ var (
 	adminPassword = config.C.AdminPassword
 )
 
-func Hash(login, password string) string {
-	data := login + ":" + password + ":" + secret
-	hash := sha256.Sum256([]byte(data))
-	return hex.EncodeToString(hash[:])
-}
-
-func CreateTokenForAdmin(user schemas.Admin) (string, error) {
-	claims := jwt.MapClaims{
-		"id":    user.ID,
-		"login": user.Login,
-		"role":  "admin",
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(jwtSecret))
-}
-
-func CreateTokenForUser(user schemas.User) (string, error) {
-	claims := jwt.MapClaims{
-		"id":    user.ID,
-		"login": user.Login,
-		"role":  "user",
-		"exp":   time.Now().Add(time.Hour * 72).Unix(),
-	}
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString([]byte(jwtSecret))
-}
 
 func InitDatabase() error {
 	var err error
@@ -133,7 +101,7 @@ func UpsertStaticData() error {
 	if err != nil {
 		return fmt.Errorf("failed to upsert static user activities: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -141,7 +109,7 @@ func UpsertStaticAdmins() error {
 	var admin schemas.Admin
 
 	admin.Login = "admin"
-	admin.Hash = Hash(admin.Login, adminPassword)
+	admin.Hash = schemas.Hash(admin.Login, adminPassword)
 
 	err := DB.Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "login"}},
@@ -173,7 +141,7 @@ func UpsertStaticUsers() error {
 			Surname:                u.Surname,
 			Login:                  u.Login,
 			Email:                  u.Email,
-			Hash:                   Hash(u.Login, u.Password),
+			Hash:                   schemas.Hash(u.Login, u.Password),
 			SubscriptionPlan:       u.SubscriptionPlan,
 			SubscriptionStatus:     u.SubscriptionStatus,
 			Status:                 u.Status,
@@ -185,7 +153,7 @@ func UpsertStaticUsers() error {
 		}
 		users = append(users, dbUser)
 	}
-	
+
 	// skip hooks to avoid default user initizalization metadata
 	err = DB.Session(&gorm.Session{SkipHooks: true}).Clauses(clause.OnConflict{
 		Columns:   []clause.Column{{Name: "email"}},
@@ -277,9 +245,8 @@ func UpsertStaticUserActivities() error {
 
 	for _, userActivityCreate := range userActivityCreates {
 		userActivity := &schemas.UserActivity{
-			UserID:       userActivityCreate.UserID,
-			ID: userActivityCreate.ID,
-			Date: userActivityCreate.Date,
+			UserID: userActivityCreate.UserID,
+			Date:   userActivityCreate.Date,
 		}
 
 		if err := DB.Create(userActivity).Error; err != nil {

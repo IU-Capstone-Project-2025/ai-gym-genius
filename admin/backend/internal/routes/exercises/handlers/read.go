@@ -54,6 +54,17 @@ func GetExerciseByID(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(exerciseRead)
 }
 
+// @Summary Get paginated list of exercises
+// @Description Retrieve a paginated list of exercises with optional page and limit query parameters
+// @Tags exercises
+// @Accept json
+// @Produce json
+// @Param page query int false "Page number" default(1)
+// @Param limit query int false "Number of exercises per page" default(10)
+// @Success 200 {object} []models.ExerciseRead
+// @Failure 400 {object} models.ErrorResponse "Malformed query parameters"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
+// @Router /users [get]
 func GetExercisesPaginate(c *fiber.Ctx) error {
 	page := c.QueryInt("page", 1)
 	if page < 1 {
@@ -69,7 +80,7 @@ func GetExercisesPaginate(c *fiber.Ctx) error {
 	var exercises []schemas.Exercise
 	if err := database.DB.Limit(limit).Offset(offset).Find(&exercises).Error; err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
-			Error: "failed to retrieve users",
+			Error: "failed to retrieve exercises",
 		})
 	}
 

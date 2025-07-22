@@ -5,7 +5,6 @@ import (
 	"admin/internal/database/schemas"
 	"admin/internal/models"
 	"errors"
-	"admin/internal/middlewares"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 )
@@ -29,21 +28,6 @@ func UpdateExercise(c *fiber.Ctx) error {
 	if err != nil || id < 1 {
 		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
 			Error: "malformed id parameter; should be > 0",
-		})
-	}
-
-	roleRaw := c.Locals(middleware.RoleKey)
-
-	role, ok := roleRaw.(string)
-	if !ok {
-		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Unauthorized or invalid token (role)",
-		})
-	}
-
-	if role != "admin" {
-		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
-			Error: "This endpoint is restricted to admin users only",
 		})
 	}
 

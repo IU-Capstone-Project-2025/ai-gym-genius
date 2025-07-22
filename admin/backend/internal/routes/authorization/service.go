@@ -7,7 +7,7 @@ import (
 )
 
 func AddAdmin(login string, password string) error {
-	hash := database.Hash(login, password)
+	hash := schemas.Hash(login, password)
 
 	admin := schemas.Admin{
 		Login: login,

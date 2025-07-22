@@ -55,7 +55,7 @@ func UserLoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	hash := database.Hash(data.Login, data.Password)
+	hash := schemas.Hash(data.Login, data.Password)
 
 	if user.Hash != hash {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
@@ -63,7 +63,7 @@ func UserLoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	token, err := database.CreateTokenForUser(user)
+	token, err := user.CreateToken()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error: "failed to create token",
