@@ -53,7 +53,7 @@
         "name": "T-Bar Row",
         "description": "A back exercise performed with a T-bar row machine or barbell to target the middle back.",
         "muscleGroup": ["Back"],
-        "imagePath": ""
+        "imagePath": "assets/exercise_pictures/tbar_row.webp"
     },
     {
         "id": 9,
@@ -74,7 +74,7 @@
         "name": "Leg-Extensions",
         "description": "An isolation exercise that targets the quadriceps using a leg extension machine.",
         "muscleGroup": ["Legs"],
-        "imagePath": ""
+        "imagePath": "assets/exercise_pictures/leg_ext.webp"
     },
     {
         "id": 12,

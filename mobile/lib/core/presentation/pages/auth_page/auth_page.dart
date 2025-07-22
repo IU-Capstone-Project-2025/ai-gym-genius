@@ -308,22 +308,6 @@ class _AuthPageState extends State<AuthPage> {
     }
   }
 
-  void _showErrorDialog(String message) {
-    showCupertinoDialog(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
-  }
-
   PreferredSizeWidget _buildAppBar(BuildContext context) {
     final schema = Theme.of(context).colorScheme;
 
