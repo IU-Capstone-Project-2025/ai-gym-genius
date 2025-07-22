@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:gym_genius/core/data/datasources/mock_data.dart';
 import 'package:gym_genius/core/domain/entities/workout_entity.dart';
 import 'package:gym_genius/core/domain/repositories/workout_repository.dart';
 import 'package:gym_genius/di.dart';
@@ -15,7 +16,7 @@ class StatsPage extends StatefulWidget {
 }
 
 class _StatsPageState extends State<StatsPage> {
-  late final Future<List<WorkoutEntity>> _workoutsF;
+  late Future<List<WorkoutEntity>> _workoutsF;
 
   @override
   void initState() {
@@ -35,6 +36,13 @@ class _StatsPageState extends State<StatsPage> {
           'Statistics',
           style: TextStyle().copyWith(color: schema.primary),
         ),
+        trailing: CupertinoButton(
+            padding: EdgeInsets.zero,
+            onPressed: addMocks,
+            child: Icon(
+              CupertinoIcons.add,
+              size: 32,
+            )),
       ),
       body: FutureBuilder<List<WorkoutEntity>>(
         future: _workoutsF,
@@ -47,7 +55,7 @@ class _StatsPageState extends State<StatsPage> {
           }
 
           final workouts = snap.data!;
-          
+
           // Normalize each startTime to a pure date
           final workoutDays = workouts
               .map((w) => DateTime(
@@ -70,28 +78,34 @@ class _StatsPageState extends State<StatsPage> {
     );
   }
 
-  Widget _buildWorkoutDurationChart(List<WorkoutEntity> workouts, ColorScheme schema) {
-  if (workouts.isEmpty) {
-    return const SizedBox(
-      height: 200,
-      child: Center(child: Text('No workout data available')),
-    );
+  void addMocks() {
+    setState(() {
+      _workoutsF = Future.value(getMockWorkouts(100));
+    });
   }
 
-  // Sort workouts by date
-  final sortedWorkouts = List<WorkoutEntity>.from(workouts)
-    ..sort((a, b) => a.startTime.compareTo(b.startTime));
+  Widget _buildWorkoutDurationChart(
+      List<WorkoutEntity> workouts, ColorScheme schema) {
+    if (workouts.isEmpty) {
+      return const SizedBox(
+        height: 200,
+        child: Center(child: Text('No workout data available')),
+      );
+    }
 
-  // Create data points for the chart
-  final spots = <FlSpot>[];
-  for (int i = 0; i < sortedWorkouts.length; i++) {
-    final workout = sortedWorkouts[i];
-    final durationMinutes = workout.duration.inMinutes.toDouble();
-    spots.add(FlSpot(i.toDouble(), durationMinutes));
-  }
+    // Sort workouts by date
+    final sortedWorkouts = List<WorkoutEntity>.from(workouts)
+      ..sort((a, b) => a.startTime.compareTo(b.startTime));
 
-  return 
-    Padding(
+    // Create data points for the chart
+    final spots = <FlSpot>[];
+    for (int i = 0; i < sortedWorkouts.length; i++) {
+      final workout = sortedWorkouts[i];
+      final durationMinutes = workout.duration.inMinutes.toDouble();
+      spots.add(FlSpot(i.toDouble(), durationMinutes));
+    }
+
+    return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -118,13 +132,17 @@ class _StatsPageState extends State<StatsPage> {
                 ),
                 titlesData: FlTitlesData(
                   show: true,
-                  rightTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
-                  topTitles: const AxisTitles(sideTitles: SideTitles(showTitles: false)),
+                  rightTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
+                  topTitles: const AxisTitles(
+                      sideTitles: SideTitles(showTitles: false)),
                   bottomTitles: AxisTitles(
                     sideTitles: SideTitles(
                       showTitles: true,
                       reservedSize: 30,
-                      interval: spots.length > 10 ? (spots.length / 5).floorToDouble() : 1,
+                      interval: spots.length > 10
+                          ? (spots.length / 5).floorToDouble()
+                          : 1,
                       getTitlesWidget: (double value, TitleMeta meta) {
                         final index = value.toInt();
                         if (index >= 0 && index < sortedWorkouts.length) {
@@ -171,7 +189,8 @@ class _StatsPageState extends State<StatsPage> {
                 minX: 0,
                 maxX: (spots.length - 1).toDouble(),
                 minY: 0,
-                maxY: spots.map((e) => e.y).reduce((a, b) => a > b ? a : b) + 10,
+                maxY:
+                    spots.map((e) => e.y).reduce((a, b) => a > b ? a : b) + 10,
                 lineBarsData: [
                   LineChartBarData(
                     spots: spots,
@@ -216,6 +235,5 @@ class _StatsPageState extends State<StatsPage> {
         ],
       ),
     );
-}
-
+  }
 }

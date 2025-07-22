@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gym_genius/core/presentation/pages/training_page/widgets/popups.dart';
 import 'package:gym_genius/core/presentation/shared/warnings.dart';
 import 'package:gym_genius/di.dart' show getIt;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,37 +41,49 @@ class _TrainingProcessPageState extends State<TrainingProcessPage> {
     return BlocProvider(
       create: (context) => getIt<TrainingBloc>(),
       child: BlocListener<TrainingBloc, TrainingState>(
-        listener: (context, state) { 
-          if (state.submitTrainingStatus == SubmitTrainingStatus.success) {
-            Navigator.pop(context);
-          }
-
-          else if (state.submitTrainingStatus == SubmitTrainingStatus.failureEmptySets) {
-            Warnings.showSubmitIncompleteWarning(context);
+        listenWhen: (previous, current) =>
+            previous.exercises != current.exercises ||
+            previous.submitTrainingStatus != current.submitTrainingStatus,
+        listener: (context, state) {
+          switch (state.submitTrainingStatus) {
+            case SubmitTrainingStatus.failureEmptySets:
+              Warnings.showSubmitIncompleteWarning(context);
+              break;
+            case SubmitTrainingStatus.failureWritingDB:
+              Warnings.showWritingFailureWarning(context);
+              break;
+            case SubmitTrainingStatus.success:
+              Popups.showSubmittedTraining(
+                  context,
+                  context.read<TrainingBloc>(),
+                  context.read<TrainingBloc>().state.workout!);
+              break;
+            default:
+              break;
           }
         },
         child: BlocBuilder<TrainingBloc, TrainingState>(
-              builder: (context, state) {
-                final bloc = context.read<TrainingBloc>();
-      
-                return Scaffold(
-                  body: Stack(
-                    children: [
-                      _buildSlivers(
-                        StopwatchWidget(controller: _timerCtrl),
-                        bloc.state.exercises.isNotEmpty,
-                        heightOfPinnedContainer,
-                        bloc,
-                      ),
-                      _buildPinnedContainer(
-                        heightOfPinnedContainer,
-                        bloc,
-                      )
-                    ],
+          builder: (context, state) {
+            final bloc = context.read<TrainingBloc>();
+
+            return Scaffold(
+              body: Stack(
+                children: [
+                  _buildSlivers(
+                    StopwatchWidget(controller: _timerCtrl),
+                    bloc.state.exercises.isNotEmpty,
+                    heightOfPinnedContainer,
+                    bloc,
                   ),
-                );
-              },
-            ),
+                  _buildPinnedContainer(
+                    heightOfPinnedContainer,
+                    bloc,
+                  )
+                ],
+              ),
+            );
+          },
+        ),
       ),
     );
   }

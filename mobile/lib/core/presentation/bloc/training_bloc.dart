@@ -12,6 +12,21 @@ class TrainingBloc extends Bloc<TrainingEvent, TrainingState> {
     on<AddExercise>(_onAddExercise);
     on<RemoveExercise>(_onRemoveExercise);
     on<SubmitTraining>(_onSubmitTraining);
+    on<GetAIReview>(_onGetAIReview);
+  }
+
+  void _onGetAIReview(GetAIReview event, Emitter<TrainingState> emit) async {
+    emit(state.copyWith(getAIReviewStatus: GetAIReviewStatus.initial));
+    try {
+      emit(state.copyWith(getAIReviewStatus: GetAIReviewStatus.loading));
+      final description = await workoutRepository.getAIReview(event.workout);
+      emit(state.copyWith(
+        getAIReviewStatus: GetAIReviewStatus.success,
+        review: description,
+      ));
+    } catch (e) {
+      emit(state.copyWith(getAIReviewStatus: GetAIReviewStatus.failure));
+    }
   }
 
   void _onAddExercise(AddExercise event, Emitter<TrainingState> emit) {

@@ -44,7 +44,7 @@ class _AuthPageState extends State<AuthPage> {
 
   Widget _buildBody() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32.0),
       child: Form(
         key: _formKey,
         child: Column(
@@ -226,9 +226,9 @@ class _AuthPageState extends State<AuthPage> {
     return Container(
       decoration: BoxDecoration(
           color: schema.secondaryContainer,
-          borderRadius: BorderRadius.circular(16)),
+          borderRadius: BorderRadius.circular(12)),
       child: CupertinoFormRow(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
         child: CupertinoTextFormFieldRow(
           controller: controller,
           placeholder: placeholder,
@@ -353,7 +353,7 @@ class _LoginPageState extends State<_LoginPage> {
 
   Widget _buildBody() {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 32),
       child: Form(
         key: _formKey,
         child: Column(
@@ -458,7 +458,7 @@ class _LoginPageState extends State<_LoginPage> {
           color: schema.secondaryContainer,
           borderRadius: BorderRadius.circular(16)),
       child: CupertinoFormRow(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
         child: CupertinoTextFormFieldRow(
           controller: controller,
           placeholder: placeholder,
@@ -512,22 +512,6 @@ class _LoginPageState extends State<_LoginPage> {
       //   });
       // }
     }
-  }
-
-  void _showErrorDialog(String message) {
-    showCupertinoDialog(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: const Text('Error'),
-        content: Text(message),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('OK'),
-          ),
-        ],
-      ),
-    );
   }
 
   PreferredSizeWidget _buildAppBar(BuildContext context) {

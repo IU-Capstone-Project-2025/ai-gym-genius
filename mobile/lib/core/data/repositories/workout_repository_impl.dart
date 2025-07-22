@@ -28,9 +28,9 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   }
 
   @override
-  Future<String> getAIReview(WorkoutEntity workout) {
-    // TODO: implement getAIReview
-    throw UnimplementedError();
+  Future<String> getAIReview(WorkoutEntity workout) async {
+    return remoteWorkoutDatasource
+        .getAIDescription(WorkoutDTO.fromEntity(workout));
   }
 
   @override
