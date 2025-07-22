@@ -3,7 +3,7 @@ package main
 import (
 	_ "admin/docs"
 	"admin/internal/database"
-	"admin/internal/middlewares"
+	middleware "admin/internal/middlewares"
 	"log"
 
 	"github.com/gofiber/fiber/v2"
@@ -33,15 +33,18 @@ func main() {
 
 	app := fiber.New()
 
+	app.Static("/exercise_images", "/assets/exercise_images")
+
 	// set up middleware
 	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*",
-		AllowHeaders: "Origin, Content-Type, Accept, Authorization",
-		AllowMethods: "GET, POST, PATCH, DELETE",
+		AllowOrigins:  "*",
+		AllowHeaders:  "Origin, Content-Type, Accept, Authorization",
+		AllowMethods:  "GET, POST, PATCH, DELETE",
+		ExposeHeaders: "Authorization",
 	}))
 	// sets X-Request-ID header with uuids
 	app.Use(requestid.New())
-	app.Use(middleware.LoggingMiddleware())
+	app.Use(middleware.Logging())
 
 	CombineRoutes(app)
 

@@ -34,13 +34,13 @@ func CreateUser(c *fiber.Ctx) error {
 		Name:    userCreate.Name,
 		Surname: userCreate.Surname,
 		Email:   userCreate.Email,
-		Hash:    database.Hash(userCreate.Login, userCreate.Password),
+		Hash:    schemas.Hash(userCreate.Login, userCreate.Password),
 	}
 
 	if err := database.DB.Create(user).Error; err != nil {
 		if errors.Is(err, gorm.ErrDuplicatedKey) {
 			return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-				Error: "user with this login already exists",
+				Error: "user with this login or email already exists",
 			})
 		}
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{

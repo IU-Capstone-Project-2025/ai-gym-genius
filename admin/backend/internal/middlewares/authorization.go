@@ -10,21 +10,24 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-var jwtSecret = config.C.JwtSecret
-
 type userIDKeyT struct{}
 
+// key, under which current user's id is stored in c.Locals
 var IDKey userIDKeyT
 
 type userLoginKeyT struct{}
 
+// key, under which current user's login is stored in c.Locals
 var LoginKey userLoginKeyT
 
 type userRoleKeyT struct{}
 
+// key, under which current user's roles is stored in c.Locals
+//
+// admin or user
 var RoleKey userRoleKeyT
 
-func JWTMiddleware(c *fiber.Ctx) error {
+func JWT(c *fiber.Ctx) error {
 	authHeader := c.Get("Authorization")
 	if authHeader == "" {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
@@ -43,7 +46,7 @@ func JWTMiddleware(c *fiber.Ctx) error {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fiber.ErrUnauthorized
 		}
-		return []byte(jwtSecret), nil
+		return []byte(config.C.JwtSecret), nil
 	})
 
 	if err != nil {
@@ -58,10 +61,12 @@ func JWTMiddleware(c *fiber.Ctx) error {
 				Error: "Token expired",
 			})
 		}
-
-		c.Locals(IDKey, claims["id"])
-		c.Locals(LoginKey, claims["login"])
-		c.Locals(RoleKey, claims["role"])
+		userID, _ := claims["id"].(float64)
+		login, _ := claims["login"].(string)
+		role, _ := claims["role"].(string)
+		c.Locals(IDKey, uint(userID))
+		c.Locals(LoginKey, login)
+		c.Locals(RoleKey, role)
 	} else {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
 			Error: "Invalid token claims",

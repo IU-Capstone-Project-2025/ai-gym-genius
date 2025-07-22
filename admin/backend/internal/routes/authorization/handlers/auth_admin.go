@@ -16,7 +16,7 @@ import (
 // @Accept json
 // @Produce json
 // @Param authInput body models.AuthInput true "Login and Password"
-// @Success 200 {object} map[string]string "Admin logged in successfully"
+// @Success 200 {object} models.TokenResponse "Admin logged in successfully"
 // @Failure 400 {object} models.ErrorResponse "Invalid request body or missing fields"
 // @Failure 404 {object} models.ErrorResponse "Admin not found"
 // @Failure 401 {object} models.ErrorResponse "Incorrect password"
@@ -55,7 +55,7 @@ func AdminLoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	hash := database.Hash(data.Login, data.Password)
+	hash := schemas.Hash(data.Login, data.Password)
 
 	if admin.Hash != hash {
 		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
@@ -63,7 +63,7 @@ func AdminLoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	token, err := database.CreateTokenForAdmin(admin)
+	token, err := admin.CreateToken()
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
 			Error: "failed to create token",
@@ -72,7 +72,8 @@ func AdminLoginHandler(c *fiber.Ctx) error {
 
 	c.Set("Authorization", "Bearer "+token)
 
-	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
+	return c.Status(fiber.StatusOK).JSON(models.TokenResponse{
+		Token:   "Bearer "+token,
 		Message: "logged in successfully",
 	})
 }
