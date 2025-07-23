@@ -15,7 +15,7 @@ export const useUsersStats = () => {
 
 
     const fetchUsersStats = async (step: string = '1d') => {
-        usersStats.value = await $fetch('http://api.говно.site/statistics/active-users', {
+        usersStats.value = await $fetch('https://api.говно.site/statistics/active-users', {
             query: {
                 start_date: startDate,
                 end_date: endDate,
