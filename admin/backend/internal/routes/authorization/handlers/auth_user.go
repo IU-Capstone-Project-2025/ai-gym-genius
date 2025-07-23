@@ -7,6 +7,7 @@ import (
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
+	"time"
 )
 
 // UserLoginHandler godoc
@@ -70,10 +71,17 @@ func UserLoginHandler(c *fiber.Ctx) error {
 		})
 	}
 
-	c.Set("Authorization", "Bearer "+token)
+	c.Cookie(&fiber.Cookie{
+		Name:     "jwt",
+		Value:    "Bearer " + token,
+		Expires:  time.Now().Add(24 * time.Hour),
+		HTTPOnly: true,         
+		Secure:   true,         
+		SameSite: "Lax",        
+		Path:     "/",
+	})
 
-	return c.Status(fiber.StatusOK).JSON(models.TokenResponse{
-		Token:   "Bearer "+token,
+	return c.Status(fiber.StatusOK).JSON(models.MessageResponse{
 		Message: "logged in successfully",
 	})
 }

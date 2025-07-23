@@ -5,7 +5,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"time"
-
 	"github.com/dgrijalva/jwt-go"
 	"gorm.io/gorm"
 )
