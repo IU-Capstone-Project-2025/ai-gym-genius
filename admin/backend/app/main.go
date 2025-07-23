@@ -37,7 +37,8 @@ func main() {
 
 	// set up middleware
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:  "*",
+		AllowOrigins:  "http://localhost:3000, https://admin.говно.site, https://api.говно.site, https://www.говно.site, https://www.gymgenius.app, https://gymgenius.app",
+		AllowCredentials: true,
 		AllowHeaders:  "Origin, Content-Type, Accept, Authorization",
 		AllowMethods:  "GET, POST, PATCH, DELETE",
 		ExposeHeaders: "Authorization",
