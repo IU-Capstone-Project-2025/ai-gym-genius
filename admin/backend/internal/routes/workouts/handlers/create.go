@@ -35,7 +35,7 @@ func CreateWorkout(c *fiber.Ctx) error {
 
 	if int(userID) != int(workoutCreate.UserID) {
 		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
-			Error: "You can only delete your own workouts",
+			Error: "You can only create your own workouts",
 		})
 	}
 
