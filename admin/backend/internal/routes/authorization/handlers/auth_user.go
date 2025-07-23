@@ -73,7 +73,7 @@ func UserLoginHandler(c *fiber.Ctx) error {
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "jwt",
-		Value:    "Bearer " + token,
+		Value:    token,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HTTPOnly: true,         
 		Secure:   true,         

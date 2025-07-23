@@ -3,7 +3,6 @@ package middleware
 import (
 	"admin/config"
 	"admin/internal/models"
-	"strings"
 	"time"
 
 	"github.com/gofiber/fiber/v2"
@@ -32,14 +31,14 @@ func JWT(c *fiber.Ctx) error {
 		})
 	}
 
-	tokenString := strings.TrimPrefix(authHeader, "Bearer ")
-	if tokenString == "" {
-		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
-			Error: "Token not provided",
-		})
-	}
+	// tokenString := strings.TrimPrefix(authHeader, "Bearer ")
+	// if tokenString == "" {
+	// 	return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+	// 		Error: "Token not provided",
+	// 	})
+	// }
 
-	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (interface{}, error) {
+	token, err := jwt.Parse(authHeader, func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fiber.ErrUnauthorized
 		}
