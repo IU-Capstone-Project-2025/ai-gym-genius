@@ -24,6 +24,12 @@ import (
 func CreateWorkout(c *fiber.Ctx) error {
 	workoutCreate := &models.WorkoutCreate{}
 
+	if err := c.BodyParser(workoutCreate); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
+			Error: err.Error(),
+		})
+	}
+
 	userIDRaw := c.Locals(middleware.IDKey)
 
 	userID, ok := userIDRaw.(float64)
@@ -36,12 +42,6 @@ func CreateWorkout(c *fiber.Ctx) error {
 	if int(userID) != int(workoutCreate.UserID) {
 		return c.Status(fiber.StatusForbidden).JSON(models.ErrorResponse{
 			Error: "You can only create your own workouts",
-		})
-	}
-
-	if err := c.BodyParser(workoutCreate); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(models.ErrorResponse{
-			Error: err.Error(),
 		})
 	}
 
