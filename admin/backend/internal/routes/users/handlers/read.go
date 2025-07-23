@@ -50,8 +50,16 @@ func GetUserByID(c *fiber.Ctx) error {
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
 // @Router /users/me [get]
 func GetCurrentUser(c *fiber.Ctx) error {
-    userID := c.Locals(middleware.IDKey).(uint)
-    return getUserByID(userID, c)
+	userIDRaw := c.Locals(middleware.IDKey)
+
+	userID, ok := userIDRaw.(float64)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "Unauthorized or invalid token (user ID)",
+		})
+	}
+
+	return getUserByID(uint(userID), c)
 }
 
 func getUserByID(id uint, c *fiber.Ctx) error {
