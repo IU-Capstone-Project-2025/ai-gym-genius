@@ -5,7 +5,7 @@ type Exercise struct {
 	Name         string   `gorm:"not null;uniqueIndex"               json:"name"`
 	Description  string   `gorm:"not null"                           json:"description"`
 	MuscleGroups []string `gorm:"type:text;serializer:json;not null" json:"muscle_groups"`
-	ImagePath          string   `gorm:"not null"                           json:"image_path"`
+	ImagePath          string   `gorm:""                           json:"image_path"`
 }
 
 type ExerciseSet struct {

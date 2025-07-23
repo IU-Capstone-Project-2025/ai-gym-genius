@@ -8,7 +8,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
 	"time"
-	
+
 )
 
 // AdminLoginHandler godoc
@@ -74,7 +74,7 @@ func AdminLoginHandler(c *fiber.Ctx) error {
 
 	c.Cookie(&fiber.Cookie{
 		Name:     "jwt",
-		Value:    "Bearer " + token,
+		Value:    token,
 		Expires:  time.Now().Add(24 * time.Hour),
 		HTTPOnly: true,         
 		Secure:   true,         
