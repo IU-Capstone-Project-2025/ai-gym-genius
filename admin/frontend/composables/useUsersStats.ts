@@ -1,5 +1,5 @@
-import { ref, type Ref } from 'vue'
-import { useUserStore } from '~/stores/user'
+import {ref, type Ref} from 'vue'
+import {useUserStore} from '~/stores/user'
 
 type UsersStats = {
     start_date: string, // Date like
@@ -21,9 +21,7 @@ export const useUsersStats = () => {
                 end_date: endDate,
                 step: step
             },
-            headers: {
-                Authorization : `Bearer ${userStore.token}`
-            }
+            credentials: 'include'
         })
 
         console.log(usersStats.value);

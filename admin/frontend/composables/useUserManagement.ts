@@ -154,7 +154,9 @@ export const useUserManagement = () => {
     const fetchUsers = async () => {
         isLoading.value = true
         await new Promise(resolve => setTimeout(resolve, 500));
-        let response = await $fetch('http://api.говно.site/users');
+        let response = await $fetch('http://api.говно.site/users', {
+            credentials: 'include'
+        });
         console.log('USERS:', response);
         isLoading.value = false
     }
