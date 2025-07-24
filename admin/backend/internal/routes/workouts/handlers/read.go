@@ -3,11 +3,11 @@ package handlers
 import (
 	"admin/internal/database"
 	"admin/internal/database/schemas"
+	"admin/internal/middlewares"
 	"admin/internal/models"
 	"errors"
 	"github.com/gofiber/fiber/v2"
 	"gorm.io/gorm"
-	"admin/internal/middlewares"
 )
 
 // GetWorkout
@@ -77,7 +77,7 @@ func GetWorkout(c *fiber.Ctx) error {
 	}
 
 	workoutRead := models.WorkoutRead{
-		ID: 		 workout.ID,
+		ID:           workout.ID,
 		DurationNS:   workout.Duration.Nanoseconds(),
 		Timestamp:    workout.StartTime,
 		UserID:       workout.UserID,
@@ -85,4 +85,53 @@ func GetWorkout(c *fiber.Ctx) error {
 	}
 
 	return c.Status(fiber.StatusOK).JSON(workoutRead)
+}
+
+// GetMyWorkouts
+// @Summary Get user's workouts
+// @Tags workouts
+// @Accept json
+// @Produce json
+// @Success 200 {object} []models.WorkoutRead
+// @Failure 401 {object} models.ErrorResponse "Unauthorized"
+// @Failure 400 {object} models.ErrorResponse "Bad Request"
+// @Failure 500 {object} models.ErrorResponse "Internal Server Error"
+// @Router /workouts/my [get]
+func GetMyWorkouts(c *fiber.Ctx) error {
+	userID, ok := c.Locals(middleware.IDKey).(float64)
+
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(models.ErrorResponse{
+			Error: "malformed claims or unauthorized",
+		})
+	}
+
+	var workouts []schemas.Workout
+
+	if err := database.DB.Preload("ExerciseSets").Find(&workouts, "user_id = ?", uint(userID)).Error; err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(models.ErrorResponse{
+			Error: "failed to fetch user's workouts",
+		})
+	}
+
+	var workoutReads []models.WorkoutRead
+	for _, workout := range workouts {
+		var exerciseSetReads []models.ExerciseSetRead
+		for _, exerciseSet := range workout.ExerciseSets {
+			exerciseSetReads = append(exerciseSetReads, models.ExerciseSetRead{
+				Weight:     exerciseSet.Weight,
+				Reps:       exerciseSet.Reps,
+				ExerciseID: exerciseSet.ExerciseID,
+				WorkoutID:  exerciseSet.WorkoutID,
+			})
+		}
+		workoutReads = append(workoutReads, models.WorkoutRead{
+			ID:           workout.ID,
+			DurationNS:   workout.Duration.Nanoseconds(),
+			Timestamp:    workout.StartTime,
+			ExerciseSets: exerciseSetReads,
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(workoutReads)
 }
