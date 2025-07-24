@@ -1,21 +1,32 @@
+import 'package:cookie_jar/cookie_jar.dart';
 import 'package:dio/dio.dart';
+import 'package:dio_cookie_manager/dio_cookie_manager.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path_provider/path_provider.dart';
 
 class DioService {
   // Private constructor for singleton pattern
-  DioService._privateConstructor() {
+  DioService._privateConstructor();
+
+  Future<void> init() async {
     _dio = Dio(BaseOptions(
         baseUrl: "http://api.xn--b1ab5acc.site",
         connectTimeout: const Duration(seconds: 10),
         receiveTimeout: const Duration(seconds: 30),
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer 123123123'
         }));
 
     if (kDebugMode) {
-      _dio.interceptors.add(LogInterceptor());
+      _dio.interceptors
+          .add(LogInterceptor(responseBody: true, requestBody: true));
     }
+
+    final appDocDir = await getApplicationDocumentsDirectory();
+    final cookieJar =
+        PersistCookieJar(storage: FileStorage('${appDocDir.path}/.cookies/'));
+
+    _dio.interceptors.add(CookieManager(cookieJar));
   }
 
   static final DioService _instance = DioService._privateConstructor();
@@ -101,6 +112,7 @@ ApiException _handleError(DioException e) {
     case DioExceptionType.unknown:
     default:
       errorMessage = 'An unknown error occurred.';
+      print(e.stackTrace);
       break;
   }
 
@@ -114,4 +126,19 @@ class ApiException implements Exception {
 
   @override
   String toString() => message;
+}
+
+class MyFuckingCookieInterceptor extends PersistCookieJar {
+  MyFuckingCookieInterceptor({super.storage});
+
+  @override
+  Future<void> saveFromResponse(Uri uri, List<Cookie> cookies) {
+    final cleaned = cookies.map((c) {
+      if (c.name == 'jwt' && c.value.startsWith('Bearer ')) {
+        return Cookie(c.name, c.value.replaceFirst('Bearer ', ''));
+      }
+      return c;
+    }).toList();
+    return super.saveFromResponse(uri, cleaned);
+  }
 }

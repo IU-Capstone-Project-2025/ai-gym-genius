@@ -28,7 +28,9 @@ class UserRepositoryImpl implements UserRepository {
     return user;
   }
 
-  @override Future<String> loginUser({required String login, required String password}) async {
+  @override
+  Future<String> loginUser(
+      {required String login, required String password}) async {
     service.post('/auth_user', data: {
       "login": login,
       "password": password,
@@ -36,8 +38,6 @@ class UserRepositoryImpl implements UserRepository {
 
     return '123';
   }
-
-
 
   @override
   Future<void> getToken() {

@@ -14,7 +14,7 @@ class Popups {
     WorkoutEntity workout,
   ) {
     showCupertinoModalPopup(
-      barrierDismissible: false,
+      barrierDismissible: true,
       context: context,
       builder: (context) => _TrainingSummaryCard(
         bloc: bloc,
