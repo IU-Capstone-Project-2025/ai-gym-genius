@@ -23,7 +23,6 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
   @override
   Future<List<WorkoutEntity>> fetchWorkouts() async {
     final dtos = await localWorkoutDatasource.getAllWorkouts();
-    print(dtos);
     return dtos.map((dto) => dto.toEntity()).toList();
   }
 
@@ -38,5 +37,11 @@ class WorkoutRepositoryImpl implements WorkoutRepository {
     final dto = WorkoutDTO.fromEntity(entity);
     localWorkoutDatasource.saveWorkout(dto);
     remoteWorkoutDatasource.saveWorkout(dto);
+  }
+
+  @override
+  Future<List<WorkoutEntity>> fetchRemoteWorkouts() async {
+    final dtos = await remoteWorkoutDatasource.fetchWorkouts();
+    return dtos.map((dto) => dto.toEntity()).toList();
   }
 }
