@@ -48,23 +48,6 @@ class _MainAppState extends State<MainApp> {
       } else {
         throw Exception('Failed to load data');
       }
-
-      // HTTP POST request
-      final postResponse = await http.post(
-        Uri.parse('https://api.example.com/data'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: json.encode(<String, String>{
-          'key': 'value',
-        }),
-      );
-
-      if (postResponse.statusCode == 201) {
-        print('Data posted successfully');
-      } else {
-        throw Exception('Failed to post data');
-      }
     } catch (e) {
       print('Error: $e');
     }

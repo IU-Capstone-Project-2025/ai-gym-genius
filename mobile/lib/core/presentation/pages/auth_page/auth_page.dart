@@ -128,9 +128,9 @@ class _AuthPageState extends State<AuthPage> {
             if (value == null || value.trim().isEmpty) {
               return 'Please enter a username';
             }
-            if (value.length < 3) {
-              return 'Username must be at least 3 characters';
-            }
+            // if (value.length < 3) {
+            //   return 'Username must be at least 3 characters';
+            // }
             return null;
           },
         ),
@@ -144,9 +144,9 @@ class _AuthPageState extends State<AuthPage> {
             if (value == null || value.trim().isEmpty) {
               return 'Please enter your email';
             }
-            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-              return 'Please enter a valid email';
-            }
+            // if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+            //   return 'Please enter a valid email';
+            // }
             return null;
           },
         ),
@@ -171,9 +171,6 @@ class _AuthPageState extends State<AuthPage> {
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Please enter a password';
-            }
-            if (value.length < 8) {
-              return 'Password must be at least 8 characters';
             }
             return null;
           },
@@ -230,6 +227,7 @@ class _AuthPageState extends State<AuthPage> {
       child: CupertinoFormRow(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
         child: CupertinoTextFormFieldRow(
+          style: TextStyle().copyWith(color: schema.onSecondary),
           controller: controller,
           placeholder: placeholder,
           obscureText: obscureText,
@@ -269,7 +267,7 @@ class _AuthPageState extends State<AuthPage> {
                 MaterialPageRoute(
                     builder: (BuildContext context) => _LoginPage()));
           },
-          child: const Text('Sign In'),
+          child: const Text('Log In'),
         ),
       ],
     );
@@ -397,16 +395,16 @@ class _LoginPageState extends State<_LoginPage> {
       children: [
         _buildInputField(
           controller: _emailController,
-          placeholder: 'Email',
-          prefixIcon: CupertinoIcons.mail,
+          placeholder: 'Login',
+          prefixIcon: CupertinoIcons.at,
           keyboardType: TextInputType.emailAddress,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
               return 'Please enter your email';
             }
-            if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
-              return 'Please enter a valid email';
-            }
+            // if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+            //   return 'Please enter a valid email';
+            // }
             return null;
           },
         ),
@@ -432,9 +430,9 @@ class _LoginPageState extends State<_LoginPage> {
             if (value == null || value.isEmpty) {
               return 'Please enter a password';
             }
-            if (value.length < 8) {
-              return 'Password must be at least 8 characters';
-            }
+            // if (value.length < 8) {
+            //   return 'Password must be at least 8 characters';
+            // }
             return null;
           },
         ),
@@ -460,6 +458,7 @@ class _LoginPageState extends State<_LoginPage> {
       child: CupertinoFormRow(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 2),
         child: CupertinoTextFormFieldRow(
+          style: TextStyle().copyWith(color: schema.onSecondary),
           controller: controller,
           placeholder: placeholder,
           obscureText: obscureText,

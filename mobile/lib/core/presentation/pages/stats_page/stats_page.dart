@@ -36,13 +36,25 @@ class _StatsPageState extends State<StatsPage> {
           'Statistics',
           style: TextStyle().copyWith(color: schema.primary),
         ),
-        trailing: CupertinoButton(
-            padding: EdgeInsets.zero,
-            onPressed: addMocks,
-            child: Icon(
-              CupertinoIcons.add,
-              size: 32,
-            )),
+        trailing: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: addMocks,
+                child: Icon(
+                  CupertinoIcons.add,
+                  size: 32,
+                )),
+            CupertinoButton(
+                padding: EdgeInsets.zero,
+                onPressed: refresh,
+                child: Icon(
+                  CupertinoIcons.refresh,
+                  size: 32,
+                )),
+          ],
+        ),
       ),
       body: FutureBuilder<List<WorkoutEntity>>(
         future: _workoutsF,
@@ -81,6 +93,12 @@ class _StatsPageState extends State<StatsPage> {
   void addMocks() {
     setState(() {
       _workoutsF = Future.value(getMockWorkouts(100));
+    });
+  }
+
+  void refresh() {
+    setState(() {
+      _workoutsF = getIt<WorkoutRepository>().fetchRemoteWorkouts();
     });
   }
 
