@@ -64,7 +64,7 @@ func GetExerciseByID(c *fiber.Ctx) error {
 // @Success 200 {object} []models.ExerciseRead
 // @Failure 400 {object} models.ErrorResponse "Malformed query parameters"
 // @Failure 500 {object} models.ErrorResponse "Internal Server Error"
-// @Router /users [get]
+// @Router /exercises [get]
 func GetExercisesPaginate(c *fiber.Ctx) error {
 	page := c.QueryInt("page", 1)
 	if page < 1 {
