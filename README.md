@@ -2,6 +2,13 @@
 
 *Offline-first workout tracker with AI-powered feedback and a full web admin console.*
 
+![123](pics/intro.png)
+![123](pics/product.png)
+![123](pics/mobile.png)
+![123](pics/themes.png)
+![123](pics/sync.png)
+![123](pics/ai.png)
+
 ---
 
 ## Table of Contents
