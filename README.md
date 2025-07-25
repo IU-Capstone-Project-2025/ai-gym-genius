@@ -2,12 +2,21 @@
 
 *Offline-first workout tracker with AI-powered feedback and a full web admin console.*
 
-![123](pics/intro.png)
-![123](pics/product.png)
-![123](pics/mobile.png)
-![123](pics/themes.png)
-![123](pics/sync.png)
-![123](pics/ai.png)
+## Expressive and Simple design
+
+![Intro](pics/intro.png)
+![Product](pics/product.png)
+![Mobile](pics/mobile.png)
+
+## Dynamic Theming
+
+![Themes](pics/themes.png)
+
+## Backend Synchronization
+![Sync](pics/sync.png)
+
+## AI support
+![AI](pics/ai.png)
 
 ---
 
