@@ -318,7 +318,3 @@ For production deployment, see the individual component READMEs:
 - [Admin Frontend README](admin/frontend/README.md)
 - [API README](api/gym-genius/README.md)
 - [Mobile README](mobile/README.md)
-
----
-
-### Mobile App
